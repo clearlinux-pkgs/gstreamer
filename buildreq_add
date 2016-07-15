@@ -1,0 +1,8 @@
+# This file contains additional build requirements that did not get
+# picked up automatically. One name per line, no whitespace.
+bison
+flex
+gobject-introspection-dev
+gobject-introspection
+gmp-dev
+valgrind
