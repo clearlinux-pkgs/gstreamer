@@ -558,6 +558,7 @@ libgstreamer-1.0.so.0:gst_bin_flags_get_type
 libgstreamer-1.0.so.0:gst_bin_get_by_interface
 libgstreamer-1.0.so.0:gst_bin_get_by_name
 libgstreamer-1.0.so.0:gst_bin_get_by_name_recurse_up
+libgstreamer-1.0.so.0:gst_bin_get_suppressed_flags
 libgstreamer-1.0.so.0:gst_bin_get_type
 libgstreamer-1.0.so.0:gst_bin_iterate_all_by_interface
 libgstreamer-1.0.so.0:gst_bin_iterate_elements
@@ -569,6 +570,7 @@ libgstreamer-1.0.so.0:gst_bin_new
 libgstreamer-1.0.so.0:gst_bin_recalculate_latency
 libgstreamer-1.0.so.0:gst_bin_remove
 libgstreamer-1.0.so.0:gst_bin_remove_many
+libgstreamer-1.0.so.0:gst_bin_set_suppressed_flags
 libgstreamer-1.0.so.0:gst_bin_sync_children_states
 libgstreamer-1.0.so.0:gst_bitmask_get_type
 libgstreamer-1.0.so.0:gst_buffer_add_meta
@@ -588,6 +590,7 @@ libgstreamer-1.0.so.0:gst_buffer_find_memory
 libgstreamer-1.0.so.0:gst_buffer_flags_get_type
 libgstreamer-1.0.so.0:gst_buffer_foreach_meta
 libgstreamer-1.0.so.0:gst_buffer_get_all_memory
+libgstreamer-1.0.so.0:gst_buffer_get_flags
 libgstreamer-1.0.so.0:gst_buffer_get_max_memory
 libgstreamer-1.0.so.0:gst_buffer_get_memory
 libgstreamer-1.0.so.0:gst_buffer_get_memory_range
@@ -596,6 +599,7 @@ libgstreamer-1.0.so.0:gst_buffer_get_size
 libgstreamer-1.0.so.0:gst_buffer_get_sizes
 libgstreamer-1.0.so.0:gst_buffer_get_sizes_range
 libgstreamer-1.0.so.0:gst_buffer_get_type
+libgstreamer-1.0.so.0:gst_buffer_has_flags
 libgstreamer-1.0.so.0:gst_buffer_insert_memory
 libgstreamer-1.0.so.0:gst_buffer_is_all_memory_writable
 libgstreamer-1.0.so.0:gst_buffer_is_memory_range_writable
@@ -650,8 +654,10 @@ libgstreamer-1.0.so.0:gst_buffer_replace_memory
 libgstreamer-1.0.so.0:gst_buffer_replace_memory_range
 libgstreamer-1.0.so.0:gst_buffer_resize
 libgstreamer-1.0.so.0:gst_buffer_resize_range
+libgstreamer-1.0.so.0:gst_buffer_set_flags
 libgstreamer-1.0.so.0:gst_buffer_set_size
 libgstreamer-1.0.so.0:gst_buffer_unmap
+libgstreamer-1.0.so.0:gst_buffer_unset_flags
 libgstreamer-1.0.so.0:gst_buffering_mode_get_type
 libgstreamer-1.0.so.0:gst_bus_add_signal_watch
 libgstreamer-1.0.so.0:gst_bus_add_signal_watch_full
@@ -997,6 +1003,7 @@ libgstreamer-1.0.so.0:gst_element_link_pads_full
 libgstreamer-1.0.so.0:gst_element_lost_state
 libgstreamer-1.0.so.0:gst_element_make_from_uri
 libgstreamer-1.0.so.0:gst_element_message_full
+libgstreamer-1.0.so.0:gst_element_message_full_with_details
 libgstreamer-1.0.so.0:gst_element_no_more_pads
 libgstreamer-1.0.so.0:gst_element_post_message
 libgstreamer-1.0.so.0:gst_element_provide_clock
@@ -1051,6 +1058,7 @@ libgstreamer-1.0.so.0:gst_event_new_select_streams
 libgstreamer-1.0.so.0:gst_event_new_sink_message
 libgstreamer-1.0.so.0:gst_event_new_step
 libgstreamer-1.0.so.0:gst_event_new_stream_collection
+libgstreamer-1.0.so.0:gst_event_new_stream_group_done
 libgstreamer-1.0.so.0:gst_event_new_stream_start
 libgstreamer-1.0.so.0:gst_event_new_tag
 libgstreamer-1.0.so.0:gst_event_new_toc
@@ -1072,6 +1080,7 @@ libgstreamer-1.0.so.0:gst_event_parse_step
 libgstreamer-1.0.so.0:gst_event_parse_stream
 libgstreamer-1.0.so.0:gst_event_parse_stream_collection
 libgstreamer-1.0.so.0:gst_event_parse_stream_flags
+libgstreamer-1.0.so.0:gst_event_parse_stream_group_done
 libgstreamer-1.0.so.0:gst_event_parse_stream_start
 libgstreamer-1.0.so.0:gst_event_parse_tag
 libgstreamer-1.0.so.0:gst_event_parse_toc
@@ -1142,6 +1151,7 @@ libgstreamer-1.0.so.0:gst_iterator_resync
 libgstreamer-1.0.so.0:gst_library_error_get_type
 libgstreamer-1.0.so.0:gst_library_error_quark
 libgstreamer-1.0.so.0:gst_lock_flags_get_type
+libgstreamer-1.0.so.0:gst_make_element_message_details
 libgstreamer-1.0.so.0:gst_map_flags_get_type
 libgstreamer-1.0.so.0:gst_memory_copy
 libgstreamer-1.0.so.0:gst_memory_flags_get_type
@@ -1156,6 +1166,8 @@ libgstreamer-1.0.so.0:gst_memory_new_wrapped
 libgstreamer-1.0.so.0:gst_memory_resize
 libgstreamer-1.0.so.0:gst_memory_share
 libgstreamer-1.0.so.0:gst_memory_unmap
+libgstreamer-1.0.so.0:gst_message_add_redirect_entry
+libgstreamer-1.0.so.0:gst_message_get_num_redirect_entries
 libgstreamer-1.0.so.0:gst_message_get_seqnum
 libgstreamer-1.0.so.0:gst_message_get_stream_status_object
 libgstreamer-1.0.so.0:gst_message_get_structure
@@ -1174,14 +1186,17 @@ libgstreamer-1.0.so.0:gst_message_new_duration_changed
 libgstreamer-1.0.so.0:gst_message_new_element
 libgstreamer-1.0.so.0:gst_message_new_eos
 libgstreamer-1.0.so.0:gst_message_new_error
+libgstreamer-1.0.so.0:gst_message_new_error_with_details
 libgstreamer-1.0.so.0:gst_message_new_have_context
 libgstreamer-1.0.so.0:gst_message_new_info
+libgstreamer-1.0.so.0:gst_message_new_info_with_details
 libgstreamer-1.0.so.0:gst_message_new_latency
 libgstreamer-1.0.so.0:gst_message_new_need_context
 libgstreamer-1.0.so.0:gst_message_new_new_clock
 libgstreamer-1.0.so.0:gst_message_new_progress
 libgstreamer-1.0.so.0:gst_message_new_property_notify
 libgstreamer-1.0.so.0:gst_message_new_qos
+libgstreamer-1.0.so.0:gst_message_new_redirect
 libgstreamer-1.0.so.0:gst_message_new_request_state
 libgstreamer-1.0.so.0:gst_message_new_reset_time
 libgstreamer-1.0.so.0:gst_message_new_segment_done
@@ -1198,6 +1213,7 @@ libgstreamer-1.0.so.0:gst_message_new_structure_change
 libgstreamer-1.0.so.0:gst_message_new_tag
 libgstreamer-1.0.so.0:gst_message_new_toc
 libgstreamer-1.0.so.0:gst_message_new_warning
+libgstreamer-1.0.so.0:gst_message_new_warning_with_details
 libgstreamer-1.0.so.0:gst_message_parse_async_done
 libgstreamer-1.0.so.0:gst_message_parse_buffering
 libgstreamer-1.0.so.0:gst_message_parse_buffering_stats
@@ -1207,15 +1223,18 @@ libgstreamer-1.0.so.0:gst_message_parse_context_type
 libgstreamer-1.0.so.0:gst_message_parse_device_added
 libgstreamer-1.0.so.0:gst_message_parse_device_removed
 libgstreamer-1.0.so.0:gst_message_parse_error
+libgstreamer-1.0.so.0:gst_message_parse_error_details
 libgstreamer-1.0.so.0:gst_message_parse_group_id
 libgstreamer-1.0.so.0:gst_message_parse_have_context
 libgstreamer-1.0.so.0:gst_message_parse_info
+libgstreamer-1.0.so.0:gst_message_parse_info_details
 libgstreamer-1.0.so.0:gst_message_parse_new_clock
 libgstreamer-1.0.so.0:gst_message_parse_progress
 libgstreamer-1.0.so.0:gst_message_parse_property_notify
 libgstreamer-1.0.so.0:gst_message_parse_qos
 libgstreamer-1.0.so.0:gst_message_parse_qos_stats
 libgstreamer-1.0.so.0:gst_message_parse_qos_values
+libgstreamer-1.0.so.0:gst_message_parse_redirect_entry
 libgstreamer-1.0.so.0:gst_message_parse_request_state
 libgstreamer-1.0.so.0:gst_message_parse_reset_time
 libgstreamer-1.0.so.0:gst_message_parse_segment_done
@@ -1230,6 +1249,7 @@ libgstreamer-1.0.so.0:gst_message_parse_structure_change
 libgstreamer-1.0.so.0:gst_message_parse_tag
 libgstreamer-1.0.so.0:gst_message_parse_toc
 libgstreamer-1.0.so.0:gst_message_parse_warning
+libgstreamer-1.0.so.0:gst_message_parse_warning_details
 libgstreamer-1.0.so.0:gst_message_set_buffering_stats
 libgstreamer-1.0.so.0:gst_message_set_group_id
 libgstreamer-1.0.so.0:gst_message_set_qos_stats
