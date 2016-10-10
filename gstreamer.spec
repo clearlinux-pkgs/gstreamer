@@ -4,7 +4,7 @@
 #
 Name     : gstreamer
 Version  : 1.9.90
-Release  : 4
+Release  : 5
 URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.9.90.tar.xz
 Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.9.90.tar.xz
 Summary  : GStreamer streaming media framework runtime
