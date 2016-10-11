@@ -4,7 +4,7 @@
 #
 Name     : gstreamer
 Version  : 1.8.3
-Release  : 6
+Release  : 7
 URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.8.3.tar.xz
 Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.8.3.tar.xz
 Summary  : GStreamer streaming media framework runtime
