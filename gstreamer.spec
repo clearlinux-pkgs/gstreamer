@@ -6,7 +6,7 @@
 #
 Name     : gstreamer
 Version  : 1.10.2
-Release  : 10
+Release  : 11
 URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.10.2.tar.xz
 Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.10.2.tar.xz
 Summary  : GStreamer streaming media framework runtime
@@ -17,20 +17,33 @@ Requires: gstreamer-lib
 Requires: gstreamer-data
 Requires: gstreamer-doc
 Requires: gstreamer-locales
+BuildRequires : at-spi2-atk-dev32
 BuildRequires : bison
+BuildRequires : cairo-dev32
 BuildRequires : docbook-xml
 BuildRequires : flex
+BuildRequires : gcc-dev32
+BuildRequires : gcc-libgcc32
+BuildRequires : gcc-libstdc++32
+BuildRequires : gdk-pixbuf-dev32
 BuildRequires : gettext
+BuildRequires : glib-dev32
+BuildRequires : glibc-dev32
+BuildRequires : glibc-libc32
 BuildRequires : gmp-dev
+BuildRequires : gmp-dev32
 BuildRequires : gobject-introspection
 BuildRequires : gobject-introspection-dev
 BuildRequires : gtk-doc
 BuildRequires : gtk-doc-dev
 BuildRequires : libxslt-bin
+BuildRequires : pango-dev32
 BuildRequires : perl(XML::Parser)
+BuildRequires : pkgconfig(32atk)
+BuildRequires : pkgconfig(32gtk+-3.0)
+BuildRequires : pkgconfig(atk)
 BuildRequires : pkgconfig(bash-completion)
 BuildRequires : pkgconfig(gtk+-3.0)
-BuildRequires : pkgconfig(libunwind)
 BuildRequires : valgrind
 
 %description
@@ -70,6 +83,18 @@ Provides: gstreamer-devel
 dev components for the gstreamer package.
 
 
+%package dev32
+Summary: dev32 components for the gstreamer package.
+Group: Default
+Requires: gstreamer-lib32
+Requires: gstreamer-bin
+Requires: gstreamer-data
+Requires: gstreamer-dev
+
+%description dev32
+dev32 components for the gstreamer package.
+
+
 %package doc
 Summary: doc components for the gstreamer package.
 Group: Documentation
@@ -87,6 +112,15 @@ Requires: gstreamer-data
 lib components for the gstreamer package.
 
 
+%package lib32
+Summary: lib32 components for the gstreamer package.
+Group: Default
+Requires: gstreamer-data
+
+%description lib32
+lib32 components for the gstreamer package.
+
+
 %package locales
 Summary: locales components for the gstreamer package.
 Group: Default
@@ -97,10 +131,13 @@ locales components for the gstreamer package.
 
 %prep
 %setup -q -n gstreamer-1.10.2
+pushd ..
+cp -a gstreamer-1.10.2 build32
+popd
 
 %build
 export LANG=C
-export SOURCE_DATE_EPOCH=1483227560
+export SOURCE_DATE_EPOCH=1483304843
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -111,6 +148,14 @@ export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto -fno
 %configure --disable-static
 make V=1  %{?_smp_mflags}
 
+pushd ../build32/
+export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+export CFLAGS="$CFLAGS -m32"
+export CXXFLAGS="$CXXFLAGS -m32"
+export LDFLAGS="$LDFLAGS -m32"
+%configure --disable-static    --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
+make V=1  %{?_smp_mflags}
+popd
 %check
 export LANG=C
 export http_proxy=http://127.0.0.1:9/
@@ -120,11 +165,25 @@ make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
 rm -rf %{buildroot}
+pushd ../build32/
+%make_install32
+if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
+then
+pushd %{buildroot}/usr/lib32/pkgconfig
+for i in *.pc ; do ln -s $i 32$i ; done
+popd
+fi
+popd
 %make_install
 %find_lang gstreamer-1.0
 
 %files
 %defattr(-,root,root,-)
+/usr/lib32/girepository-1.0/Gst-1.0.typelib
+/usr/lib32/girepository-1.0/GstBase-1.0.typelib
+/usr/lib32/girepository-1.0/GstCheck-1.0.typelib
+/usr/lib32/girepository-1.0/GstController-1.0.typelib
+/usr/lib32/girepository-1.0/GstNet-1.0.typelib
 
 %files bin
 %defattr(-,root,root,-)
@@ -272,6 +331,24 @@ rm -rf %{buildroot}
 /usr/lib64/pkgconfig/gstreamer-net-1.0.pc
 /usr/share/aclocal/*.m4
 /usr/share/gir-1.0/*.gir
+
+%files dev32
+%defattr(-,root,root,-)
+/usr/lib32/libgstbase-1.0.so
+/usr/lib32/libgstcheck-1.0.so
+/usr/lib32/libgstcontroller-1.0.so
+/usr/lib32/libgstnet-1.0.so
+/usr/lib32/libgstreamer-1.0.so
+/usr/lib32/pkgconfig/32gstreamer-1.0.pc
+/usr/lib32/pkgconfig/32gstreamer-base-1.0.pc
+/usr/lib32/pkgconfig/32gstreamer-check-1.0.pc
+/usr/lib32/pkgconfig/32gstreamer-controller-1.0.pc
+/usr/lib32/pkgconfig/32gstreamer-net-1.0.pc
+/usr/lib32/pkgconfig/gstreamer-1.0.pc
+/usr/lib32/pkgconfig/gstreamer-base-1.0.pc
+/usr/lib32/pkgconfig/gstreamer-check-1.0.pc
+/usr/lib32/pkgconfig/gstreamer-controller-1.0.pc
+/usr/lib32/pkgconfig/gstreamer-net-1.0.pc
 
 %files doc
 %defattr(-,root,root,-)
@@ -477,6 +554,21 @@ rm -rf %{buildroot}
 /usr/lib64/libgstnet-1.0.so.0.1002.0
 /usr/lib64/libgstreamer-1.0.so.0
 /usr/lib64/libgstreamer-1.0.so.0.1002.0
+
+%files lib32
+%defattr(-,root,root,-)
+/usr/lib32/gstreamer-1.0/libgstcoreelements.so
+/usr/lib32/gstreamer-1.0/libgstcoretracers.so
+/usr/lib32/libgstbase-1.0.so.0
+/usr/lib32/libgstbase-1.0.so.0.1002.0
+/usr/lib32/libgstcheck-1.0.so.0
+/usr/lib32/libgstcheck-1.0.so.0.1002.0
+/usr/lib32/libgstcontroller-1.0.so.0
+/usr/lib32/libgstcontroller-1.0.so.0.1002.0
+/usr/lib32/libgstnet-1.0.so.0
+/usr/lib32/libgstnet-1.0.so.0.1002.0
+/usr/lib32/libgstreamer-1.0.so.0
+/usr/lib32/libgstreamer-1.0.so.0.1002.0
 
 %files locales -f gstreamer-1.0.lang
 %defattr(-,root,root,-)

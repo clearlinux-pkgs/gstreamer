@@ -6,3 +6,9 @@ gobject-introspection-dev
 gobject-introspection
 gmp-dev
 valgrind
+glib-dev32
+gmp-dev32
+pango-dev32
+cairo-dev32
+gdk-pixbuf-dev32
+at-spi2-atk-dev32

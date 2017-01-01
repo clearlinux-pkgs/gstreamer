@@ -2,3 +2,4 @@
 # but are undesirable. One entry per line, no whitespace.
 32bash-completion
 32libunwind
+libunwind
