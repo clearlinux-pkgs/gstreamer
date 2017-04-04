@@ -6,7 +6,7 @@
 #
 Name     : gstreamer
 Version  : 1.10.3
-Release  : 12
+Release  : 13
 URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.10.3.tar.xz
 Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.10.3.tar.xz
 Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.10.3.tar.xz.asc
@@ -14,8 +14,8 @@ Summary  : GStreamer streaming media framework runtime
 Group    : Development/Tools
 License  : GPL-2.0
 Requires: gstreamer-bin
-Requires: gstreamer-lib
 Requires: gstreamer-data
+Requires: gstreamer-lib
 Requires: gstreamer-doc
 Requires: gstreamer-locales
 BuildRequires : at-spi2-atk-dev32
@@ -138,7 +138,7 @@ popd
 
 %build
 export LANG=C
-export SOURCE_DATE_EPOCH=1486050783
+export SOURCE_DATE_EPOCH=1491320185
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -165,7 +165,7 @@ export no_proxy=localhost
 make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1486050783
+export SOURCE_DATE_EPOCH=1491320185
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32
@@ -198,10 +198,16 @@ popd
 
 %files data
 %defattr(-,root,root,-)
+/usr/lib64/girepository-1.0/Gst-1.0.typelib
+/usr/lib64/girepository-1.0/GstBase-1.0.typelib
+/usr/lib64/girepository-1.0/GstCheck-1.0.typelib
+/usr/lib64/girepository-1.0/GstController-1.0.typelib
+/usr/lib64/girepository-1.0/GstNet-1.0.typelib
 /usr/share/bash-completion/completions/gst-inspect-1.0
 /usr/share/bash-completion/completions/gst-launch-1.0
 /usr/share/bash-completion/helpers/gst
 /usr/share/bash-completion/helpers/gst-completion-helper-1.0
+/usr/share/gir-1.0/*.gir
 
 %files dev
 %defattr(-,root,root,-)
@@ -316,11 +322,6 @@ popd
 /usr/include/gstreamer-1.0/gst/net/gstnettimeprovider.h
 /usr/include/gstreamer-1.0/gst/net/gstptpclock.h
 /usr/include/gstreamer-1.0/gst/net/net.h
-/usr/lib64/girepository-1.0/Gst-1.0.typelib
-/usr/lib64/girepository-1.0/GstBase-1.0.typelib
-/usr/lib64/girepository-1.0/GstCheck-1.0.typelib
-/usr/lib64/girepository-1.0/GstController-1.0.typelib
-/usr/lib64/girepository-1.0/GstNet-1.0.typelib
 /usr/lib64/libgstbase-1.0.so
 /usr/lib64/libgstcheck-1.0.so
 /usr/lib64/libgstcontroller-1.0.so
@@ -332,7 +333,6 @@ popd
 /usr/lib64/pkgconfig/gstreamer-controller-1.0.pc
 /usr/lib64/pkgconfig/gstreamer-net-1.0.pc
 /usr/share/aclocal/*.m4
-/usr/share/gir-1.0/*.gir
 
 %files dev32
 %defattr(-,root,root,-)
