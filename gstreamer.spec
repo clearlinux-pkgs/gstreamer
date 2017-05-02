@@ -6,7 +6,7 @@
 #
 Name     : gstreamer
 Version  : 1.10.3
-Release  : 13
+Release  : 14
 URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.10.3.tar.xz
 Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.10.3.tar.xz
 Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.10.3.tar.xz.asc
