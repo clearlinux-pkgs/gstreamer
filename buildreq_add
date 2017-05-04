@@ -12,3 +12,4 @@ pango-dev32
 cairo-dev32
 gdk-pixbuf-dev32
 at-spi2-atk-dev32
+gstreamer-dev

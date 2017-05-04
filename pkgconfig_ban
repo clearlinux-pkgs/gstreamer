@@ -3,3 +3,5 @@
 32bash-completion
 32libunwind
 libunwind
+gstreamer-gl-$GST_API_VERSION
+32gstreamer-gl-$GST_API_VERSION

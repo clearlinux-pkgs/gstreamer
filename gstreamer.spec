@@ -5,12 +5,12 @@
 # Source0 file verified with key 0x0668CC1486C2D7B5 (slomo@debian.org)
 #
 Name     : gstreamer
-Version  : 1.10.3
-Release  : 14
-URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.10.3.tar.xz
-Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.10.3.tar.xz
-Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.10.3.tar.xz.asc
-Summary  : GStreamer streaming media framework runtime
+Version  : 1.12.0
+Release  : 15
+URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.12.0.tar.xz
+Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.12.0.tar.xz
+Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.12.0.tar.xz.asc
+Summary  : Streaming media framework, Not Installed
 Group    : Development/Tools
 License  : GPL-2.0
 Requires: gstreamer-bin
@@ -27,7 +27,6 @@ BuildRequires : gcc-dev32
 BuildRequires : gcc-libgcc32
 BuildRequires : gcc-libstdc++32
 BuildRequires : gdk-pixbuf-dev32
-BuildRequires : gettext
 BuildRequires : glib-dev32
 BuildRequires : glibc-dev32
 BuildRequires : glibc-libc32
@@ -35,25 +34,25 @@ BuildRequires : gmp-dev
 BuildRequires : gmp-dev32
 BuildRequires : gobject-introspection
 BuildRequires : gobject-introspection-dev
+BuildRequires : gstreamer-dev
 BuildRequires : gtk-doc
 BuildRequires : gtk-doc-dev
 BuildRequires : libxslt-bin
 BuildRequires : pango-dev32
-BuildRequires : perl(XML::Parser)
 BuildRequires : pkgconfig(32atk)
 BuildRequires : pkgconfig(32gtk+-3.0)
+BuildRequires : pkgconfig(32libdw)
 BuildRequires : pkgconfig(atk)
 BuildRequires : pkgconfig(bash-completion)
 BuildRequires : pkgconfig(gtk+-3.0)
+BuildRequires : pkgconfig(libdw)
 BuildRequires : valgrind
 
 %description
-GStreamer is a streaming media framework, based on graphs of filters which
-operate on media data. Applications using this library can do anything
-from real-time sound processing to playing videos, and just about anything
-else media-related.  Its plugin-based architecture means that new data
-types or processing capabilities can be added simply by installing new 
-plugins.
+GStreamer 1.11.x development series
+WHAT IT IS
+----------
+This is GStreamer, a framework for streaming media.
 
 %package bin
 Summary: bin components for the gstreamer package.
@@ -131,14 +130,17 @@ locales components for the gstreamer package.
 
 
 %prep
-%setup -q -n gstreamer-1.10.3
+%setup -q -n gstreamer-1.12.0
 pushd ..
-cp -a gstreamer-1.10.3 build32
+cp -a gstreamer-1.12.0 build32
 popd
 
 %build
+export http_proxy=http://127.0.0.1:9/
+export https_proxy=http://127.0.0.1:9/
+export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1491320185
+export SOURCE_DATE_EPOCH=1493907742
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -161,11 +163,11 @@ popd
 export LANG=C
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
-export no_proxy=localhost
+export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1491320185
+export SOURCE_DATE_EPOCH=1493907742
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32
@@ -193,6 +195,7 @@ popd
 /usr/bin/gst-launch-1.0
 /usr/bin/gst-stats-1.0
 /usr/bin/gst-typefind-1.0
+/usr/libexec/gstreamer-1.0/gst-completion-helper
 /usr/libexec/gstreamer-1.0/gst-plugin-scanner
 /usr/libexec/gstreamer-1.0/gst-ptp-helper
 
@@ -206,7 +209,6 @@ popd
 /usr/share/bash-completion/completions/gst-inspect-1.0
 /usr/share/bash-completion/completions/gst-launch-1.0
 /usr/share/bash-completion/helpers/gst
-/usr/share/bash-completion/helpers/gst-completion-helper-1.0
 /usr/share/gir-1.0/*.gir
 
 %files dev
@@ -233,11 +235,13 @@ popd
 /usr/include/gstreamer-1.0/gst/check/gstharness.h
 /usr/include/gstreamer-1.0/gst/check/gsttestclock.h
 /usr/include/gstreamer-1.0/gst/check/internal-check.h
+/usr/include/gstreamer-1.0/gst/controller/controller-enumtypes.h
 /usr/include/gstreamer-1.0/gst/controller/controller.h
 /usr/include/gstreamer-1.0/gst/controller/gstargbcontrolbinding.h
 /usr/include/gstreamer-1.0/gst/controller/gstdirectcontrolbinding.h
 /usr/include/gstreamer-1.0/gst/controller/gstinterpolationcontrolsource.h
 /usr/include/gstreamer-1.0/gst/controller/gstlfocontrolsource.h
+/usr/include/gstreamer-1.0/gst/controller/gstproxycontrolbinding.h
 /usr/include/gstreamer-1.0/gst/controller/gsttimedvaluecontrolsource.h
 /usr/include/gstreamer-1.0/gst/controller/gsttriggercontrolsource.h
 /usr/include/gstreamer-1.0/gst/glib-compat.h
@@ -264,6 +268,7 @@ popd
 /usr/include/gstreamer-1.0/gst/gstdevicemonitor.h
 /usr/include/gstreamer-1.0/gst/gstdeviceprovider.h
 /usr/include/gstreamer-1.0/gst/gstdeviceproviderfactory.h
+/usr/include/gstreamer-1.0/gst/gstdynamictypefactory.h
 /usr/include/gstreamer-1.0/gst/gstelement.h
 /usr/include/gstreamer-1.0/gst/gstelementfactory.h
 /usr/include/gstreamer-1.0/gst/gstelementmetadata.h
@@ -370,6 +375,7 @@ popd
 /usr/share/gtk-doc/html/gstreamer-1.0/GstControlSource.html
 /usr/share/gtk-doc/html/gstreamer-1.0/GstDateTime.html
 /usr/share/gtk-doc/html/gstreamer-1.0/GstDeviceProviderFactory.html
+/usr/share/gtk-doc/html/gstreamer-1.0/GstDynamicTypeFactory.html
 /usr/share/gtk-doc/html/gstreamer-1.0/GstElement.html
 /usr/share/gtk-doc/html/gstreamer-1.0/GstElementFactory.html
 /usr/share/gtk-doc/html/gstreamer-1.0/GstEvent.html
@@ -486,6 +492,7 @@ popd
 /usr/share/gtk-doc/html/gstreamer-libs-1.0/gstreamer-libs-GstNetAddressMeta.html
 /usr/share/gtk-doc/html/gstreamer-libs-1.0/gstreamer-libs-GstNetControlMessageMeta.html
 /usr/share/gtk-doc/html/gstreamer-libs-1.0/gstreamer-libs-GstNetTimePacket.html
+/usr/share/gtk-doc/html/gstreamer-libs-1.0/gstreamer-libs-GstProxyControlBinding.html
 /usr/share/gtk-doc/html/gstreamer-libs-1.0/gstreamer-libs-GstQueueArray.html
 /usr/share/gtk-doc/html/gstreamer-libs-1.0/gstreamer-libs-GstStreamConsistency.html
 /usr/share/gtk-doc/html/gstreamer-libs-1.0/gstreamer-libs-GstTypeFindHelper.html
@@ -513,6 +520,7 @@ popd
 /usr/share/gtk-doc/html/gstreamer-plugins-1.0/gstreamer-plugins-1.0.devhelp2
 /usr/share/gtk-doc/html/gstreamer-plugins-1.0/gstreamer-plugins-capsfilter.html
 /usr/share/gtk-doc/html/gstreamer-plugins-1.0/gstreamer-plugins-concat.html
+/usr/share/gtk-doc/html/gstreamer-plugins-1.0/gstreamer-plugins-dataurisrc.html
 /usr/share/gtk-doc/html/gstreamer-plugins-1.0/gstreamer-plugins-downloadbuffer.html
 /usr/share/gtk-doc/html/gstreamer-plugins-1.0/gstreamer-plugins-fakesink.html
 /usr/share/gtk-doc/html/gstreamer-plugins-1.0/gstreamer-plugins-fakesrc.html
@@ -547,30 +555,30 @@ popd
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
-/usr/lib64/libgstbase-1.0.so.0.1003.0
+/usr/lib64/libgstbase-1.0.so.0.1200.0
 /usr/lib64/libgstcheck-1.0.so.0
-/usr/lib64/libgstcheck-1.0.so.0.1003.0
+/usr/lib64/libgstcheck-1.0.so.0.1200.0
 /usr/lib64/libgstcontroller-1.0.so.0
-/usr/lib64/libgstcontroller-1.0.so.0.1003.0
+/usr/lib64/libgstcontroller-1.0.so.0.1200.0
 /usr/lib64/libgstnet-1.0.so.0
-/usr/lib64/libgstnet-1.0.so.0.1003.0
+/usr/lib64/libgstnet-1.0.so.0.1200.0
 /usr/lib64/libgstreamer-1.0.so.0
-/usr/lib64/libgstreamer-1.0.so.0.1003.0
+/usr/lib64/libgstreamer-1.0.so.0.1200.0
 
 %files lib32
 %defattr(-,root,root,-)
 /usr/lib32/gstreamer-1.0/libgstcoreelements.so
 /usr/lib32/gstreamer-1.0/libgstcoretracers.so
 /usr/lib32/libgstbase-1.0.so.0
-/usr/lib32/libgstbase-1.0.so.0.1003.0
+/usr/lib32/libgstbase-1.0.so.0.1200.0
 /usr/lib32/libgstcheck-1.0.so.0
-/usr/lib32/libgstcheck-1.0.so.0.1003.0
+/usr/lib32/libgstcheck-1.0.so.0.1200.0
 /usr/lib32/libgstcontroller-1.0.so.0
-/usr/lib32/libgstcontroller-1.0.so.0.1003.0
+/usr/lib32/libgstcontroller-1.0.so.0.1200.0
 /usr/lib32/libgstnet-1.0.so.0
-/usr/lib32/libgstnet-1.0.so.0.1003.0
+/usr/lib32/libgstnet-1.0.so.0.1200.0
 /usr/lib32/libgstreamer-1.0.so.0
-/usr/lib32/libgstreamer-1.0.so.0.1003.0
+/usr/lib32/libgstreamer-1.0.so.0.1200.0
 
 %files locales -f gstreamer-1.0.lang
 %defattr(-,root,root,-)
