@@ -1,0 +1,40 @@
+Configure miss: VALGRIND
+Configure miss: whether to build static plugins or not
+Configure miss: cap_init in -lcap
+Configure miss: setcap
+Configure miss: getifaddrs() and AF_LINK
+Configure miss: whether to build plugin documentation
+Configure miss: whether gcc is Clang
+Configure miss: whether more special flags are required for pthreads
+Configure miss: pthread_setname_np(const char*)
+Configure miss: valgrind/valgrind.h
+Configure miss: winsock2.h
+Configure miss: gsl_rng_uniform_int in -lgsl
+Configure miss: broken poll
+Configure miss: UNWIND
+Configure miss: _getpid
+Configure miss: _strdup
+Configure miss: i686-generic-linux-gnu-objdump
+Configure miss: i686-generic-linux-gnu-dlltool
+Configure miss: i686-generic-linux-gnu-strip
+Configure miss: i686-generic-linux-gnu-mt
+Configure miss: whether a statically linked program can dlopen itself
+Configure miss: i686-generic-linux-gnu-pkg-config
+Configure miss: VALGRIND
+Configure miss: whether to build static plugins or not
+Configure miss: cap_init in -lcap
+Configure miss: setcap
+Configure miss: getifaddrs() and AF_LINK
+Configure miss: whether to build plugin documentation
+Configure miss: whether gcc is Clang
+Configure miss: whether more special flags are required for pthreads
+Configure miss: pthread_setname_np(const char*)
+Configure miss: valgrind/valgrind.h
+Configure miss: winsock2.h
+Configure miss: __gmpz_init_set_d in -lgmp
+Configure miss: gsl_rng_uniform_int in -lgsl
+Configure miss: __uint128_t
+Configure miss: broken poll
+Configure miss: UNWIND
+Configure miss: _getpid
+Configure miss: _strdup
