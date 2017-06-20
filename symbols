@@ -33,6 +33,7 @@ libgstbase-1.0.so.0:gst_base_parse_add_index_entry
 libgstbase-1.0.so.0:gst_base_parse_convert_default
 libgstbase-1.0.so.0:gst_base_parse_drain
 libgstbase-1.0.so.0:gst_base_parse_finish_frame
+libgstbase-1.0.so.0:gst_base_parse_frame_copy
 libgstbase-1.0.so.0:gst_base_parse_frame_free
 libgstbase-1.0.so.0:gst_base_parse_frame_get_type
 libgstbase-1.0.so.0:gst_base_parse_frame_init
@@ -284,8 +285,10 @@ libgstbase-1.0.so.0:gst_flow_combiner_clear
 libgstbase-1.0.so.0:gst_flow_combiner_free
 libgstbase-1.0.so.0:gst_flow_combiner_get_type
 libgstbase-1.0.so.0:gst_flow_combiner_new
+libgstbase-1.0.so.0:gst_flow_combiner_ref
 libgstbase-1.0.so.0:gst_flow_combiner_remove_pad
 libgstbase-1.0.so.0:gst_flow_combiner_reset
+libgstbase-1.0.so.0:gst_flow_combiner_unref
 libgstbase-1.0.so.0:gst_flow_combiner_update_flow
 libgstbase-1.0.so.0:gst_flow_combiner_update_pad_flow
 libgstbase-1.0.so.0:gst_push_src_get_type
@@ -483,6 +486,8 @@ libgstcheck-1.0.so.0:tr_rtype
 libgstcheck-1.0.so.0:tr_tcname
 libgstcontroller-1.0.so.0:gst_argb_control_binding_get_type
 libgstcontroller-1.0.so.0:gst_argb_control_binding_new
+libgstcontroller-1.0.so.0:gst_control_point_copy
+libgstcontroller-1.0.so.0:gst_control_point_free
 libgstcontroller-1.0.so.0:gst_control_point_get_type
 libgstcontroller-1.0.so.0:gst_direct_control_binding_get_type
 libgstcontroller-1.0.so.0:gst_direct_control_binding_new
@@ -1444,6 +1449,7 @@ libgstreamer-1.0.so.0:gst_parent_buffer_meta_api_get_type
 libgstreamer-1.0.so.0:gst_parent_buffer_meta_get_info
 libgstreamer-1.0.so.0:gst_parse_bin_from_description
 libgstreamer-1.0.so.0:gst_parse_bin_from_description_full
+libgstreamer-1.0.so.0:gst_parse_context_copy
 libgstreamer-1.0.so.0:gst_parse_context_free
 libgstreamer-1.0.so.0:gst_parse_context_get_missing_elements
 libgstreamer-1.0.so.0:gst_parse_context_get_type
