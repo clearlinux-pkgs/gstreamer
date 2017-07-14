@@ -5,11 +5,11 @@
 # Source0 file verified with key 0x0668CC1486C2D7B5 (slomo@debian.org)
 #
 Name     : gstreamer
-Version  : 1.12.1
-Release  : 17
-URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.12.1.tar.xz
-Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.12.1.tar.xz
-Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.12.1.tar.xz.asc
+Version  : 1.12.2
+Release  : 18
+URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.12.2.tar.xz
+Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.12.2.tar.xz
+Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.12.2.tar.xz.asc
 Summary  : Streaming media framework, Not Installed
 Group    : Development/Tools
 License  : GPL-2.0
@@ -130,9 +130,9 @@ locales components for the gstreamer package.
 
 
 %prep
-%setup -q -n gstreamer-1.12.1
+%setup -q -n gstreamer-1.12.2
 pushd ..
-cp -a gstreamer-1.12.1 build32
+cp -a gstreamer-1.12.2 build32
 popd
 
 %build
@@ -140,7 +140,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1497966972
+export SOURCE_DATE_EPOCH=1500041131
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -167,7 +167,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1497966972
+export SOURCE_DATE_EPOCH=1500041131
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32
@@ -555,30 +555,30 @@ popd
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
-/usr/lib64/libgstbase-1.0.so.0.1201.0
+/usr/lib64/libgstbase-1.0.so.0.1202.0
 /usr/lib64/libgstcheck-1.0.so.0
-/usr/lib64/libgstcheck-1.0.so.0.1201.0
+/usr/lib64/libgstcheck-1.0.so.0.1202.0
 /usr/lib64/libgstcontroller-1.0.so.0
-/usr/lib64/libgstcontroller-1.0.so.0.1201.0
+/usr/lib64/libgstcontroller-1.0.so.0.1202.0
 /usr/lib64/libgstnet-1.0.so.0
-/usr/lib64/libgstnet-1.0.so.0.1201.0
+/usr/lib64/libgstnet-1.0.so.0.1202.0
 /usr/lib64/libgstreamer-1.0.so.0
-/usr/lib64/libgstreamer-1.0.so.0.1201.0
+/usr/lib64/libgstreamer-1.0.so.0.1202.0
 
 %files lib32
 %defattr(-,root,root,-)
 /usr/lib32/gstreamer-1.0/libgstcoreelements.so
 /usr/lib32/gstreamer-1.0/libgstcoretracers.so
 /usr/lib32/libgstbase-1.0.so.0
-/usr/lib32/libgstbase-1.0.so.0.1201.0
+/usr/lib32/libgstbase-1.0.so.0.1202.0
 /usr/lib32/libgstcheck-1.0.so.0
-/usr/lib32/libgstcheck-1.0.so.0.1201.0
+/usr/lib32/libgstcheck-1.0.so.0.1202.0
 /usr/lib32/libgstcontroller-1.0.so.0
-/usr/lib32/libgstcontroller-1.0.so.0.1201.0
+/usr/lib32/libgstcontroller-1.0.so.0.1202.0
 /usr/lib32/libgstnet-1.0.so.0
-/usr/lib32/libgstnet-1.0.so.0.1201.0
+/usr/lib32/libgstnet-1.0.so.0.1202.0
 /usr/lib32/libgstreamer-1.0.so.0
-/usr/lib32/libgstreamer-1.0.so.0.1201.0
+/usr/lib32/libgstreamer-1.0.so.0.1202.0
 
 %files locales -f gstreamer-1.0.lang
 %defattr(-,root,root,-)
