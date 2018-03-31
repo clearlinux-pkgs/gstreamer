@@ -29,6 +29,18 @@ libgstbase-1.0.so.0:gst_adapter_take_buffer_fast
 libgstbase-1.0.so.0:gst_adapter_take_buffer_list
 libgstbase-1.0.so.0:gst_adapter_take_list
 libgstbase-1.0.so.0:gst_adapter_unmap
+libgstbase-1.0.so.0:gst_aggregator_finish_buffer
+libgstbase-1.0.so.0:gst_aggregator_get_allocator
+libgstbase-1.0.so.0:gst_aggregator_get_buffer_pool
+libgstbase-1.0.so.0:gst_aggregator_get_latency
+libgstbase-1.0.so.0:gst_aggregator_get_type
+libgstbase-1.0.so.0:gst_aggregator_pad_drop_buffer
+libgstbase-1.0.so.0:gst_aggregator_pad_get_type
+libgstbase-1.0.so.0:gst_aggregator_pad_is_eos
+libgstbase-1.0.so.0:gst_aggregator_pad_peek_buffer
+libgstbase-1.0.so.0:gst_aggregator_pad_pop_buffer
+libgstbase-1.0.so.0:gst_aggregator_set_latency
+libgstbase-1.0.so.0:gst_aggregator_set_src_caps
 libgstbase-1.0.so.0:gst_base_parse_add_index_entry
 libgstbase-1.0.so.0:gst_base_parse_convert_default
 libgstbase-1.0.so.0:gst_base_parse_drain
@@ -101,6 +113,7 @@ libgstbase-1.0.so.0:gst_base_src_set_format
 libgstbase-1.0.so.0:gst_base_src_set_live
 libgstbase-1.0.so.0:gst_base_src_start_complete
 libgstbase-1.0.so.0:gst_base_src_start_wait
+libgstbase-1.0.so.0:gst_base_src_submit_buffer_list
 libgstbase-1.0.so.0:gst_base_src_wait_playing
 libgstbase-1.0.so.0:gst_base_transform_get_allocator
 libgstbase-1.0.so.0:gst_base_transform_get_buffer_pool
@@ -302,8 +315,12 @@ libgstbase-1.0.so.0:gst_queue_array_new
 libgstbase-1.0.so.0:gst_queue_array_new_for_struct
 libgstbase-1.0.so.0:gst_queue_array_peek_head
 libgstbase-1.0.so.0:gst_queue_array_peek_head_struct
+libgstbase-1.0.so.0:gst_queue_array_peek_tail
+libgstbase-1.0.so.0:gst_queue_array_peek_tail_struct
 libgstbase-1.0.so.0:gst_queue_array_pop_head
 libgstbase-1.0.so.0:gst_queue_array_pop_head_struct
+libgstbase-1.0.so.0:gst_queue_array_pop_tail
+libgstbase-1.0.so.0:gst_queue_array_pop_tail_struct
 libgstbase-1.0.so.0:gst_queue_array_push_tail
 libgstbase-1.0.so.0:gst_queue_array_push_tail_struct
 libgstbase-1.0.so.0:gst_type_find_helper
@@ -355,6 +372,7 @@ libgstcheck-1.0.so.0:gst_consistency_checker_free
 libgstcheck-1.0.so.0:gst_consistency_checker_new
 libgstcheck-1.0.so.0:gst_consistency_checker_reset
 libgstcheck-1.0.so.0:gst_harness_add_element_full
+libgstcheck-1.0.so.0:gst_harness_add_element_sink_pad
 libgstcheck-1.0.so.0:gst_harness_add_element_src_pad
 libgstcheck-1.0.so.0:gst_harness_add_parse
 libgstcheck-1.0.so.0:gst_harness_add_probe
@@ -422,6 +440,9 @@ libgstcheck-1.0.so.0:gst_harness_stress_push_upstream_event_with_cb_start_full
 libgstcheck-1.0.so.0:gst_harness_stress_requestpad_start_full
 libgstcheck-1.0.so.0:gst_harness_stress_statechange_start_full
 libgstcheck-1.0.so.0:gst_harness_stress_thread_stop
+libgstcheck-1.0.so.0:gst_harness_take_all_data
+libgstcheck-1.0.so.0:gst_harness_take_all_data_as_buffer
+libgstcheck-1.0.so.0:gst_harness_take_all_data_as_bytes
 libgstcheck-1.0.so.0:gst_harness_teardown
 libgstcheck-1.0.so.0:gst_harness_try_pull
 libgstcheck-1.0.so.0:gst_harness_try_pull_event
@@ -557,7 +578,6 @@ libgstreamer-1.0.so.0:gst_allocator_free
 libgstreamer-1.0.so.0:gst_allocator_get_type
 libgstreamer-1.0.so.0:gst_allocator_register
 libgstreamer-1.0.so.0:gst_allocator_set_default
-libgstreamer-1.0.so.0:gst_allocator_sysmem_get_type
 libgstreamer-1.0.so.0:gst_atomic_queue_get_type
 libgstreamer-1.0.so.0:gst_atomic_queue_length
 libgstreamer-1.0.so.0:gst_atomic_queue_new
@@ -591,6 +611,7 @@ libgstreamer-1.0.so.0:gst_bitmask_get_type
 libgstreamer-1.0.so.0:gst_buffer_add_meta
 libgstreamer-1.0.so.0:gst_buffer_add_parent_buffer_meta
 libgstreamer-1.0.so.0:gst_buffer_add_protection_meta
+libgstreamer-1.0.so.0:gst_buffer_add_reference_timestamp_meta
 libgstreamer-1.0.so.0:gst_buffer_append
 libgstreamer-1.0.so.0:gst_buffer_append_memory
 libgstreamer-1.0.so.0:gst_buffer_append_region
@@ -610,6 +631,8 @@ libgstreamer-1.0.so.0:gst_buffer_get_max_memory
 libgstreamer-1.0.so.0:gst_buffer_get_memory
 libgstreamer-1.0.so.0:gst_buffer_get_memory_range
 libgstreamer-1.0.so.0:gst_buffer_get_meta
+libgstreamer-1.0.so.0:gst_buffer_get_n_meta
+libgstreamer-1.0.so.0:gst_buffer_get_reference_timestamp_meta
 libgstreamer-1.0.so.0:gst_buffer_get_size
 libgstreamer-1.0.so.0:gst_buffer_get_sizes
 libgstreamer-1.0.so.0:gst_buffer_get_sizes_range
@@ -620,10 +643,12 @@ libgstreamer-1.0.so.0:gst_buffer_is_all_memory_writable
 libgstreamer-1.0.so.0:gst_buffer_is_memory_range_writable
 libgstreamer-1.0.so.0:gst_buffer_iterate_meta
 libgstreamer-1.0.so.0:gst_buffer_iterate_meta_filtered
+libgstreamer-1.0.so.0:gst_buffer_list_calculate_size
 libgstreamer-1.0.so.0:gst_buffer_list_copy_deep
 libgstreamer-1.0.so.0:gst_buffer_list_foreach
 libgstreamer-1.0.so.0:gst_buffer_list_get
 libgstreamer-1.0.so.0:gst_buffer_list_get_type
+libgstreamer-1.0.so.0:gst_buffer_list_get_writable
 libgstreamer-1.0.so.0:gst_buffer_list_insert
 libgstreamer-1.0.so.0:gst_buffer_list_length
 libgstreamer-1.0.so.0:gst_buffer_list_new
@@ -684,6 +709,7 @@ libgstreamer-1.0.so.0:gst_bus_create_watch
 libgstreamer-1.0.so.0:gst_bus_disable_sync_message_emission
 libgstreamer-1.0.so.0:gst_bus_enable_sync_message_emission
 libgstreamer-1.0.so.0:gst_bus_flags_get_type
+libgstreamer-1.0.so.0:gst_bus_get_pollfd
 libgstreamer-1.0.so.0:gst_bus_get_type
 libgstreamer-1.0.so.0:gst_bus_have_pending
 libgstreamer-1.0.so.0:gst_bus_new
@@ -869,6 +895,7 @@ libgstreamer-1.0.so.0:gst_date_time_to_g_date_time
 libgstreamer-1.0.so.0:gst_date_time_to_iso8601_string
 libgstreamer-1.0.so.0:gst_date_time_unref
 libgstreamer-1.0.so.0:gst_debug_add_log_function
+libgstreamer-1.0.so.0:gst_debug_add_ring_buffer_logger
 libgstreamer-1.0.so.0:gst_debug_bin_to_dot_data
 libgstreamer-1.0.so.0:gst_debug_bin_to_dot_file
 libgstreamer-1.0.so.0:gst_debug_bin_to_dot_file_with_ts
@@ -899,6 +926,8 @@ libgstreamer-1.0.so.0:gst_debug_message_get
 libgstreamer-1.0.so.0:gst_debug_print_stack_trace
 libgstreamer-1.0.so.0:gst_debug_remove_log_function
 libgstreamer-1.0.so.0:gst_debug_remove_log_function_by_data
+libgstreamer-1.0.so.0:gst_debug_remove_ring_buffer_logger
+libgstreamer-1.0.so.0:gst_debug_ring_buffer_logger_get_logs
 libgstreamer-1.0.so.0:gst_debug_set_active
 libgstreamer-1.0.so.0:gst_debug_set_color_mode
 libgstreamer-1.0.so.0:gst_debug_set_color_mode_from_string
@@ -949,6 +978,7 @@ libgstreamer-1.0.so.0:gst_device_provider_get_bus
 libgstreamer-1.0.so.0:gst_device_provider_get_devices
 libgstreamer-1.0.so.0:gst_device_provider_get_factory
 libgstreamer-1.0.so.0:gst_device_provider_get_hidden_providers
+libgstreamer-1.0.so.0:gst_device_provider_get_metadata
 libgstreamer-1.0.so.0:gst_device_provider_get_type
 libgstreamer-1.0.so.0:gst_device_provider_hide_provider
 libgstreamer-1.0.so.0:gst_device_provider_register
@@ -970,6 +1000,7 @@ libgstreamer-1.0.so.0:gst_element_class_add_metadata
 libgstreamer-1.0.so.0:gst_element_class_add_pad_template
 libgstreamer-1.0.so.0:gst_element_class_add_static_metadata
 libgstreamer-1.0.so.0:gst_element_class_add_static_pad_template
+libgstreamer-1.0.so.0:gst_element_class_add_static_pad_template_with_gtype
 libgstreamer-1.0.so.0:gst_element_class_get_metadata
 libgstreamer-1.0.so.0:gst_element_class_get_pad_template
 libgstreamer-1.0.so.0:gst_element_class_get_pad_template_list
@@ -997,6 +1028,9 @@ libgstreamer-1.0.so.0:gst_element_factory_list_get_elements
 libgstreamer-1.0.so.0:gst_element_factory_list_is_type
 libgstreamer-1.0.so.0:gst_element_factory_make
 libgstreamer-1.0.so.0:gst_element_flags_get_type
+libgstreamer-1.0.so.0:gst_element_foreach_pad
+libgstreamer-1.0.so.0:gst_element_foreach_sink_pad
+libgstreamer-1.0.so.0:gst_element_foreach_src_pad
 libgstreamer-1.0.so.0:gst_element_get_base_time
 libgstreamer-1.0.so.0:gst_element_get_bus
 libgstreamer-1.0.so.0:gst_element_get_clock
@@ -1006,6 +1040,9 @@ libgstreamer-1.0.so.0:gst_element_get_context
 libgstreamer-1.0.so.0:gst_element_get_context_unlocked
 libgstreamer-1.0.so.0:gst_element_get_contexts
 libgstreamer-1.0.so.0:gst_element_get_factory
+libgstreamer-1.0.so.0:gst_element_get_metadata
+libgstreamer-1.0.so.0:gst_element_get_pad_template
+libgstreamer-1.0.so.0:gst_element_get_pad_template_list
 libgstreamer-1.0.so.0:gst_element_get_request_pad
 libgstreamer-1.0.so.0:gst_element_get_start_time
 libgstreamer-1.0.so.0:gst_element_get_state
@@ -1134,6 +1171,7 @@ libgstreamer-1.0.so.0:gst_formats_contains
 libgstreamer-1.0.so.0:gst_fraction_get_type
 libgstreamer-1.0.so.0:gst_fraction_range_get_type
 libgstreamer-1.0.so.0:gst_g_thread_get_type
+libgstreamer-1.0.so.0:gst_get_main_executable_path
 libgstreamer-1.0.so.0:gst_ghost_pad_activate_mode_default
 libgstreamer-1.0.so.0:gst_ghost_pad_construct
 libgstreamer-1.0.so.0:gst_ghost_pad_get_target
@@ -1283,6 +1321,7 @@ libgstreamer-1.0.so.0:gst_message_streams_selected_get_stream
 libgstreamer-1.0.so.0:gst_message_type_get_name
 libgstreamer-1.0.so.0:gst_message_type_get_type
 libgstreamer-1.0.so.0:gst_message_type_to_quark
+libgstreamer-1.0.so.0:gst_message_writable_structure
 libgstreamer-1.0.so.0:gst_meta_api_type_get_tags
 libgstreamer-1.0.so.0:gst_meta_api_type_has_tag
 libgstreamer-1.0.so.0:gst_meta_api_type_register
@@ -1438,6 +1477,8 @@ libgstreamer-1.0.so.0:gst_pad_template_flags_get_type
 libgstreamer-1.0.so.0:gst_pad_template_get_caps
 libgstreamer-1.0.so.0:gst_pad_template_get_type
 libgstreamer-1.0.so.0:gst_pad_template_new
+libgstreamer-1.0.so.0:gst_pad_template_new_from_static_pad_template_with_gtype
+libgstreamer-1.0.so.0:gst_pad_template_new_with_gtype
 libgstreamer-1.0.so.0:gst_pad_template_pad_created
 libgstreamer-1.0.so.0:gst_pad_unlink
 libgstreamer-1.0.so.0:gst_pad_use_fixed_caps
@@ -1549,6 +1590,16 @@ libgstreamer-1.0.so.0:gst_printerr
 libgstreamer-1.0.so.0:gst_printerrln
 libgstreamer-1.0.so.0:gst_println
 libgstreamer-1.0.so.0:gst_progress_type_get_type
+libgstreamer-1.0.so.0:gst_promise_expire
+libgstreamer-1.0.so.0:gst_promise_get_reply
+libgstreamer-1.0.so.0:gst_promise_get_type
+libgstreamer-1.0.so.0:gst_promise_interrupt
+libgstreamer-1.0.so.0:gst_promise_new
+libgstreamer-1.0.so.0:gst_promise_new_with_change_func
+libgstreamer-1.0.so.0:gst_promise_reply
+libgstreamer-1.0.so.0:gst_promise_result_get_type
+libgstreamer-1.0.so.0:gst_promise_wait
+libgstreamer-1.0.so.0:gst_protection_filter_systems_by_available_decryptors
 libgstreamer-1.0.so.0:gst_protection_meta_api_get_type
 libgstreamer-1.0.so.0:gst_protection_meta_get_info
 libgstreamer-1.0.so.0:gst_protection_select_system
@@ -1647,6 +1698,8 @@ libgstreamer-1.0.so.0:gst_query_type_get_type
 libgstreamer-1.0.so.0:gst_query_type_to_quark
 libgstreamer-1.0.so.0:gst_query_writable_structure
 libgstreamer-1.0.so.0:gst_rank_get_type
+libgstreamer-1.0.so.0:gst_reference_timestamp_meta_api_get_type
+libgstreamer-1.0.so.0:gst_reference_timestamp_meta_get_info
 libgstreamer-1.0.so.0:gst_registry_add_feature
 libgstreamer-1.0.so.0:gst_registry_add_plugin
 libgstreamer-1.0.so.0:gst_registry_check_feature_version
@@ -1705,6 +1758,7 @@ libgstreamer-1.0.so.0:gst_segment_to_stream_time_full
 libgstreamer-1.0.so.0:gst_segtrap_is_enabled
 libgstreamer-1.0.so.0:gst_segtrap_set_enabled
 libgstreamer-1.0.so.0:gst_stack_trace_flags_get_type
+libgstreamer-1.0.so.0:gst_state_change_get_name
 libgstreamer-1.0.so.0:gst_state_change_get_type
 libgstreamer-1.0.so.0:gst_state_change_return_get_type
 libgstreamer-1.0.so.0:gst_state_get_type
@@ -1943,6 +1997,7 @@ libgstreamer-1.0.so.0:gst_toc_setter_get_type
 libgstreamer-1.0.so.0:gst_toc_setter_reset
 libgstreamer-1.0.so.0:gst_toc_setter_set_toc
 libgstreamer-1.0.so.0:gst_tracer_factory_get_list
+libgstreamer-1.0.so.0:gst_tracer_factory_get_tracer_type
 libgstreamer-1.0.so.0:gst_tracer_factory_get_type
 libgstreamer-1.0.so.0:gst_tracer_get_type
 libgstreamer-1.0.so.0:gst_tracer_record_get_type
@@ -2024,6 +2079,7 @@ libgstreamer-1.0.so.0:gst_uri_to_string
 libgstreamer-1.0.so.0:gst_uri_type_get_type
 libgstreamer-1.0.so.0:gst_util_array_binary_search
 libgstreamer-1.0.so.0:gst_util_double_to_fraction
+libgstreamer-1.0.so.0:gst_util_dump_buffer
 libgstreamer-1.0.so.0:gst_util_dump_mem
 libgstreamer-1.0.so.0:gst_util_fraction_add
 libgstreamer-1.0.so.0:gst_util_fraction_compare

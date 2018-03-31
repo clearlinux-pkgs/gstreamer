@@ -4,6 +4,7 @@ option('disable_gtkdoc', type : 'boolean', value : false)
 option('disable_examples', type : 'boolean', value : false)
 option('disable_gst_debug', type : 'boolean', value : false)
 option('disable_registry', type : 'boolean', value : false)
+option('disable_tracer_hooks', type : 'boolean', value : false)
 option('library_format', type : 'combo', choices : ['shared', 'static', 'both'], value : 'shared')
 option('disable_introspection',
         type : 'boolean', value : false,
@@ -15,3 +16,9 @@ option('with-package-name', type : 'string',
        description : 'package name to use in plugins')
 option('with-package-origin', type : 'string', value : 'Unknown package origin',
        description : 'package origin URL to use in plugins')
+option('with-ptp-helper-setuid-user', type : 'string',
+        description : 'User to switch to when installing gst-ptp-helper setuid root')
+option('with-ptp-helper-setuid-group', type : 'string',
+        description : 'Group to switch to when installing gst-ptp-helper setuid root')
+option('with-ptp-helper-permissions', type : 'combo',
+       choices : ['none', 'setuid-root', 'capabilities', 'auto'], value : 'auto')

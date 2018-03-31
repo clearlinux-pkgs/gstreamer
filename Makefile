@@ -1,5 +1,5 @@
 PKG_NAME := gstreamer
-URL = https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.12.4.tar.xz
-
+URL = https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.0.tar.xz
+ARCHIVES = 
 
 include ../common/Makefile.common
