@@ -5,24 +5,25 @@
 # Source0 file verified with key 0x5D2EEE6F6F349D7C (tim@centricular.com)
 #
 Name     : gstreamer
-Version  : 1.14.0
-Release  : 24
-URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.0.tar.xz
-Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.0.tar.xz
-Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.0.tar.xz.asc
+Version  : 1.14.1
+Release  : 25
+URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.1.tar.xz
+Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.1.tar.xz
+Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.1.tar.xz.asc
 Summary  : Streaming media framework
 Group    : Development/Tools
 License  : LGPL-2.0
 Requires: gstreamer-bin
 Requires: gstreamer-data
 Requires: gstreamer-lib
-Requires: gstreamer-doc
 Requires: gstreamer-locales
+Requires: gstreamer-man
 BuildRequires : at-spi2-atk-dev32
 BuildRequires : bison
 BuildRequires : cairo-dev32
 BuildRequires : docbook-xml
 BuildRequires : flex
+BuildRequires : fribidi-dev32
 BuildRequires : gcc-dev32
 BuildRequires : gcc-libgcc32
 BuildRequires : gcc-libstdc++32
@@ -61,6 +62,7 @@ This is GStreamer, a framework for streaming media.
 Summary: bin components for the gstreamer package.
 Group: Binaries
 Requires: gstreamer-data
+Requires: gstreamer-man
 
 %description bin
 bin components for the gstreamer package.
@@ -101,6 +103,7 @@ dev32 components for the gstreamer package.
 %package doc
 Summary: doc components for the gstreamer package.
 Group: Documentation
+Requires: gstreamer-man
 
 %description doc
 doc components for the gstreamer package.
@@ -132,10 +135,18 @@ Group: Default
 locales components for the gstreamer package.
 
 
+%package man
+Summary: man components for the gstreamer package.
+Group: Default
+
+%description man
+man components for the gstreamer package.
+
+
 %prep
-%setup -q -n gstreamer-1.14.0
+%setup -q -n gstreamer-1.14.1
 pushd ..
-cp -a gstreamer-1.14.0 build32
+cp -a gstreamer-1.14.1 build32
 popd
 
 %build
@@ -143,7 +154,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1522520950
+export SOURCE_DATE_EPOCH=1526690645
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -170,7 +181,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1522520950
+export SOURCE_DATE_EPOCH=1526690645
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32
@@ -368,7 +379,6 @@ popd
 
 %files doc
 %defattr(-,root,root,-)
-%doc /usr/share/man/man1/*
 /usr/share/gtk-doc/html/gstreamer-1.0/GstAllocator.html
 /usr/share/gtk-doc/html/gstreamer-1.0/GstBin.html
 /usr/share/gtk-doc/html/gstreamer-1.0/GstBuffer.html
@@ -579,30 +589,37 @@ popd
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
-/usr/lib64/libgstbase-1.0.so.0.1400.0
+/usr/lib64/libgstbase-1.0.so.0.1401.0
 /usr/lib64/libgstcheck-1.0.so.0
-/usr/lib64/libgstcheck-1.0.so.0.1400.0
+/usr/lib64/libgstcheck-1.0.so.0.1401.0
 /usr/lib64/libgstcontroller-1.0.so.0
-/usr/lib64/libgstcontroller-1.0.so.0.1400.0
+/usr/lib64/libgstcontroller-1.0.so.0.1401.0
 /usr/lib64/libgstnet-1.0.so.0
-/usr/lib64/libgstnet-1.0.so.0.1400.0
+/usr/lib64/libgstnet-1.0.so.0.1401.0
 /usr/lib64/libgstreamer-1.0.so.0
-/usr/lib64/libgstreamer-1.0.so.0.1400.0
+/usr/lib64/libgstreamer-1.0.so.0.1401.0
 
 %files lib32
 %defattr(-,root,root,-)
 /usr/lib32/gstreamer-1.0/libgstcoreelements.so
 /usr/lib32/gstreamer-1.0/libgstcoretracers.so
 /usr/lib32/libgstbase-1.0.so.0
-/usr/lib32/libgstbase-1.0.so.0.1400.0
+/usr/lib32/libgstbase-1.0.so.0.1401.0
 /usr/lib32/libgstcheck-1.0.so.0
-/usr/lib32/libgstcheck-1.0.so.0.1400.0
+/usr/lib32/libgstcheck-1.0.so.0.1401.0
 /usr/lib32/libgstcontroller-1.0.so.0
-/usr/lib32/libgstcontroller-1.0.so.0.1400.0
+/usr/lib32/libgstcontroller-1.0.so.0.1401.0
 /usr/lib32/libgstnet-1.0.so.0
-/usr/lib32/libgstnet-1.0.so.0.1400.0
+/usr/lib32/libgstnet-1.0.so.0.1401.0
 /usr/lib32/libgstreamer-1.0.so.0
-/usr/lib32/libgstreamer-1.0.so.0.1400.0
+/usr/lib32/libgstreamer-1.0.so.0.1401.0
+
+%files man
+%defattr(-,root,root,-)
+/usr/share/man/man1/gst-inspect-1.0.1
+/usr/share/man/man1/gst-launch-1.0.1
+/usr/share/man/man1/gst-stats-1.0.1
+/usr/share/man/man1/gst-typefind-1.0.1
 
 %files locales -f gstreamer-1.0.lang
 %defattr(-,root,root,-)
