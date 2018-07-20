@@ -5,21 +5,23 @@
 # Source0 file verified with key 0x5D2EEE6F6F349D7C (tim@centricular.com)
 #
 Name     : gstreamer
-Version  : 1.14.1
-Release  : 25
-URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.1.tar.xz
-Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.1.tar.xz
-Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.1.tar.xz.asc
+Version  : 1.14.2
+Release  : 26
+URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.2.tar.xz
+Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.2.tar.xz
+Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.2.tar.xz.asc
 Summary  : Streaming media framework
 Group    : Development/Tools
 License  : LGPL-2.0
 Requires: gstreamer-bin
 Requires: gstreamer-data
 Requires: gstreamer-lib
+Requires: gstreamer-license
 Requires: gstreamer-locales
 Requires: gstreamer-man
 BuildRequires : at-spi2-atk-dev32
 BuildRequires : bison
+BuildRequires : buildreq-meson
 BuildRequires : cairo-dev32
 BuildRequires : docbook-xml
 BuildRequires : flex
@@ -38,10 +40,10 @@ BuildRequires : gobject-introspection-dev
 BuildRequires : gstreamer-dev
 BuildRequires : gtk-doc
 BuildRequires : gtk-doc-dev
+BuildRequires : libcap-dev
 BuildRequires : libxslt-bin
-BuildRequires : meson
-BuildRequires : ninja
 BuildRequires : pango-dev32
+BuildRequires : pkg-config
 BuildRequires : pkgconfig(32atk)
 BuildRequires : pkgconfig(32gtk+-3.0)
 BuildRequires : pkgconfig(32libdw)
@@ -49,7 +51,6 @@ BuildRequires : pkgconfig(atk)
 BuildRequires : pkgconfig(bash-completion)
 BuildRequires : pkgconfig(gtk+-3.0)
 BuildRequires : pkgconfig(libdw)
-BuildRequires : python3
 BuildRequires : valgrind
 
 %description
@@ -62,6 +63,7 @@ This is GStreamer, a framework for streaming media.
 Summary: bin components for the gstreamer package.
 Group: Binaries
 Requires: gstreamer-data
+Requires: gstreamer-license
 Requires: gstreamer-man
 
 %description bin
@@ -113,6 +115,7 @@ doc components for the gstreamer package.
 Summary: lib components for the gstreamer package.
 Group: Libraries
 Requires: gstreamer-data
+Requires: gstreamer-license
 
 %description lib
 lib components for the gstreamer package.
@@ -122,9 +125,18 @@ lib components for the gstreamer package.
 Summary: lib32 components for the gstreamer package.
 Group: Default
 Requires: gstreamer-data
+Requires: gstreamer-license
 
 %description lib32
 lib32 components for the gstreamer package.
+
+
+%package license
+Summary: license components for the gstreamer package.
+Group: Default
+
+%description license
+license components for the gstreamer package.
 
 
 %package locales
@@ -144,9 +156,9 @@ man components for the gstreamer package.
 
 
 %prep
-%setup -q -n gstreamer-1.14.1
+%setup -q -n gstreamer-1.14.2
 pushd ..
-cp -a gstreamer-1.14.1 build32
+cp -a gstreamer-1.14.2 build32
 popd
 
 %build
@@ -154,7 +166,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1526690645
+export SOURCE_DATE_EPOCH=1532089827
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -181,8 +193,10 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1526690645
+export SOURCE_DATE_EPOCH=1532089827
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/doc/gstreamer
+cp COPYING %{buildroot}/usr/share/doc/gstreamer/COPYING
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
@@ -378,7 +392,7 @@ popd
 /usr/lib32/pkgconfig/gstreamer-net-1.0.pc
 
 %files doc
-%defattr(-,root,root,-)
+%defattr(0644,root,root,0755)
 /usr/share/gtk-doc/html/gstreamer-1.0/GstAllocator.html
 /usr/share/gtk-doc/html/gstreamer-1.0/GstBin.html
 /usr/share/gtk-doc/html/gstreamer-1.0/GstBuffer.html
@@ -589,30 +603,34 @@ popd
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
-/usr/lib64/libgstbase-1.0.so.0.1401.0
+/usr/lib64/libgstbase-1.0.so.0.1402.0
 /usr/lib64/libgstcheck-1.0.so.0
-/usr/lib64/libgstcheck-1.0.so.0.1401.0
+/usr/lib64/libgstcheck-1.0.so.0.1402.0
 /usr/lib64/libgstcontroller-1.0.so.0
-/usr/lib64/libgstcontroller-1.0.so.0.1401.0
+/usr/lib64/libgstcontroller-1.0.so.0.1402.0
 /usr/lib64/libgstnet-1.0.so.0
-/usr/lib64/libgstnet-1.0.so.0.1401.0
+/usr/lib64/libgstnet-1.0.so.0.1402.0
 /usr/lib64/libgstreamer-1.0.so.0
-/usr/lib64/libgstreamer-1.0.so.0.1401.0
+/usr/lib64/libgstreamer-1.0.so.0.1402.0
 
 %files lib32
 %defattr(-,root,root,-)
 /usr/lib32/gstreamer-1.0/libgstcoreelements.so
 /usr/lib32/gstreamer-1.0/libgstcoretracers.so
 /usr/lib32/libgstbase-1.0.so.0
-/usr/lib32/libgstbase-1.0.so.0.1401.0
+/usr/lib32/libgstbase-1.0.so.0.1402.0
 /usr/lib32/libgstcheck-1.0.so.0
-/usr/lib32/libgstcheck-1.0.so.0.1401.0
+/usr/lib32/libgstcheck-1.0.so.0.1402.0
 /usr/lib32/libgstcontroller-1.0.so.0
-/usr/lib32/libgstcontroller-1.0.so.0.1401.0
+/usr/lib32/libgstcontroller-1.0.so.0.1402.0
 /usr/lib32/libgstnet-1.0.so.0
-/usr/lib32/libgstnet-1.0.so.0.1401.0
+/usr/lib32/libgstnet-1.0.so.0.1402.0
 /usr/lib32/libgstreamer-1.0.so.0
-/usr/lib32/libgstreamer-1.0.so.0.1401.0
+/usr/lib32/libgstreamer-1.0.so.0.1402.0
+
+%files license
+%defattr(-,root,root,-)
+/usr/share/doc/gstreamer/COPYING
 
 %files man
 %defattr(-,root,root,-)
