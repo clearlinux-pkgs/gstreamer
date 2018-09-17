@@ -3,7 +3,6 @@ Configure miss: setcap
 Configure miss: getifaddrs() and AF_LINK
 Configure miss: whether to build plugin documentation
 Configure miss: pthread_setname_np(const char*)
-Configure miss: gsl_rng_uniform_int in -lgsl
 Configure miss: broken poll
 Configure miss: UNWIND
 Configure miss: _getpid
