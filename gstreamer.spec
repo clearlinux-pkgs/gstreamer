@@ -5,11 +5,11 @@
 # Source0 file verified with key 0x5D2EEE6F6F349D7C (tim@centricular.com)
 #
 Name     : gstreamer
-Version  : 1.14.3
-Release  : 28
-URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.3.tar.xz
-Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.3.tar.xz
-Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.3.tar.xz.asc
+Version  : 1.14.4
+Release  : 29
+URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.4.tar.xz
+Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.4.tar.xz
+Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.4.tar.xz.asc
 Summary  : Streaming media framework
 Group    : Development/Tools
 License  : LGPL-2.0
@@ -63,9 +63,9 @@ This is GStreamer, a framework for streaming media.
 %package bin
 Summary: bin components for the gstreamer package.
 Group: Binaries
-Requires: gstreamer-data
-Requires: gstreamer-license
-Requires: gstreamer-man
+Requires: gstreamer-data = %{version}-%{release}
+Requires: gstreamer-license = %{version}-%{release}
+Requires: gstreamer-man = %{version}-%{release}
 
 %description bin
 bin components for the gstreamer package.
@@ -82,10 +82,10 @@ data components for the gstreamer package.
 %package dev
 Summary: dev components for the gstreamer package.
 Group: Development
-Requires: gstreamer-lib
-Requires: gstreamer-bin
-Requires: gstreamer-data
-Provides: gstreamer-devel
+Requires: gstreamer-lib = %{version}-%{release}
+Requires: gstreamer-bin = %{version}-%{release}
+Requires: gstreamer-data = %{version}-%{release}
+Provides: gstreamer-devel = %{version}-%{release}
 
 %description dev
 dev components for the gstreamer package.
@@ -94,10 +94,10 @@ dev components for the gstreamer package.
 %package dev32
 Summary: dev32 components for the gstreamer package.
 Group: Default
-Requires: gstreamer-lib32
-Requires: gstreamer-bin
-Requires: gstreamer-data
-Requires: gstreamer-dev
+Requires: gstreamer-lib32 = %{version}-%{release}
+Requires: gstreamer-bin = %{version}-%{release}
+Requires: gstreamer-data = %{version}-%{release}
+Requires: gstreamer-dev = %{version}-%{release}
 
 %description dev32
 dev32 components for the gstreamer package.
@@ -106,7 +106,7 @@ dev32 components for the gstreamer package.
 %package doc
 Summary: doc components for the gstreamer package.
 Group: Documentation
-Requires: gstreamer-man
+Requires: gstreamer-man = %{version}-%{release}
 
 %description doc
 doc components for the gstreamer package.
@@ -115,8 +115,8 @@ doc components for the gstreamer package.
 %package lib
 Summary: lib components for the gstreamer package.
 Group: Libraries
-Requires: gstreamer-data
-Requires: gstreamer-license
+Requires: gstreamer-data = %{version}-%{release}
+Requires: gstreamer-license = %{version}-%{release}
 
 %description lib
 lib components for the gstreamer package.
@@ -125,8 +125,8 @@ lib components for the gstreamer package.
 %package lib32
 Summary: lib32 components for the gstreamer package.
 Group: Default
-Requires: gstreamer-data
-Requires: gstreamer-license
+Requires: gstreamer-data = %{version}-%{release}
+Requires: gstreamer-license = %{version}-%{release}
 
 %description lib32
 lib32 components for the gstreamer package.
@@ -157,9 +157,9 @@ man components for the gstreamer package.
 
 
 %prep
-%setup -q -n gstreamer-1.14.3
+%setup -q -n gstreamer-1.14.4
 pushd ..
-cp -a gstreamer-1.14.3 build32
+cp -a gstreamer-1.14.4 build32
 popd
 
 %build
@@ -167,7 +167,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1537200322
+export SOURCE_DATE_EPOCH=1538578915
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -192,9 +192,11 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check || :
+cd ../build32;
+make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1537200322
+export SOURCE_DATE_EPOCH=1538578915
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/doc/gstreamer
 cp COPYING %{buildroot}/usr/share/doc/gstreamer/COPYING
@@ -604,37 +606,37 @@ popd
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
-/usr/lib64/libgstbase-1.0.so.0.1403.0
+/usr/lib64/libgstbase-1.0.so.0.1404.0
 /usr/lib64/libgstcheck-1.0.so.0
-/usr/lib64/libgstcheck-1.0.so.0.1403.0
+/usr/lib64/libgstcheck-1.0.so.0.1404.0
 /usr/lib64/libgstcontroller-1.0.so.0
-/usr/lib64/libgstcontroller-1.0.so.0.1403.0
+/usr/lib64/libgstcontroller-1.0.so.0.1404.0
 /usr/lib64/libgstnet-1.0.so.0
-/usr/lib64/libgstnet-1.0.so.0.1403.0
+/usr/lib64/libgstnet-1.0.so.0.1404.0
 /usr/lib64/libgstreamer-1.0.so.0
-/usr/lib64/libgstreamer-1.0.so.0.1403.0
+/usr/lib64/libgstreamer-1.0.so.0.1404.0
 
 %files lib32
 %defattr(-,root,root,-)
 /usr/lib32/gstreamer-1.0/libgstcoreelements.so
 /usr/lib32/gstreamer-1.0/libgstcoretracers.so
 /usr/lib32/libgstbase-1.0.so.0
-/usr/lib32/libgstbase-1.0.so.0.1403.0
+/usr/lib32/libgstbase-1.0.so.0.1404.0
 /usr/lib32/libgstcheck-1.0.so.0
-/usr/lib32/libgstcheck-1.0.so.0.1403.0
+/usr/lib32/libgstcheck-1.0.so.0.1404.0
 /usr/lib32/libgstcontroller-1.0.so.0
-/usr/lib32/libgstcontroller-1.0.so.0.1403.0
+/usr/lib32/libgstcontroller-1.0.so.0.1404.0
 /usr/lib32/libgstnet-1.0.so.0
-/usr/lib32/libgstnet-1.0.so.0.1403.0
+/usr/lib32/libgstnet-1.0.so.0.1404.0
 /usr/lib32/libgstreamer-1.0.so.0
-/usr/lib32/libgstreamer-1.0.so.0.1403.0
+/usr/lib32/libgstreamer-1.0.so.0.1404.0
 
 %files license
-%defattr(-,root,root,-)
+%defattr(0644,root,root,0755)
 /usr/share/doc/gstreamer/COPYING
 
 %files man
-%defattr(-,root,root,-)
+%defattr(0644,root,root,0755)
 /usr/share/man/man1/gst-inspect-1.0.1
 /usr/share/man/man1/gst-launch-1.0.1
 /usr/share/man/man1/gst-stats-1.0.1
