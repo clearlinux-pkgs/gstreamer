@@ -6,19 +6,20 @@
 #
 Name     : gstreamer
 Version  : 1.14.4
-Release  : 31
+Release  : 32
 URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.4.tar.xz
 Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.4.tar.xz
 Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.4.tar.xz.asc
 Summary  : Streaming media framework
 Group    : Development/Tools
 License  : LGPL-2.0
-Requires: gstreamer-bin
-Requires: gstreamer-data
-Requires: gstreamer-lib
-Requires: gstreamer-license
-Requires: gstreamer-locales
-Requires: gstreamer-man
+Requires: gstreamer-bin = %{version}-%{release}
+Requires: gstreamer-data = %{version}-%{release}
+Requires: gstreamer-lib = %{version}-%{release}
+Requires: gstreamer-libexec = %{version}-%{release}
+Requires: gstreamer-license = %{version}-%{release}
+Requires: gstreamer-locales = %{version}-%{release}
+Requires: gstreamer-man = %{version}-%{release}
 BuildRequires : at-spi2-atk-dev32
 BuildRequires : bison
 BuildRequires : buildreq-meson
@@ -64,6 +65,7 @@ This is GStreamer, a framework for streaming media.
 Summary: bin components for the gstreamer package.
 Group: Binaries
 Requires: gstreamer-data = %{version}-%{release}
+Requires: gstreamer-libexec = %{version}-%{release}
 Requires: gstreamer-license = %{version}-%{release}
 Requires: gstreamer-man = %{version}-%{release}
 
@@ -116,6 +118,7 @@ doc components for the gstreamer package.
 Summary: lib components for the gstreamer package.
 Group: Libraries
 Requires: gstreamer-data = %{version}-%{release}
+Requires: gstreamer-libexec = %{version}-%{release}
 Requires: gstreamer-license = %{version}-%{release}
 
 %description lib
@@ -130,6 +133,15 @@ Requires: gstreamer-license = %{version}-%{release}
 
 %description lib32
 lib32 components for the gstreamer package.
+
+
+%package libexec
+Summary: libexec components for the gstreamer package.
+Group: Default
+Requires: gstreamer-license = %{version}-%{release}
+
+%description libexec
+libexec components for the gstreamer package.
 
 
 %package license
@@ -167,7 +179,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1538578915
+export SOURCE_DATE_EPOCH=1547252967
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -175,17 +187,18 @@ export CFLAGS="$CFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-m
 export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FFLAGS="$CFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-%configure --disable-static
+%reconfigure --disable-static --enable-failing-tests
 make  %{?_smp_mflags}
-
 pushd ../build32/
 export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
-export CFLAGS="$CFLAGS -m32"
-export CXXFLAGS="$CXXFLAGS -m32"
-export LDFLAGS="$LDFLAGS -m32"
-%configure --disable-static    --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
+export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
+export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32"
+export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32"
+export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32"
+%reconfigure --disable-static --enable-failing-tests  --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
 make  %{?_smp_mflags}
 popd
+
 %check
 export LANG=C
 export http_proxy=http://127.0.0.1:9/
@@ -193,13 +206,13 @@ export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 cd ../build32;
-make VERBOSE=1 V=1 %{?_smp_mflags} check || :
+make VERBOSE=1 V=1 %{?_smp_mflags} check || : || :
 
 %install
-export SOURCE_DATE_EPOCH=1538578915
+export SOURCE_DATE_EPOCH=1547252967
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/usr/share/doc/gstreamer
-cp COPYING %{buildroot}/usr/share/doc/gstreamer/COPYING
+mkdir -p %{buildroot}/usr/share/package-licenses/gstreamer
+cp COPYING %{buildroot}/usr/share/package-licenses/gstreamer/COPYING
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
@@ -226,9 +239,6 @@ popd
 /usr/bin/gst-launch-1.0
 /usr/bin/gst-stats-1.0
 /usr/bin/gst-typefind-1.0
-/usr/libexec/gstreamer-1.0/gst-completion-helper
-/usr/libexec/gstreamer-1.0/gst-plugin-scanner
-/usr/libexec/gstreamer-1.0/gst-ptp-helper
 
 %files data
 %defattr(-,root,root,-)
@@ -631,9 +641,15 @@ popd
 /usr/lib32/libgstreamer-1.0.so.0
 /usr/lib32/libgstreamer-1.0.so.0.1404.0
 
+%files libexec
+%defattr(-,root,root,-)
+/usr/libexec/gstreamer-1.0/gst-completion-helper
+/usr/libexec/gstreamer-1.0/gst-plugin-scanner
+/usr/libexec/gstreamer-1.0/gst-ptp-helper
+
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/doc/gstreamer/COPYING
+/usr/share/package-licenses/gstreamer/COPYING
 
 %files man
 %defattr(0644,root,root,0755)
