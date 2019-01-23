@@ -5,11 +5,11 @@
 # Source0 file verified with key 0x5D2EEE6F6F349D7C (tim@centricular.com)
 #
 Name     : gstreamer
-Version  : 1.14.4
-Release  : 33
-URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.4.tar.xz
-Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.4.tar.xz
-Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.14.4.tar.xz.asc
+Version  : 1.15.1
+Release  : 34
+URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.15.1.tar.xz
+Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.15.1.tar.xz
+Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.15.1.tar.xz.asc
 Summary  : Streaming media framework
 Group    : Development/Tools
 License  : LGPL-2.0
@@ -56,7 +56,7 @@ BuildRequires : pkgconfig(libdw)
 BuildRequires : valgrind
 
 %description
-GStreamer 1.13.x development series
+GStreamer 1.15.x development series
 WHAT IT IS
 ----------
 This is GStreamer, a framework for streaming media.
@@ -169,9 +169,9 @@ man components for the gstreamer package.
 
 
 %prep
-%setup -q -n gstreamer-1.14.4
+%setup -q -n gstreamer-1.15.1
 pushd ..
-cp -a gstreamer-1.14.4 build32
+cp -a gstreamer-1.15.1 build32
 popd
 
 %build
@@ -179,7 +179,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1547252967
+export SOURCE_DATE_EPOCH=1548270558
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -209,7 +209,7 @@ cd ../build32;
 make VERBOSE=1 V=1 %{?_smp_mflags} check || : || :
 
 %install
-export SOURCE_DATE_EPOCH=1547252967
+export SOURCE_DATE_EPOCH=1548270558
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/gstreamer
 cp COPYING %{buildroot}/usr/share/package-licenses/gstreamer/COPYING
@@ -250,7 +250,11 @@ popd
 /usr/share/bash-completion/completions/gst-inspect-1.0
 /usr/share/bash-completion/completions/gst-launch-1.0
 /usr/share/bash-completion/helpers/gst
+/usr/share/gdb/auto-load/usr/lib32/libgstreamer-1.0.so.0.1501.0-gdb.py
+/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.1501.0-gdb.py
 /usr/share/gir-1.0/*.gir
+/usr/share/gstreamer-1.0/gdb/glib_gobject_helper.py
+/usr/share/gstreamer-1.0/gdb/gst_gdb.py
 
 %files dev
 %defattr(-,root,root,-)
@@ -263,6 +267,7 @@ popd
 /usr/include/gstreamer-1.0/gst/base/gstbasesrc.h
 /usr/include/gstreamer-1.0/gst/base/gstbasetransform.h
 /usr/include/gstreamer-1.0/gst/base/gstbitreader.h
+/usr/include/gstreamer-1.0/gst/base/gstbitwriter.h
 /usr/include/gstreamer-1.0/gst/base/gstbytereader.h
 /usr/include/gstreamer-1.0/gst/base/gstbytewriter.h
 /usr/include/gstreamer-1.0/gst/base/gstcollectpads.h
@@ -533,6 +538,7 @@ popd
 /usr/share/gtk-doc/html/gstreamer-libs-1.0/gstreamer-hierarchy.html
 /usr/share/gtk-doc/html/gstreamer-libs-1.0/gstreamer-libs-1.0.devhelp2
 /usr/share/gtk-doc/html/gstreamer-libs-1.0/gstreamer-libs-GstBitReader.html
+/usr/share/gtk-doc/html/gstreamer-libs-1.0/gstreamer-libs-GstBitWriter.html
 /usr/share/gtk-doc/html/gstreamer-libs-1.0/gstreamer-libs-GstBufferStraw.html
 /usr/share/gtk-doc/html/gstreamer-libs-1.0/gstreamer-libs-GstByteReader.html
 /usr/share/gtk-doc/html/gstreamer-libs-1.0/gstreamer-libs-GstByteWriter.html
@@ -616,30 +622,30 @@ popd
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
-/usr/lib64/libgstbase-1.0.so.0.1404.0
+/usr/lib64/libgstbase-1.0.so.0.1501.0
 /usr/lib64/libgstcheck-1.0.so.0
-/usr/lib64/libgstcheck-1.0.so.0.1404.0
+/usr/lib64/libgstcheck-1.0.so.0.1501.0
 /usr/lib64/libgstcontroller-1.0.so.0
-/usr/lib64/libgstcontroller-1.0.so.0.1404.0
+/usr/lib64/libgstcontroller-1.0.so.0.1501.0
 /usr/lib64/libgstnet-1.0.so.0
-/usr/lib64/libgstnet-1.0.so.0.1404.0
+/usr/lib64/libgstnet-1.0.so.0.1501.0
 /usr/lib64/libgstreamer-1.0.so.0
-/usr/lib64/libgstreamer-1.0.so.0.1404.0
+/usr/lib64/libgstreamer-1.0.so.0.1501.0
 
 %files lib32
 %defattr(-,root,root,-)
 /usr/lib32/gstreamer-1.0/libgstcoreelements.so
 /usr/lib32/gstreamer-1.0/libgstcoretracers.so
 /usr/lib32/libgstbase-1.0.so.0
-/usr/lib32/libgstbase-1.0.so.0.1404.0
+/usr/lib32/libgstbase-1.0.so.0.1501.0
 /usr/lib32/libgstcheck-1.0.so.0
-/usr/lib32/libgstcheck-1.0.so.0.1404.0
+/usr/lib32/libgstcheck-1.0.so.0.1501.0
 /usr/lib32/libgstcontroller-1.0.so.0
-/usr/lib32/libgstcontroller-1.0.so.0.1404.0
+/usr/lib32/libgstcontroller-1.0.so.0.1501.0
 /usr/lib32/libgstnet-1.0.so.0
-/usr/lib32/libgstnet-1.0.so.0.1404.0
+/usr/lib32/libgstnet-1.0.so.0.1501.0
 /usr/lib32/libgstreamer-1.0.so.0
-/usr/lib32/libgstreamer-1.0.so.0.1404.0
+/usr/lib32/libgstreamer-1.0.so.0.1501.0
 
 %files libexec
 %defattr(-,root,root,-)

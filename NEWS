@@ -1,17 +1,21 @@
 
 
-GSTREAMER 1.14 RELEASE NOTES
+GSTREAMER 1.16 RELEASE NOTES
 
 
-GStreamer 1.14.0 was originally released on 19 March 2018.
+GStreamer 1.16 has not been released yet. It is scheduled for release in
+January/February 2019.
 
-The latest bug-fix release in the 1.14 series is 1.14.3 and was released
-on 16 September 2018.
+1.15.x is the unstable development version that is being developed in
+the git master branch and which will eventually result in 1.16.
 
-See https://gstreamer.freedesktop.org/releases/1.14/ for the latest
+1.16 will be backwards-compatible to the stable 1.14, 1.12, 1.10, 1.8,
+1.6, 1.4, 1.2 and 1.0 release series.
+
+See https://gstreamer.freedesktop.org/releases/1.16/ for the latest
 version of this document.
 
-_Last updated: Sunday 16 September 2018, 13:00 UTC (log)_
+_Last updated: Monday 14 January 2019, 13:00 UTC (log)_
 
 
 Introduction
@@ -26,1532 +30,1130 @@ other improvements.
 
 Highlights
 
--   WebRTC support: real-time audio/video streaming to and from web
-    browsers
+-   GStreamer WebRTC stack gained support for data channels for
+    peer-to-peer communication based on SCTP, BUNDLE support, as well as
+    support for multiple TURN servers.
 
--   Experimental support for the next-gen royalty-free AV1 video codec
+-   AV1 video codec support for Matroska and QuickTime/MP4 containers
+    and more configuration options and supported input formats for the
+    AOMedia AV1 encoder
 
--   Video4Linux: encoding support, stable element names and faster
-    device probing
+-   Support for Closed Captions and other Ancillary Data in video
 
--   Support for the Secure Reliable Transport (SRT) video streaming
-    protocol
+-   Spport for planar (non-interleaved) raw audio
 
--   RTP Forward Error Correction (FEC) support (ULPFEC)
+-   GstVideoAggregator, compositor and OpenGL mixer elements are now in
+    -base
 
--   RTSP 2.0 support in rtspsrc and gst-rtsp-server
+-   New alternate fields interlace mode where each buffer carries a
+    single field
 
--   ONVIF audio backchannel support in gst-rtsp-server and rtspsrc
+-   WebM and Matroska ContentEncryption support in the Matroska demuxer
 
--   playbin3 gapless playback and pre-buffering support
+-   new WebKit WPE-based web browser source element
 
--   tee, our stream splitter/duplication element, now does allocation
-    query aggregation which is important for efficient data handling and
-    zero-copy
+-   Video4Linux: HEVC encoding and decoding, JPEG encoding, and improved
+    dmabuf import/export
 
--   QuickTime muxer has a new prefill recording mode that allows file
-    import in Adobe Premiere and FinalCut Pro while the file is still
-    being written.
+-   Hardware-accelerated Nvidia video decoder gained support for VP8/VP9
+    decoding, whilst the encoder gained support for H.265/HEVC encoding.
 
--   rtpjitterbuffer fast-start mode and timestamp offset adjustment
-    smoothing
+-   Many improvements to the Intel Media SDK based hardware-accelerated
+    video decoder and encoder plugin (msdk): dmabuf import/export for
+    zero-copy integration with other components; VP9 decoding; 10-bit
+    HEVC encoding; video post-processing (vpp) support including
+    deinterlacing; and the video decoder now handles dynamic resolution
+    changes.
 
--   souphttpsrc connection sharing, which allows for connection reuse,
-    cookie sharing, etc.
+-   The ASS/SSA subtitle overlay renderer can now handle multiple
+    subtitles that overlap in time and will show them on screen
+    simultaneously
 
--   nvdec: new plugin for hardware-accelerated video decoding using the
-    NVIDIA NVDEC API
+-   The Meson build is now feature-complete (*) and it is now the
+    recommended build system on all platforms. The Autotools build is
+    scheduled to be removed in the next cycle.
 
--   Adaptive DASH trick play support
+-   The GStreamer Rust bindings and Rust plugins module are now
+    officially part of upstream GStreamer.
 
--   ipcpipeline: new plugin that allows splitting a pipeline across
-    multiple processes
-
--   Major gobject-introspection annotation improvements for large parts
-    of the library API
-
--   GStreamer C# bindings have been revived and seen many updates and
-    fixes
-
--   The externally maintained GStreamer Rust bindings had many usability
-    improvements and cover most of the API now. Coinciding with the 1.14
-    release, a new release with the 1.14 API additions is happening.
+-   Many performance improvements
 
 
 Major new features and changes
 
-WebRTC support
+Noteworthy new API
 
-There is now basic support for WebRTC in GStreamer in form of a new
-webrtcbin element and a webrtc support library. This allows you to build
-applications that set up connections with and stream to and from other
-WebRTC peers, whilst leveraging all of the usual GStreamer features such
-as hardware-accelerated encoding and decoding, OpenGL integration,
-zero-copy and embedded platform support. And it’s easy to build and
-integrate into your application too!
+-   GstAggregator has a new "min-upstream-latency" property that forces
+    a minimum aggregate latency for the input branches of an aggregator.
+    This is useful for dynamic pipelines where branches with a higher
+    latency might be added later after the pipeline is already up and
+    running and where a change in the latency would be disruptive. This
+    only applies to the case where at least one of the input branches is
+    live though, it won’t force the aggregator into live mode in the
+    absence of any live inputs.
 
-WebRTC enables real-time communication of audio, video and data with web
-browsers and native apps, and it is supported or about to be support by
-recent versions of all major browsers and operating systems.
+-   GstBaseSink gained a "processing-deadline" property and
+    setter/getter API to configure a processing deadline for live
+    pipelines. The processing deadline is the acceptable amount of time
+    to process the media in a live pipeline before it reaches the sink.
+    This is on top of the systemic latency that is normally reported by
+    the latency query. This defaults to 20ms and should make pipelines
+    such as “v4lsrc ! xvimagesink” not claim that all frames are late in
+    the QoS events. Ideally, this should replace max_lateness for most
+    applications.
 
-GStreamer’s new WebRTC implementation uses libnice for Interactive
-Connectivity Establishment (ICE) to figure out the best way to
-communicate with other peers, punch holes into firewalls, and traverse
-NATs.
+-   RTCP Extended Reports (XR) parsing according to RFC 3611:
+    Loss/Duplicate RLE, Packet Receipt Times, Receiver Reference Time,
+    Delay since the last Receiver (DLRR), Statistics Summary, and VoIP
+    Metrics reports.
 
-The implementation is not complete, but all the basics are there, and
-the code sticks fairly close to the PeerConnection API. Where
-functionality is missing it should be fairly obvious where it needs to
-go.
+-   a new mode for interlaced video was added where each buffer carries
+    a single field of interlaced video, with buffer flags indicating
+    whether the field is the top field or bottom field. Top and bottom
+    fields are expected to alternate in this mode. Caps for this
+    interlace mode must also carry a format:Interlaced caps feature to
+    ensure backwards compatibility.
 
-For more details, background and example code, check out Nirbheek’s blog
-post _GStreamer has grown a WebRTC implementation_, as well as Matthew’s
-_GStreamer WebRTC_ talk from last year’s GStreamer Conference in Prague.
+-   The video library has gained support for three new raw pixel
+    formats:
+
+    -   Y410: packed 4:4:4 YUV, 10 bits per channel
+    -   Y210: packed 4:2:2 YUV, 10 bits per channel
+    -   NV12_10LE40: fully-packed 10-bit variant of NV12_10LE32,
+        i.e. without the padding bits
+
+-   GstRTPSourceMeta is a new meta that can be used to transport
+    information about the origin of depayloaded or decoded RTP buffers,
+    e.g. when mixing audio from multiple sources into a single stream. A
+    new "source-info" property on the RTP depayloader base class
+    determines whether depayloaders should put this meta on outgoing
+    buffers. Similarly, the same property on RTP payloaders determines
+    whether they should use the information from this meta to construct
+    the CSRCs list on outgoing RTP buffers.
+
+-   gst_sdp_message_from_text() is a convenience constructor to parse
+    SDPs from a string which is particularly useful for language
+    bindings.
+
+Support for Planar (Non-Interleaved) Raw Audio
+
+Raw audio samples are usually passed around in interleaved form in
+GStreamer, which means that if there are multiple audio channels the
+samples for each channel are interleaved in memory, e.g.
+|LEFT|RIGHT|LEFT|RIGHT|LEFT|RIGHT| for stereo audio. A non-interleaved
+or planar arrangement in memory would look like
+|LEFT|LEFT|LEFT|RIGHT|RIGHT|RIGHT| instead, possibly with
+|LEFT|LEFT|LEFT| and |RIGHT|RIGHT|RIGHT| residing in separate memory
+chunks or separated by some padding.
+
+GStreamer has always had signalling for non-interleaved audio, but it
+was never actually properly implemented in any elements. audioconvert
+would advertise support for it, but wasn’t actually able to handle it.
+
+With this release we now have full support for non-interleaved audio as
+well, which means more efficient integration with external APIs that
+handle audio this way, but also more efficient processing of certain
+operations like interleaving multiple 1-channel streams into a
+multi-channel stream which can be done without memory copies now.
+
+New API to support this has been added to the GStreamer Audio support
+library: There is now a new GstAudioMeta which describes how data is
+laid out inside the buffer, and buffers with non-interleaved audio must
+always carry this meta. To access the non-interleaved audio samples you
+must map such buffers with gst_audio_buffer_map() which works much like
+gst_buffer_map() or gst_video_frame_map() in that it will populate a
+little GstAudioBuffer helper structure passed to it with the number of
+samples, the number of planes and pointers to the start of each plane in
+memory. This function can also be used to map interleaved audio buffers
+in which case there will be only one plane of interleaved samples.
+
+Of course support for this has also been implemented in the various
+audio helper and conversion APIs, base classes, and in elements such as
+audioconvert, audioresample, audiotestsrc, audiorate.
+
+Support for Closed Captions and Other Ancillary Data in Video
+
+The video support library has gained support for detecting and
+extracting Ancillary Data from videos as per the SMPTE S291M
+specification, including:
+
+-   a VBI (Video Blanking Interval) parser that can detect and extract
+    Ancillary Data from Vertical Blanking Interval lines of component
+    signals. This is currently supported for videos in v210 and UYVY
+    format.
+
+-   a new GstMeta for closed captions: GstVideoCaptionMeta. This
+    supports the two types of closed captions, CEA-608 and CEA-708,
+    along with the four different ways they can be transported (other
+    systems are a superset of those).
+
+-   a VBI (Video Blanking Interval) encoder for writing ancillary data
+    to the Vertical Blanking Interval lines of component signals.
+
+The new closedcaption plugin in gst-plugins-bad then makes use of all
+this new infrastructure and provides the following elements:
+
+-   cccombiner: a closed caption combiner that takes a closed captions
+    stream and another stream and adds the closed captions as
+    GstVideoCaptionMeta to the buffers of the other stream.
+
+-   ccextractor: a closed caption extractor which will take
+    GstVideoCaptionMeta from input buffers and output them as a separate
+    closed captions stream.
+
+-   ccconverter: a closed caption converter that can convert between
+    different formats
+
+-   line21decoder: extract line21 closed captions from SD video streams
+
+-   cc708overlay: decodes CEA 608/708 captions and overlays them on
+    video
+
+Additionally, the following elements have also gained Closed Caption
+support:
+
+-   qtdemux and qtmux support CEA 608/708 Closed Caption tracks
+
+-   mpegvideoparse extracts Closed Captions from MPEG-2 video streams
+
+-   decklinkvideosink can output closed captions and decklinkvideosrc
+    can extract closed captions
+
+-   playbin and playbin3 learned how to autoplug CEA 608/708 CC overlay
+    elements
+
+The rsclosedcaption plugin in the Rust plugins collection includes a
+MacCaption (MCC) file parser and encoder.
 
 New Elements
 
--   webrtcbin handles the transport aspects of webrtc connections (see
-    WebRTC section above for more details)
-
--   New srtsink and srtsrc elements for the Secure Reliable Transport
-    (SRT) video streaming protocol, which aims to be easy to use whilst
-    striking a new balance between reliability and latency for low
-    latency video streaming use cases. More details about SRT and the
-    implementation in GStreamer in Olivier’s blog post _SRT in
-    GStreamer_.
-
--   av1enc and av1dec elements providing experimental support for the
-    next-generation royalty free video AV1 codec, alongside Matroska
-    support for it.
-
--   hlssink2 is a rewrite of the existing hlssink element, but unlike
-    its predecessor hlssink2 takes elementary streams as input and
-    handles the muxing to MPEG-TS internally. It also leverages
-    splitmuxsink internally to do the splitting. This allows more
-    control over the chunk splitting and sizing process and relies less
-    on the co-operation of an upstream muxer. Different to the old
-    hlssink it also works with pre-encoded streams and does not require
-    close interaction with an upstream encoder element.
-
--   audiolatency is a new element for measuring audio latency end-to-end
-    and is useful to measure roundtrip latency including both the
-    GStreamer-internal latency as well as latency added by external
-    components or circuits.
-
--   ’fakevideosink is basically a null sink for video data and very
-    similar to fakesink, only that it will answer allocation queries and
-    will advertise support for various video-specific things such
-    GstVideoMeta, GstVideoCropMeta and GstVideoOverlayCompositionMeta
-    like a normal video sink would. This is useful for throughput
-    testing and testing the zero-copy path when creating a new pipeline.
-
--   ipcpipeline: new plugin that allows the splitting of a pipeline into
-    multiple processes. Usually a GStreamer pipeline runs in a single
-    process and parallelism is achieved by distributing workloads using
-    multiple threads. This means that all elements in the pipeline have
-    access to all the other elements’ memory space however, including
-    that of any libraries used. For security reasons one might therefore
-    want to put sensitive parts of a pipeline such as DRM and decryption
-    handling into a separate process to isolate it from the rest of the
-    pipeline. This can now be achieved with the new ipcpipeline plugin.
-    Check out George’s blog post _ipcpipeline: Splitting a GStreamer
-    pipeline into multiple processes_ or his lightning talk from last
-    year’s GStreamer Conference in Prague for all the gory details.
-
--   proxysink and proxysrc are new elements to pass data from one
-    pipeline to another within the same process, very similar to the
-    existing inter elements, but not limited to raw audio and video
-    data. These new proxy elements are very special in how they work
-    under the hood, which makes them extremely powerful, but also
-    dangerous if not used with care. The reason for this is that it’s
-    not just data that’s passed from sink to src, but these elements
-    basically establish a two-way wormhole that passes through queries
-    and events in both directions, which means caps negotiation and
-    allocation query driven zero-copy can work through this wormhole.
-    There are scheduling considerations as well: proxysink forwards
-    everything into the proxysrc pipeline directly from the proxysink
-    streaming thread. There is a queue element inside proxysrc to
-    decouple the source thread from the sink thread, but that queue is
-    not unlimited, so it is entirely possible that the proxysink
-    pipeline thread gets stuck in the proxysrc pipeline, e.g. when that
-    pipeline is paused or stops consuming data for some other reason.
-    This means that one should always shut down down the proxysrc
-    pipeline before shutting down the proxysink pipeline, for example.
-    Or at least take care when shutting down pipelines. Usually this is
-    not a problem though, especially not in live pipelines. For more
-    information see Nirbheek’s blog post _Decoupling GStreamer
-    Pipelines_, and also check out out the new ipcpipeline plugin for
-    sending data from one process to another process (see above).
-
--   lcms is a new LCMS-based ICC color profile correction element
-
--   openmptdec is a new OpenMPT-based decoder for module music formats,
-    such as S3M, MOD, XM, IT. It is built on top of a new
-    GstNonstreamAudioDecoder base class which aims to unify handling of
-    files which do not operate a streaming model. The wildmidi plugin
-    has also been revived and is also implemented on top of this new
-    base class.
-
--   The curl plugin has gained a new curlhttpsrc element, which is
-    useful for testing HTTP protocol version 2.0 amongst other things.
-
--   The msdk plugin has gained a MPEG-2 video decoder(msdkmpeg2dec), VP8
-    decoder(msdkvp8dec) and a VC1/WMV decoder(msdkvc1dec)
-
-Noteworthy new API
-
--   GstPromise provides future/promise-like functionality. This is used
-    in the GStreamer WebRTC implementation.
-
--   GstReferenceTimestampMeta is a new meta that allows you to attach
-    additional reference timestamps to a buffer. These timestamps don’t
-    have to relate to the pipeline clock in any way. Examples of this
-    could be an NTP timestamp when the media was captured, a frame
-    counter on the capture side or the (local) UNIX timestamp when the
-    media was captured. The decklink elements make use of this.
-
--   GstVideoRegionOfInterestMeta: it’s now possible to attach generic
-    free-form element-specific parameters to a region of interest meta,
-    for example to tell a downstream encoder to use certain codec
-    parameters for a certain region.
-
--   gst_bus_get_pollfd can be used to obtain a file descriptor for the
-    bus that can be poll()-ed on for new messages. This is useful for
-    integration with non-GLib event loops.
-
--   gst_get_main_executable_path() can be used by wrapper plugins that
-    need to find things in the directory where the application
-    executable is located. In the same vein,
-    GST_PLUGIN_DEPENDENCY_FLAG_PATHS_ARE_RELATIVE_TO_EXE can be used to
-    signal that plugin dependency paths are relative to the main
-    executable.
-
--   pad templates can be told about the GType of the pad subclass of the
-    pad via newly-added GstPadTemplate API API or the
-    gst_element_class_add_static_pad_template_with_gtype() convenience
-    function. gst-inspect-1.0 will use this information to print pad
-    properties.
-
--   new convenience functions to iterate over element pads without using
-    the GstIterator API: gst_element_foreach_pad(),
-    gst_element_foreach_src_pad(), and gst_element_foreach_sink_pad().
-
--   GstBaseSrc and appsrc have gained support for buffer lists:
-    GstBaseSrc subclasses can use gst_base_src_submit_buffer_list(), and
-    applications can use gst_app_src_push_buffer_list() to push a buffer
-    list into appsrc.
-
--   The GstHarness unit test harness has a couple of new convenience
-    functions to retrieve all pending data in the harness in form of a
-    single chunk of memory.
-
--   GstAudioStreamAlign is a new helper object for audio elements that
-    handles discontinuity detection and sample alignment. It will align
-    samples after the previous buffer’s samples, but keep track of the
-    divergence between buffer timestamps and sample position (jitter).
-    If it exceeds a configurable threshold the alignment will be reset.
-    This simply factors out code that was duplicated in a number of
-    elements into a common helper API.
-
--   The GstVideoEncoder base class implements Quality of Service (QoS)
-    now. This is disabled by default and must be opted in by setting the
-    "qos" property, which will make the base class gather statistics
-    about the real-time performance of the pipeline from downstream
-    elements (usually sinks that sync the pipeline clock). Subclasses
-    can then make use of this by checking whether input frames are late
-    already using gst_video_encoder_get_max_encode_time() If late, they
-    can just drop them and skip encoding in the hope that the pipeline
-    will catch up.
-
--   The GstVideoOverlay interface gained a few helper functions for
-    installing and handling a "render-rectangle" property on elements
-    that implement this interface, so that this functionality can also
-    be used from the command line for testing and debugging purposes.
-    The property wasn’t added to the interface itself as that would
-    require all implementors to provide it which would not be
-    backwards-compatible.
-
--   A new base class, GstNonstreamAudioDecoder for non-stream audio
-    decoders was added to gst-plugins-bad. This base-class is meant to
-    be used for audio decoders that require the whole stream to be
-    loaded first before decoding can start. Examples of this are module
-    formats (MOD/S3M/XM/IT/etc), C64 SID tunes, video console music
-    files (GYM/VGM/etc), MIDI files and others. The new openmptdec
-    element is based on this.
-
--   Full list of API new in 1.14:
-    -   GStreamer core API new in 1.14
-    -   GStreamer base library API new in 1.14
-    -   gst-plugins-base libraries API new in 1.14
-    -   gst-plugins-bad: no list, mostly GstWebRTC library and new
-        non-stream audio decoder base class.
-
-New RTP features and improvements
-
--   rtpulpfecenc and rtpulpfecdec are new elements that implement
-    Generic Forward Error Correction (FEC) using Uneven Level Protection
-    (ULP) as described in RFC 5109. This can be used to protect against
-    certain types of (non-bursty) packet loss, and important packets
-    such as those containing codec configuration data or key frames can
-    be protected with higher redundancy. Equally, packets that are not
-    particularly important can be given low priority or not be protected
-    at all. If packets are lost, the receiver can then hopefully restore
-    the lost packet(s) from the surrounding packets which were received.
-    This is an alternative to, or rather complementary to, dealing with
-    packet loss using _retransmission (rtx)_. GStreamer has had
-    retransmission support for a long time, but Forward Error Correction
-    allows for different trade-offs: The advantage of Forward Error
-    Correction is that it doesn’t add latency, whereas retransmission
-    requires at least one more roundtrip to request and hopefully
-    receive lost packets; Forward Error Correction increases the
-    required bandwidth however, even in situations where there is no
-    packet loss at all, so one will typically want to fine-tune the
-    overhead and mechanisms used based on the characteristics of the
-    link at the time.
-
--   New _Redundant Audio Data (RED)_ encoders and decoders for RTP as
-    per RFC 2198 are also provided (rtpredenc and rtpreddec), mostly for
-    chrome webrtc compatibility, as chrome will wrap ULPFEC-protected
-    streams in RED packets, and such streams need to be wrapped and
-    unwrapped in order to use ULPFEC with chrome.
-
--   a few new buffer flags for FEC support:
-    GST_BUFFER_FLAG_NON_DROPPABLE can be used to mark important buffers,
-    e.g. to flag RTP packets carrying keyframes or codec setup data for
-    RTP Forward Error Correction purposes, or to prevent still video
-    frames from being dropped by elements due to QoS. There already is a
-    GST_BUFFER_FLAG_DROPPABLE. GST_RTP_BUFFER_FLAG_REDUNDANT is used to
-    signal internally that a packet represents a redundant RTP packet
-    and used in rtpstorage to hold back the packet and use it only for
-    recovery from packet loss. Further work is still needed in
-    payloaders to make use of these.
-
--   rtpbin now has an option for increasing timestamp offsets gradually:
-    Sudden large changes to the internal ts_offset may cause timestamps
-    to move backwards and may also cause visible glitches in media
-    playback. The new "max-ts-offset-adjustment" and "max-ts-offset"
-    properties let the application control the rate to apply changes to
-    ts_offset. There have also been some EOS/BYE handling improvements
-    in rtpbin.
-
--   rtpjitterbuffer has a new fast start mode: in many scenarios the
-    jitter buffer will have to wait for the full configured latency
-    before it can start outputting packets. The reason for that is that
-    it often can’t know what the sequence number of the first expected
-    RTP packet is, so it can’t know whether a packet earlier than the
-    earliest packet received will still arrive in future. This behaviour
-    can now be bypassed by setting the "faststart-min-packets" property
-    to the number of consecutive packets needed to start, and the jitter
-    buffer will start output packets as soon as it has N consecutive
-    packets queued internally. This is particularly useful to get a
-    first video frame decoded and rendered as quickly as possible.
-
--   rtpL8pay and rtpL8depay provide RTP payloading and depayloading for
-    8-bit raw audio
-
-New element features
-
--   playbin3 has gained support or gapless playback via the
-    "about-to-finish" signal where users can set the uri for the next
-    item to play. For non-live streams this will be emitted as soon as
-    the first uri has finished downloading, so with sufficiently large
-    buffers it is now possible to pre-buffer the next item well ahead of
-    time (unlike playbin where there would not be a lot of time between
-    "about-to-finish" emission and the end of the stream). If the stream
-    format of the next stream is the same as that of the previous
-    stream, the data will be concatenated via the concat element.
-    Whether this will result in true gaplessness depends on the
-    container format and codecs used, there might still be codec-related
-    gaps between streams with some codecs.
-
--   tee now does allocation query aggregation, which is important for
-    zero-copy and efficient data handling, especially for video. Those
-    who want to drop allocation queries on purpose can use the identity
-    element’s new "drop-allocation" property for that instead.
-
--   audioconvert now has a "mix-matrix" property, which obsoletes the
-    audiomixmatrix element. There’s also mix matrix support in the audio
-    conversion and channel mixing API.
-
--   x264enc: new "insert-vui" property to disable VUI (Video Usability
-    Information) parameter insertion into the stream, which allows
-    creation of streams that are compatible with certain legacy hardware
-    decoders that will refuse to decode in certain combinations of
-    resolution and VUI parameters; the max. allowed number of B-frames
-    was also increased from 4 to 16.
-
--   dvdlpcmdec: has gained support for Blu-Ray audio LPCM.
-
--   appsrc has gained support for buffer lists (see above) and also seen
-    some other performance improvements.
-
--   flvmux has been ported to the GstAggregator base class which means
-    it can work in defined-latency mode with live input sources and
-    continue streaming if one of the inputs stops producing data.
-
--   jpegenc has gained a "snapshot" property just like pngenc to make it
-    easier to output just a single encoded frame.
-
--   jpegdec will now handle interlaced MJPEG streams properly and also
-    handles frames without an End of Image marker better.
-
--   v4l2: There are now video encoders for VP8, VP9, MPEG4, and H263.
-    The v4l2 video decoder handles dynamic resolution changes, and the
-    video4linux device provider now does much faster device probing. The
-    plugin also no longer uses the libv4l2 library by default, as it has
-    prevented a lot of interesting use cases like CREATE_BUFS, DMABuf,
-    usage of TRY_FMT. As the libv4l2 library is totally inactive and not
-    really maintained, we decided to disable it. This might affect a
-    small number of cheap/old webcams with custom vendor formats for
-    which we do not provide conversion in GStreamer. It is possible to
-    re-enable support for libv4l2 at run-time however, by setting the
-    environment variable GST_V4L2_USE_LIBV4L2=1.
-
--   rtspsrc now has support for RTSP protocol version 2.0 as well as
-    ONVIF audio backchannels (see below for more details). It also
-    sports a new "accept-certificate" signal for “manually” checking a
-    TLS certificate for validity. It now also prints RTSP/SDP messages
-    to the gstreamer debug log instead of stdout.
-
--   shout2send now uses non-blocking I/O and has a configurable network
-    operations timeout.
-
--   splitmuxsink has gained a "split-now" action signal and new
-    "alignment-threshold" and "use-robust-muxing" properties. If robust
-    muxing is enabled, it will check and set the muxer’s reserved space
-    properties if present. This is primarily for use with mp4mux’s
-    robust muxing mode.
-
--   qtmux has a new _prefill recording mode_ which sets up a moov header
-    with the correct sample positions beforehand, which then allows
-    software like Adobe Premiere and FinalCut Pro to import the files
-    while they are still being written to. This only works with constant
-    framerate I-frame only streams, and for now only support for ProRes
-    video and raw audio is implemented. Adding support for additional
-    codecs is just a matter of defining appropriate maximum frame sizes
-    though.
-
--   qtmux also supports writing of svmi atoms with stereoscopic video
-    information now. Trak timescales can be configured on a per-stream
-    basis using the "trak-timescale" property on the sink pads. Various
-    new formats can be muxed: MPEG layer 1 and 2, AC3 and Opus, as well
-    as PNG and VP9.
-
--   souphttpsrc now does connection sharing by default: it shares its
-    SoupSession with other elements in the same pipeline via a
-    GstContext if possible (session-wide settings are all the defaults).
-    This allows for connection reuse, cookie sharing, etc. Applications
-    can also force a context to use. In other news, HTTP headers
-    received from the server are posted as element messages on the bus
-    now for easier diagnostics, and it’s also possible now to use other
-    types of proxy servers such as SOCKS4 or SOCKS5 proxies, support for
-    which is implemented directly in gio. Before only HTTP proxies were
-    allowed.
-
--   qtmux, mp4mux and matroskamux will now refuse caps changes of input
-    streams at runtime. This isn’t really supported with these
-    containers (or would have to be implemented differently with a
-    considerable effort) and doesn’t produce valid and spec-compliant
-    files that will play everywhere. So if you can’t guarantee that the
-    input caps won’t change, use a container format that does support on
-    the fly caps changes for a stream such as MPEG-TS or use
-    splitmuxsink which can start a new file when the caps change. What
-    would happen before is that e.g. rtph264depay or rtph265depay would
-    simply send new SPS/PPS inband even for AVC format, which would then
-    get muxed into the container as if nothing changed. Some decoders
-    will handle this just fine, but that’s often more luck than by
-    design. In any case, it’s not right, so we disallow it now.
-
--   matroskamux has Table of Content (TOC) support now (chapters etc.)
-    and matroskademux TOC support has been improved. matroskademux has
-    also seen seeking improvements searching for the right cluster and
-    position.
-
--   videocrop now uses GstVideoCropMeta if downstream supports it, which
-    means cropping can be handled more efficiently without any copying.
-
--   compositor now has support for _crossfade blending_, which can be
-    used via the new "crossfade-ratio" property on the sink pads.
-
--   The avwait element has a new "end-timecode" property and posts
-    "avwait-status" element messages now whenever avwait starts or stops
-    passing through data (e.g. because target-timecode and end-timecode
-    respectively have been reached).
-
--   ‘alsamidisrc’ element has been broken for many many years and has
-    now been repaired allowing live capture from your MIDI HW.
-
--   h265parse and h265parse will try harder to make upstream output the
-    same caps as downstream requires or prefers, thus avoiding
-    unnecessary conversion. The parsers also expose chroma format and
-    bit depth in the caps now.
-
--   The dtls elements now longer rely on or require the application to
-    run a GLib main loop that iterates the default main context
-    (GStreamer plugins should never rely on the application running a
-    GLib main loop).
-
--   openh264enc allows to change the encoding bitrate dynamically at
-    runtime now
-
--   nvdec is a new plugin for hardware-accelerated video decoding using
-    the NVIDIA NVDEC API (which replaces the old VDPAU API which is no
-    longer supported by NVIDIA)
-
--   The NVIDIA NVENC hardware-accelerated video encoders now support
-    dynamic bitrate and preset reconfiguration and support the I420
-    4:2:0 video format. It’s also possible to configure the gop size via
-    the new "gop-size" property.
-
--   The MPEG-TS muxer and demuxer (tsmux, tsdemux) now have support for
-    JPEG2000
-
--   openjpegdec and jpeg2000parse support 2-component images now (gray
-    with alpha), and jpeg2000parse has gained limited support for
-    conversion between JPEG2000 stream-formats. (JP2, J2C, JPC) and also
-    extracts more details such as colorimetry, interlace-mode,
-    field-order, multiview-mode and chroma siting.
-
--   The decklink plugin for Blackmagic capture and playback cards have
-    seen numerous improvements:
-
-    -   decklinkaudiosrc and decklinkvideosrc now put hardware reference
-        timestamp on buffers in form of GstReferenceTimestampMetas.
-        This can be useful to know on multi-channel cards which frames
-        from different channels were captured at the same time.
-
-    -   decklinkvideosink has gained support for Decklink hardware
-        keying with two new properties ("keyer-mode" and "keyer-level")
-        to control the built-in hardware keyer of Decklink cards.
-
-    -   decklinkaudiosink has been re-implemented around GstBaseSink
-        instead of the GstAudioBaseSink base class, since the Decklink
-        APIs don’t fit very well with the GstAudioBaseSink APIs, which
-        used to cause various problems due to inaccuracies in the clock
-        calculations. Problems were audio drop-outs and A/V sync going
-        wrong after pausing/seeking.
-
-    -   support for more than 16 devices, without any artificial limit
-
--   work continued on the msdk plugin for Intel’s Media SDK which
-    enables hardware-accelerated video encoding and decoding on Intel
-    graphics hardware on Windows or Linux. Added the video memory,
-    buffer pool, and context/session sharing support which helps to
-    improve the performance and resource utilization. Rendernode support
-    is in place which helps to avoid the constraint of having a running
-    graphics server as DRM-Master. Encoders are exposing a number rate
-    control algorithms now. More encoder tuning options like
-    trellis-quantiztion (h264), slice size control (h264), B-pyramid
-    prediction(h264), MB-level bitrate control, frame partitioning and
-    adaptive I/B frame insertion were added, and more pixel formats and
-    video codecs are supported now. The encoder now also handles
-    force-key-unit events and can insert frame-packing SEIs for
-    side-by-side and top-bottom stereoscopic 3D video.
-
--   dashdemux can now do adaptive trick play of certain types of DASH
-    streams, meaning it can do fast-forward/fast-rewind of normal (non-I
-    frame only) streams even at high speeds without saturating network
-    bandwidth or exceeding decoder capabilities. It will keep statistics
-    and skip keyframes or fragments as needed. See Sebastian’s blog post
-    _DASH trick-mode playback in GStreamer_ for more details. It also
-    supports webvtt subtitle streams now and has seen improvements when
-    seeking in live streams.
-
--   kmssink has seen lots of fixes and improvements in this cycle,
-    including:
-
-    -   Raspberry Pi (vc4) and Xilinx DRM driver support
-
-    -   new "render-rectangle" property that can be used from the
-        command line as well as "display-width" and "display-height",
-        and "can-scale" properties
-
-    -   GstVideoCropMeta support
+-   overlaycomposition: New element that allows applications to draw
+    GstVideoOverlayCompositions on a stream. The element will emit the
+    "draw" signal for each video buffer, and the application then
+    generates an overlay for that frame (or not). This is much more
+    performant than e.g. cairooverlay for many use cases, e.g. because
+    pixel format conversions can be avoided or the blitting of the
+    overlay can be delegated to downstream elements (such as
+    gloverlaycompositor). It’s particularly useful for cases where only
+    a small section of the video frame should be drawn on.
+
+-   gloverlaycompositor: New OpenGL-based compositor element that
+    flattens any overlays from GstVideoOverlayCompositionMetas into the
+    video stream.
+
+-   glalpha: New element that adds an alpha channel to a video stream.
+    The values of the alpha channel can either be set to a constant or
+    can be dynamically calculated via chroma keying. It is similar to
+    the existing alpha element but based on OpenGL. Calculations are
+    done in floating point so results may not be identical to the output
+    of the existing alpha element.
+
+-   rtpfunnel funnels together rtp-streams into a single session. Use
+    cases include multiplexing and bundle. webrtcbin uses it to
+    implement BUNDLE support.
+
+-   testsrcbin is a source element that provides an audio and/or video
+    stream and also announces them using the recently-introduced
+    GstStream API. This is useful for testing elements such as playbin3
+    or uridecodebin3 etc.
+
+-   New closed caption elements: cccombiner, ccextractor, ccconverter,
+    line21decoder and cc708overlay (see above)
+
+-   wpesrc: new source element acting as a Web Browser based on WebKit
+    WPE
+
+-   Two new OpenCV-based elements: cameracalibrate and cameraundistort
+    who can communicate to figure out distortion correction parameters
+    for a camera and correct for the distortion.
+
+-   new sctp plugin based on usrsctp with sctpenc and sctpdec elements
+
+New element features and additions
+
+-   playbin3, playbin and playsink have gained a new "text-offset"
+    property to adjust the positioning of the selected subtitle stream
+    vis-a-vis the audio and video streams. This uses subtitleoverlay’s
+    new "subtitle-ts-offset" property. GstPlayer has gained matching API
+    for this, namely gst_player_get_text_video_offset().
+
+-   playbin3 buffering improvements: in network playback scenarios there
+    may be multiple inputs to decodebin3, and buffering will be done
+    before decodebin3 using queue2 or downloadbuffer elements inside
+    urisourcebin. Since this is before any parsers or demuxers there may
+    not be any bitrate information available for the various streams, so
+    it was difficult to configure the buffering there smartly within
+    global constraints. This was improved now: The queue2 elements
+    inside urisourcebin will now use the new bitrate query to figure out
+    a bitrate estimate for the stream if no bitrate was provided by
+    upstream, and urisourcebin will use the bitrates of the individual
+    queues to distribute the globally-set "buffer-size" budget in bytes
+    to the various queues. urisourcebin also gained "low-watermark" and
+    "high-watermark" properties which will be proxied to the internal
+    queues, as well as a read-only "statistics" property which allows
+    querying of the minimum/maximum/average byte and time levels of the
+    queues inside the urisourcebin in question.
+
+-   splitmuxsink has gained a couple of new features:
+
+    -   new "async-finalize" mode: This mode is useful for muxers or
+        outputs that can take a long time to finalize a file. Instead of
+        blocking the whole upstream pipeline while the muxer is doing
+        its stuff, we can unlink it and spawn a new muxer + sink
+        combination to continue running normally. This requires us to
+        receive the muxer and sink (if needed) as factories via the new
+        "muxer-factory" and "sink-factory" properties, optionally
+        accompanied by their respective properties structures (set via
+        the new "muxer-properties" and "sink-properties" properties).
+        There are also new "muxer-added" and "sink-added" signals in
+        case custom code has to be called for them to configure them.
+
+    -   "split-at-running-time" action signal: When called by the user,
+        this action signal ends the current file (and starts a new one)
+        as soon as the given running time is reached. If called multiple
+        times, running times are queued up and processed in the order
+        they were given.
+
+    -   "split-after" action signal to finish outputting the current GOP
+        to the current file and then start a new file as soon as the GOP
+        is finished and a new GOP is opened (unlike the existing
+        "split-now" which immediately finishes the current file and
+        writes the current GOP into the next newly-started file).
+
+    -   "reset-muxer" property: when unset, the muxer is reset using
+        flush events instead of setting its state to NULL and back. This
+        means the muxer can keep state across resets, e.g. mpegtsmux
+        will keep the continuity counter continuous across segments as
+        required by hlssink2.
+
+-   qtdemux gained PIFF track encryption box support in addition to the
+    already-existing PIFF sample encryption support, and also allows
+    applications to select which encryption system to use via a
+    "drm-preferred-decryption-system-id" context in case there are
+    multiple options.
+
+-   qtmux: the "start-gap-threshold" property determines now whether an
+    edit list will be created to account for small gaps or offsets at
+    the beginning of a stream in case the start timestamps of tracks
+    don’t line up perfectly. Previously the threshold was hard-coded to
+    1% of the (video) frame duration, now it is 0 by default (so edit
+    list will be created even for small differences), but fully
+    configurable.
+
+-   rtpjitterbuffer has improved end-of-stream handling
+
+-   rtpmp4vpay will be prefered over rtpmp4gpay for MPEG-4 video in
+    autoplugging scenarios now
+
+-   rtspsrc now allows applications to send RTSP SET_PARAMETER and
+    GET_PARAMETER requests using action signals.
+
+-   rtspsrc also has a small (100ms) configurable teardown delay by
+    default to try and make sure an RTSP TEARDOWN request gets sent out
+    when the source element shuts down. This will block the downward
+    PAUSED to READY state change for a short time, but can be unset
+    where it’s a problem. Some servers only allow a limited number of
+    concurren clients, so if no proper TEARDOWN is sent clients may have
+    problems connecting to the server for a while.
+
+-   souphttpsrc behaves better with low bitrate streams now. Before it
+    would increase the read block size too quickly which could lead to
+    it not reading any data from the socket for a very long time with
+    low bitrate streams that are output live downstream. This could lead
+    to servers kicking off the client.
+
+-   filesink: do internal buffering to avoid performance regression with
+    small writes since we bypass libc buffering by using writev()
+
+-   identity: add "eos-after" property and fix "error-after" property
+    when the element is reused
+
+-   input-selector: lets context queries pass through, so that
+    e.g. upstream OpenGL elements can use contexts and displays
+    advertised by downstream elements
+
+-   queue2: avoid ping-pong between 0% and 100% buffering messages if
+    upstream is pushing buffers larger than one of its limits, plus
+    performance optimisations
+
+-   opusdec: new "phase-inversion" property to control phase inversion.
+    When enabled, this will slightly increase stereo quality, but
+    produces a stream that when downmixed to mono will suffer audio
+    distortions.
+
+-   The x265enc HEVC encoder also exposes a "key-int-max" property to
+    configure the maximum allowed GOP size now.
+
+-   decklinkvideosink has seen stability improvements for long-running
+    pipelines (potential crash due to overflow of leaked clock refcount)
+    and clock-slaving improvements when performing flushing seeks
+    (causing stalls in the output timeline), pausing and/or buffering.
+
+-   srtpdec, srtpenc: add support for MKIs which allow multiple keys to
+    be used with a single SRTP stream
+
+-   The srt Secure Reliable Transport plugin has integrated server and
+    client elements srt{client,server}{src,sink} into one (srtsrc and
+    srtsink), since SRT connection mode can be changed by uri
+    parameters.
+
+-   h264parse and h265parse will handle SEI recovery point messages and
+    mark recovery points as keyframes as well (in addition to IDR
+    frames)
+
+-   webrtcbin: "add-turn-server" action signal to pass multiple ICE
+    relays (TURN servers).
+
+-   The removesilence element has received various new features and
+    properties, such as a
+    "threshold"1 property, detecting silence only after minimum   silence time/buffers, a“silent”property to control bus message   notifications as well as a“squash”`
+    property.
+
+-   AOMedia AV1 decoder gained support for 10/12bit decoding whilst the
+    AV1 encoder supports more image formats and subsamplings now and
+    acquired support for rate control and profile related configuration.
+
+-   The Fraunhofer fdkaac plugin can now be built against the 2.0.0
+    version API and has improved multichannel support
+
+-   kmssink now supports unpadded 24-bit RGB and can configure mode
+    setting from video info, which enables display of multi-planar
+    formats such as I420 or NV12 with modesetting. It has also gained a
+    number of new properties: The "restore-crtc" property does what it
+    says on the tin and is enabled by default. "plane-properties" and
+    "connector-properties" can be used to pass custom properties to the
+    DRM.
+
+-   waylandsink has a "fullscreen" property now.
 
 Plugin and library moves
 
-MPEG-1 audio (mp1, mp2, mp3) decoders and encoders moved to -good
+-   The stereo element was moved from -bad into the existing audiofx
+    plugin in -good. If you get duplicate type registration warnings
+    when upgrading, check that you don’t have a stale gststereo plugin
+    lying about somewhere.
 
-Following the expiration of the last remaining mp3 patents in most
-jurisdictions, and the termination of the mp3 licensing program, as well
-as the decision by certain distros to officially start shipping full mp3
-decoding and encoding support, these plugins should now no longer be
-problematic for most distributors and have therefore been moved from
--ugly and -bad to gst-plugins-good. Distributors can still disable these
-plugins if desired.
+GstVideoAggregator, compositor, and OpenGL mixer elements moved from -bad to -base
 
-In particular these are:
-
--   mpg123audiodec: an mp1/mp2/mp3 audio decoder using libmpg123
--   lamemp3enc: an mp3 encoder using LAME
--   twolamemp2enc: an mp2 encoder using TwoLAME
-
-GstAggregator moved from -bad to core
-
-GstAggregator has been moved from gst-plugins-bad to the base library in
-GStreamer and is now stable API.
-
-GstAggregator is a new base class for mixers and muxers that have to
-handle multiple input pads and aggregate streams into one output stream.
-It improves upon the existing GstCollectPads API in that it is a proper
-base class which was also designed with live streaming in mind.
-GstAggregator subclasses will operate in a mode with defined latency if
-any of the inputs are live streams. This ensures that the pipeline won’t
-stall if any of the inputs stop producing data, and that the configured
-maximum latency is never exceeded.
-
-GstAudioAggregator, audiomixer and audiointerleave moved from -bad to -base
-
-GstAudioAggregator is a new base class for raw audio mixers and muxers
-and is based on GstAggregator (see above). It provides defined-latency
-mixing of raw audio inputs and ensures that the pipeline won’t stall
+GstVideoAggregator is a new base class for raw video mixers and muxers
+and is based on [GstAggregator][aggregator]. It provides defined-latency
+mixing of raw video inputs and ensures that the pipeline won’t stall
 even if one of the input streams stops producing data.
 
 As part of the move to stabilise the API there were some last-minute API
 changes and clean-ups, but those should mostly affect internal elements.
+Most notably, the "ignore-eos" pad property was renamed to
+"repeat-after-eos" and the conversion code was moved to a
+GstVideoAggregatorConvertPad subclass to avoid code duplication, make
+things less awkward for subclasses like the OpenGL-based video mixer,
+and make the API more consistent with the audio aggregator API.
 
-It is used by the audiomixer element, which is a replacement for
-‘adder’, which did not handle live inputs very well and did not align
-input streams according to running time. audiomixer should behave much
-better in that respect and generally behave as one would expected in
-most scenarios.
+It is used by the compositor element, which is a replacement for
+‘videomixer’ which did not handle live inputs very well. compositor
+should behave much better in that respect and generally behave as one
+would expected in most scenarios.
 
-Similarly, audiointerleave replaces the ‘interleave’ element which did
-not handle live inputs or non-aligned inputs very robustly.
+The compositor element has gained support for per-pad blending mode
+operators (SOURCE, OVER, ADD) which determines what operator to use for
+blending this pad over the previous ones. This can be used to implement
+crossfading.
 
-GstAudioAggregator and its subclases have gained support for input
-format conversion, which does not include sample rate conversion though
-as that would add additional latency. Furthermore, GAP events are now
-handled correctly.
-
-We hope to move the video equivalents (GstVideoAggregator and
-compositor) to -base in the next cycle, i.e. for 1.16.
-
-GStreamer OpenGL integration library and plugin moved from -bad to -base
-
-The GStreamer OpenGL integration library and opengl plugin have moved
-from gst-plugins-bad to -base and are now part of the stable API canon.
-Not all OpenGL elements have been moved; a few had to be left behind in
-gst-plugins-bad in the new openglmixers plugin, because they depend on
-the GstVideoAggregator base class which we were not able to move in this
-cycle. We hope to reunite these elements with the rest of their family
-for 1.16 though.
-
-This is quite a milestone, thanks to everyone who worked to make this
-happen!
-
-Qt QML and GTK plugins moved from -bad to -good
-
-The Qt QML-based qmlgl plugin has moved to -good and provides a
-qmlglsink video sink element as well as a qmlglsrc element. qmlglsink
-renders video into a QQuickItem, and qmlglsrc captures a window from a
-QML view and feeds it as video into a pipeline for further processing.
-Both elements leverage GStreamer’s OpenGL integration. In addition to
-the move to -good the following features were added:
-
--   A proxy object is now used for thread-safe access to the QML widget
-    which prevents crashes in corner case scenarios: QML can destroy the
-    video widget at any time, so without this we might be left with a
-    dangling pointer.
-
--   EGL is now supported with the X11 backend, which works e.g. on
-    Freescale imx6
-
-The GTK+ plugin has also moved from -bad to -good. It includes gtksink
-and gtkglsink which both render video into a GtkWidget. gtksink uses
-Cairo for rendering the video, which will work everywhere in all
-scenarios but involves an extra memory copy, whereas gtkglsink fully
-leverages GStreamer’s OpenGL integration, but might not work properly in
-all scenarios, e.g. where the OpenGL driver does not properly support
-multiple sharing contexts in different threads; on Linux Nouveau is
-known to be broken in this respect, whilst NVIDIA’s proprietary drivers
-and most other drivers generally work fine, and the experience with
-Intel’s driver seems to be mixed; some proprietary embedded Linux
-drivers don’t work; macOS works.
-
-GstPhysMemoryAllocator interface moved from -bad to -base
-
-GstPhysMemoryAllocator is a marker interface for allocators with
-physical address backed memory.
+A number of OpenGL-based video mixer elements (glvideomixer, glmixerbin,
+glvideomixerelement, glstereomix, glmosaic) which are built on top of
+GstVideoAggregator have also been moved from -bad to -base now. These
+elements have been merged into the existing OpenGL plugin, so if you get
+duplicate type registration warnings when upgrading, check that you
+don’t have a stale gstopenglmixers plugin lying about somewhere.
 
 Plugin removals
 
--   the sunaudio plugin was removed, since it couldn’t ever have been
-    built or used with GStreamer 1.0, but no one even noticed in all
-    these years.
+The following plugins have been removed from gst-plugins-bad:
 
--   the schroedinger-based Dirac encoder/decoder plugin has been
-    removed, as there is no longer any upstream or anyone else
-    maintaining it. Seeing that it’s quite a fringe codec it seemed best
-    to simply remove it.
+-   The experimental daala plugin has been removed, since it’s not so
+    useful now that all effort is focused on AV1 instead, and it had to
+    be enabled explicitly with --enable-experimental anyway.
 
-API removals
+-   The spc plugin has been removed. It has been replaced by the gme
+    plugin.
 
--   some MPEG video parser API in the API unstable codecutils library in
-    gst-plugins-bad was removed after having been deprecated for 5
-    years.
+-   The acmmp3dec and acmenc plugins for Windows have been removed. ACM
+    is an ancient legacy API and there was no point in keeping them
+    around for a licensed mp3 decoder now that mp3 patents have expired
+    and we have a decoder in -good. We also didn’t ship these in our
+    cerbero-built Windows packages, so it’s unlikely that they’ll be
+    missed.
+
+
+Miscellaneous API additions
+
+-   GstBitwriter: new generic bit writer API to complement the existing
+    bit reader
+
+-   gst_buffer_new_wrapped_bytes() creates a wrap buffer from a GBytes
+
+-   gst_caps_set_features_simple() sets a caps feature on all the
+    structures of a GstCaps
+
+-   New GST_QUERY_BITRATE query: This allows determining from downstream
+    what the expected bitrate of a stream may be which is useful in
+    queue2 for setting time based limits when upstream does not provide
+    timing information. tsdemux, qtdemux and matroskademux have basic
+    support for this query on their sink pads.
+
+-   elements: there is a new “Hardware” class specifier. Elements
+    interacting with hardware devices should specify this classifier in
+    their element factory class metadata. This is useful to advertise as
+    one might need to put such elements into READY state to test if the
+    hardware is present in the system for example.
+
+-   protection: Add a new definition for unspecified system protection
+
+-   take functions for various mini objects that didn’t have them yet:
+    gst_query_take(), gst_message_take(), gst_tag_list_take(),
+    gst_buffer_list_take(). Unlike the various _replace() functions
+    _take() does not increase the reference count but takes ownership of
+    the mini object passed.
+
+-   clear functions for various mini object types and GstObject which
+    unrefs the object or mini object (if non-NULL) and sets the variable
+    pointed to to NULL: gst_clear_structure(), gst_clear_tag_list(),
+    gst_clear_query(), gst_clear_message(), gst_clear_event(),
+    gst_clear_caps(), gst_clear_buffer_list(), gst_clear_buffer(),
+    gst_clear_mini_object(), gst_clear_object()
+
+-   miniobject: new API gst_mini_object_add_parent() and
+    gst_mini_object_remove_parent()to set parent pointers on mini objects to ensure correct writability: Every container of miniobjects now needs to store itself as parent in the child object, and remove itself again later. A mini object is then only writable if there is at most one parent, that parent is writable itself, and the reference count of the mini object is 1.GstBuffer(for memories),GstBufferList(for buffers),GstSample(for caps, buffer, bufferlist), andGstVideoOverlayComposition`
+    were updated accordingly. Without this it was possible to have
+    e.g. a buffer list with a refcount of 2 used in two places at once
+    that both modify the same buffer with refcount 1 at the same time
+    wrongly thinking it is writable even though it’s really not.
+
+-   poll: add API to watch for POLLPRI and stop treating POLLPRI as a
+    read. This is useful to wait for video4linux events which are
+    signalled via POLLPRI.
+
+-   sample: new API to update the contents of a GstSample and make it
+    writable: gst_sample_set_buffer(), gst_sample_set_caps(),
+    gst_sample_set_segment(), gst_sample_set_info(), plus
+    gst_sample_is_writable() and gst_sample_make_writable(). This makes
+    it possible to reuse a sample object and avoid unnecessary memory
+    allocations, for example in appsink.
+
+-   ClockIDs now keep a weak reference to underlying clock to avoid
+    crashes in basesink in corner cases where a clock goes away while
+    the ClockID is still in use, plus some new API
+    (gst_clock_id_get_clock(), gst_clock_id_uses_clock()) to check the
+    clock a ClockID is linked to.
+
+-   The GstCheck unit test library gained a
+    fail_unless_equals_clocktime() convenience macro as well as some new
+    GstHarness API for for proposing meta APIs from the allocation
+    query: gst_harness_add_propose_allocation_meta(). ASSERT_CRITICAL()
+    checks in unit tests are now skipped if GStreamer was compiled with
+    GST_DISABLE_GLIB_CHECKS.
+
+-   gst_audio_buffer_truncate() convenience function to truncate a raw
+    audio buffer
+
+
+Miscellaneous performance and memory optimisations
+
+As always there have been many performance and memory usage improvements
+across all components and modules. Some of them (such as dmabuf
+import/export) have already been mentioned elsewhere so won’t be
+repeated here.
+
+The following list is only a small snapshot of some of the more
+interesting optimisations that haven’t been mentioned in other contexts
+yet:
+
+-   The GstVideoEncoder and GstVideoDecoder base classes now release the
+    STREAM_LOCK when pushing out buffers, which means (multi-threaded)
+    encoders and decoders can now receive and continue to process input
+    buffers whilst waiting for downstream elements in the pipeline to
+    process the buffer that was pushed out. This increases throughput
+    and reduces processing latency, also and especially for
+    hardware-accelerated encoder/decoder elements.
+
+-   GstQueueArray has seen a few API additions
+    (gst_queue_array_peek_nth(), gst_queue_array_set_clear_func(),
+    gst_queue_array_clear()) so that it can be used in other places like
+    GstAdapter instead of a GList, which reduces allocations and
+    improves performance.
+
+-   appsink now reuses the sample object in pull_sample() if possible
+
+-   rtpsession only starts the RTCP thread when it’s actually needed now
+
+-   udpsrc uses a buffer pool now and the GstUdpSrc object structure was
+    optimised for better cache performance
+
+GstPlayer
+
+-   API was added to fine-tune the synchronisation offset between
+    subtitles and video
 
 
 Miscellaneous changes
 
--   The video support library has gained support for a few new pixel
-    formats:
-    -   NV16_10LE32: 10-bit variant of NV16, packed into 32bit words
-        (plus 2 bits padding)
-    -   NV12_10LE32: 10-bit variant of NV12, packed into 32bit words
-        (plus 2 bits padding)
-    -   GRAY10_LE32: 10-bit grayscale, packed in 32bit words (plus 2
-        bits padding)
--   decodebin, playbin and GstDiscoverer have seen stability
-    improvements in corner cases such as shutdown while still starting
-    up or shutdown in error cases (hat tip to the oss-fuzz project).
-
--   floating reference handling was inconsistent and has been cleaned up
-    across the board, including annotations. This solves various
-    long-standing memory leaks in language bindings, which e.g. often
-    caused elements and pads to be leaked.
-
--   major gobject-introspection annotation improvements for large parts
-    of the library API, including nullability of return types and
-    function parameters, correct types (e.g. strings vs. filenames),
-    ownership transfer, array length parameters, etc. This allows to use
-    bigger parts of the GStreamer API to be safely used from dynamic
-    language bindings (e.g. Python, Javascript) and allows static
-    bindings (e.g. C#, Rust, Vala) to autogenerate more API bindings
-    without manual intervention.
+-   As a result of moving to different FFmpeg APIs, encoder and decoder
+    elements exposed by the GStreamer FFmpeg wrapper plugin (gst-libav)
+    may have seen possibly incompatible changes to property names and/or
+    types, and not all properties exposed might be functional. We are
+    still reviewing the new properties and aim to minimise breaking
+    changes at least for the most commonly-used properties, so please
+    report any issues you run into!
 
 OpenGL integration
 
--   The GStreamer OpenGL integration library has moved to
-    gst-plugins-base and is now part of our stable API.
+-   The OpenGL mixer elements have been moved from -bad to
+    gst-plugins-base (see above)
 
--   new MESA3D GBM BACKEND. On devices with working libdrm support, it
-    is possible to use Mesa3D’s GBM library to set up an EGL context
-    directly on top of KMS. This makes it possible to use the GStreamer
-    OpenGL elements without a windowing system if a libdrm- and
-    Mesa3D-supported GPU is present.
+-   The Mesa GBM backend now supports headless mode
 
--   Prefer wayland display over X11: As most Wayland compositors support
-    XWayland, the X11 backend would get selected.
+-   gloverlaycompositor: New OpenGL-based compositor element that
+    flattens any overlays from GstVideoOverlayCompositionMetas into the
+    video stream.
 
--   gldownload can export dmabufs now, and glupload will advertise
-    dmabuf as caps feature.
+-   glalpha: New element that adds an alpha channel to a video stream.
+    The values of the alpha channel can either be set to a constant or
+    can be dynamically calculated via chroma keying. It is similar to
+    the existing alpha element but based on OpenGL. Calculations are
+    done in floating point so results may not be identical to the output
+    of the existing alpha element.
+
+-   glupload: Implement direct dmabuf uploader, the idea being that some
+    GPUs (like the Vivante series) can actually perform the YUV->RGB
+    conversion internally, so no custom conversion shaders are needed.
+    To make use of this feature, we need an additional uploader that can
+    import DMABUF FDs and also directly pass the pixel format, relying
+    on the GPU to do the conversion.
 
 
 Tracing framework and debugging improvements
 
--   NEW MEMORY RINGBUFFER BASED DEBUG LOGGER, useful for long-running
-    applications or to retrieve diagnostics when encountering an error.
-    The GStreamer debug logging system provides in-depth debug logging
-    about what is going on inside a pipeline. When enabled, debug logs
-    are usually written into a file, printed to the terminal, or handed
-    off to a log handler installed by the application. However, at
-    higher debug levels the volume of debug output quickly becomes
-    unmanageable, which poses a problem in disk-space or bandwidth
-    restricted environments or with long-running pipelines where a
-    problem might only manifest itself after multiple days. In those
-    situations, developers are usually only interested in the most
-    recent debug log output. The new in-memory ringbuffer logger makes
-    this easy: just installed it with gst_debug_add_ring_buffer_logger()
-    and retrieve logs with gst_debug_ring_buffer_logger_get_logs() when
-    needed. It is possible to limit the memory usage per thread and set
-    a timeout to determine how long messages are kept around. It was
-    always possible to implement this in the application with a custom
-    log handler of course, this just provides this functionality as part
-    of GStreamer.
+-   There is now a GDB PRETTY PRINTER FOR VARIOUS GSTREAMER TYPES: For
+    GstObject pointers the type and name is added, e.g.
+    0x5555557e4110 [GstDecodeBin|decodebin0]. For GstMiniObject pointers
+    the object type is added, e.g. 0x7fffe001fc50 [GstBuffer]. For
+    GstClockTime and GstClockTimeDiff the time is also printed in human
+    readable form, e.g. 150116219955 [+0:02:30.116219955].
 
--   ’fakevideosink is a null sink for video data that advertises
-    video-specific metas and behaves like a video sink. See above for
-    more details.
+-   GDB EXTENSION WITH TWO CUSTOM GDB COMMANDS gst-dot AND gst-print:
 
--   gst_util_dump_buffer() prints the content of a buffer to stdout.
+    -   gst-dot creates dot files that a very close to what
+        GST_DEBUG_BIN_TO_DOT_FILE() produces, but object properties and
+        buffer contents such as codec-data in caps are not available.
 
--   gst_pad_link_get_name() and gst_state_change_get_name() print pad
-    link return values and state change transition values as strings.
+    -   gst-print produces high-level information about a GStreamer
+        object. This is currently limited to pads for GstElements and
+        events for the pads. The output may look like this:
 
--   The LATENCY TRACER has seen a few improvements: trace records now
-    contain timestamps which is useful to plot things over time, and
-    downstream synchronisation time is now excluded from the measured
-    values.
+                (gdb) gst-print pad.object.parent
+                GstMatroskaDemux (matroskademux0) {
+                    SinkPad (sink, pull) {
+                    }
+                    SrcPad (video_0, push) {
+                      events:
+                        stream-start:
+                          stream-id: 0463ccb080d00b8689bf569a435c4ff84f9ff753545318ae2328ea0763fd0bec/001:1274058367
+                        caps: video/x-theora
+                          width: 1920
+                          height: 800
+                          pixel-aspect-ratio: 1/1
+                          framerate: 24/1
+                          streamheader: < 0x5555557c7d30 [GstBuffer], 0x5555557c7e40 [GstBuffer], 0x7fffe00141d0 [GstBuffer] >
+                        segment: time
+                          rate: 1
+                        tag: global
+                          container-format: Matroska
+                    }
+                    SrcPad (audio_0, push) {
+                      events:
+                        stream-start:
+                          stream-id: 0463ccb080d00b8689bf569a435c4ff84f9ff753545318ae2328ea0763fd0bec/002:1551204875
+                        caps: audio/mpeg
+                          mpegversion: 4
+                          framed: true
+                          stream-format: raw
+                          codec_data: 0x7fffe0014500 [GstBuffer]
+                          level: 2
+                          base-profile: lc
+                          profile: lc
+                          channels: 2
+                          rate: 44100
+                        segment: time
+                          rate: 1
+                        tag: global
+                          container-format: Matroska
+                        tag: stream
+                          audio-codec: MPEG-4 AAC audio
+                          language-code: en
+                    }
+                }
 
--   Miniobject refcount tracing and logging was not entirley
-    thread-safe, there were duplicates or missing entries at times. This
-    has now been made reliable.
-
--   The netsim element, which can be used to simulate network jitter,
-    packet reordering and packet loss, received new features and
-    improvements: it can now also simulate network congestion using a
-    token bucket algorithm. This can be enabled via the "max-kbps"
-    property. Packet reordering can be disabled now via the
-    "allow-reordering" property: Reordering of packets is not very
-    common in networks, and the delay functions will always introduce
-    reordering if delay > packet-spacing, so by setting
-    "allow-reordering" to FALSE you guarantee that the packets are in
-    order, while at the same time introducing delay/jitter to them. By
-    using the new "delay-distribution" property the user can control how
-    the delay applied to delayed packets is distributed: This is either
-    the uniform distribution (as before) or the normal distribution; in
-    addition there is also the gamma distribution which simulates the
-    delay on wifi networks better.
+-   gst_structure_to_string() now serialises the actual value of
+    pointers when serialising GstStructures instead of claiming they’re
+    NULL. This makes debug logging in various places less confusing,
+    because it’s clear now that structure fields actually hold valid
+    objects. Such object pointer values will never be deserialised
+    however.
 
 
 Tools
 
--   gst-inspect-1.0 now prints pad properties for elements that have pad
-    subclasses with special properties, such as compositor or
-    audiomixer. This only works for elements that use the newly-added
-    GstPadTemplate API API or the
-    gst_element_class_add_static_pad_template_with_gtype() convenience
-    function to tell GStreamer about the special pad subclass.
-
--   gst-launch-1.0 now generates a gstreamer pipeline diagram (.dot
-    file) whenever SIGHUP is sent to it on Linux/*nix systems.
-
--   gst-discoverer-1.0 can now analyse live streams such as rtsp:// URIs
+-   gst-inspect-1.0 has coloured output now and will automatically use a
+    pager if the output does not fit on a page. This only works in a
+    unix environment and if the output is not piped. If you don’t like
+    the colours you can disable them by setting the
+    GST_INSPECT_NO_COLORS=1 environment variable or passing the
+    --no-colors command line option.
 
 
 GStreamer RTSP server
 
--   Initial support for RTSP protocol version 2.0 was added, which is to
-    the best of our knowledge the first RTSP 2.0 implementation ever!
+-   Improved backlog handling when using TCP interleaved for data
+    transport. Before there was a fixed maximum size for backlog
+    messages, which was prone to deadlocks and made it difficult to
+    control memory usage with the watch backlog. The RTSP server now
+    limits queued TCP data messages to one per stream, moving queuing of
+    the data into the pipeline and leaving the RTSP connection
+    responsive to RTSP messages in both directions, preventing all those
+    problems.
 
--   ONVIF audio backchannel support. This is an extension specified by
-    ONVIF that allows RTSP clients (e.g. a control room operator) to
-    send audio back to the RTSP server (e.g. an IP camera).
-    Theoretically this could have been done also by using the RECORD
-    method of the RTSP protocol, but ONVIF chose not to do that, so the
-    backchannel is set up alongside the other streams. Format
-    negotiation needs to be done out of band, if needed. Use the new
-    ONVIF-specific subclasses GstRTSPOnvifServer and
-    GstRTSPOnvifMediaFactory to enable this functionality.
+-   Initial ULP Forward Error Correction support in rtspclientsink and
+    for RECORD mode in the server.
 
--   The internal server streaming pipeline is now dynamically
-    reconfigured on PLAY based on the transports needed. This means that
-    the server no longer adds the pipeline plumbing for all possible
-    transports from the start, but only if needed as needed. This
-    improves performance and memory footprint.
+-   API to explicitly enable retransmission requests (RTX)
 
--   rtspclientsink has gained an "accept-certificate" signal for
-    manually checking a TLS certificate for validity.
+-   Lots of multicast-related fixes
 
--   Fix keep-alive/timeout issue for certain clients using TCP
-    interleave as transport who don’t do keep-alive via some other
-    method such as periodic RTSP OPTION requests. We now put netaddress
-    metas on the packets from the TCP interleaved stream, so can map
-    RTCP packets to the right stream in the server and can handle them
-    properly.
-
--   Language bindings improvements: in general there were quite a few
-    improvements in the gobject-introspection annotations, but we also
-    extended the permissions API which was not usable from bindings
-    before.
-
--   Fix corner case issue where the wrong mount point was found when
-    there were multiple mount points with a common prefix.
+-   rtsp-auth: Add support for parsing .htdigest files
 
 
 GStreamer VAAPI
 
--   Improve DMABuf’s usage, both upstream and dowstream, and
-    memory:DMABuf caps feature is also negotiated when the dmabuf-based
-    buffer cannot be mapped onto user-space.
-
--   VA initialization was fixed when it is used in headless systems.
-
--   VA display sharing, through GstContext, among the pipeline, has been
-    improved, adding the possibility to the application share its VA
-    display (external display) via gst.vaapi.app.Display context.
-
--   VA display cache was removed.
-
--   libva’s log messages are now redirected into the GStreamer log
-    handler.
-
--   Decoders improved their upstream re-negotiation by avoiding to
-    re-instantiate the internal decoder if stream caps are compatible
-    with the previous one.
-
--   When downstream doesn’t support GstVideoMeta and the decoded frames
-    don’t have standard strides, they are copied onto system
-    memory-based buffers.
-
--   H.264 decoder has a low-latency property, for live streams which
-    doesn’t conform the H.264 specification but still it is required to
-    push the frames to downstream as soon as possible.
-
--   As part of the Google Summer of Code 2017 the H.264 decoder drops
-    MVC and SVC frames when base-only property is enabled.
-
--   Added support for libva-2.0 (VA-API 1.0).
-
--   H.264 and H.265 encoders handle Region-Of-Interest metas by adding a
-    delta-qp for every rectangle within the frame specified by those
-    metas.
-
--   Encoders for H.264 and H.265 set the media profile by the downstream
-    caps.
-
--   H.264 encoder inserts an AU delimiter for each encoded frame when
-    aud property is enabled (it is only available for certain drivers
-    and platforms).
-
--   H.264 encoder supports for P and B hierarchical prediction modes.
-
--   All encoders handles a quality-level property, which is a number
-    from 1 to 8, where a lower number means higher quality, but slower
-    processing, and vice-versa.
-
--   VP8 and VP9 encoders support constant bit-rate mode (CBR).
-
--   VP8, VP9 and H.265 encoders support variable bit-rate mode (VBR).
-
--   Resurrected GstGLUploadTextureMeta handling for EGL backends.
-
--   H.265 encoder can configure its number of reference frames via the
-    refs property.
-
--   Add H.264 encoder mbbrc property, which controls the macro-block
-    bitrate as auto, on or off.
-
--   Add H.264 encoder temporal-levels property, to select the number of
-    temporal levels to be included.
-
--   Add to H.264 and H.265 encoders the properties qp-ip and qp-ib, to
-    handle the QP (quality parameter) difference between the I and P
-    frames, and the I and B frames, respectively.
-
--   vaapisink was demoted to marginal rank on Wayland because COGL
-    cannot display YUV surfaces.
-
-More details in Víctor’s blog post _GStreamer VA-API 1.14: what’s new?_.
+-   this section will be filled in in due course
 
 
 GStreamer Editing Services and NLE
 
--   Handle crossfade in complex scenarios by using the new
-    compositorpad::crossfade-ratio property
-
--   Add API allowing to stop using proxies for clips in the timeline
-
--   Allow management of none square pixel aspect ratios by allowing
-    application to deal with them in the way they want
-
--   Misc fixes around the timeline editing API
+-   this section will be filled in in due course
 
 
 GStreamer validate
 
--   Handle running scenarios on live pipelines (in the “content sense”,
-    not the GStreamer one)
-
--   Implement RTSP support with a basic server based on gst-rtsp-server,
-    and add RTSP 1.0 and 2.0 integration tests
-
--   Implement a plugin that allows users to implement configurable
-    tests. It currently can check if a particular element is added a
-    configurable number of time in the pipeline. In the future that
-    plugin should allow us to implement specific tests of any kind in a
-    descriptive way
-
--   Add a verbosity configuration which behaves in a similare way as the
-    gst-launch-1.0 verbose flags allowing the informations to be
-    outputed on any running pipeline when enabling GstValidate.
-
--   Misc optimization in the launcher, making the tests run much faster.
+-   this section will be filled in in due course
 
 
-GStreamer C# bindings
+GStreamer Python Bindings
 
--   Port to the meson build system, autotools support has been removed
+-   add binding for gst_pad_set_caps()
 
--   Use a new GlibSharp version, set as a meson subproject
+-   pygobject dependency requirement was bumped to >= 3.8
 
--   Update wrapped API to GStreamer 1.14
+-   new audiotestsrc, audioplot, and mixer plugin examples, and a
+    dynamic pipeline example
 
--   Removed the need for “glue” code
 
--   Provide a nuget
+GStreamer C# Bindings
 
--   Misc API fixes
+-   bindings for the GstWebRTC library
+
+
+GStreamer Rust Bindings
+
+The GStreamer Rust bindings are now officially part of the GStreamer
+project and are also maintained in the GStreamer GitLab.
+
+The releases will generally not be synchronized with the releases of
+other GStreamer parts due to dependencies on other projects.
+
+Also unlike the other GStreamer libraries, the bindings will not commit
+to full API stability but instead will follow the approach that is
+generally taken by Rust projects, e.g.:
+
+1)  0.12.X will be completely API compatible with all other 0.12.Y
+    versions.
+2)  0.12.X+1 will contain bugfixes and compatible new feature additions.
+3)  0.13.0 will _not_ be backwards compatible with 0.12.X but projects
+    will be able to stay at 0.12.X without any problems as long as they
+    don’t need newer features.
+
+The current stable release is 0.12.2 and the next release series will be
+0.13, probably around March 2019.
+
+At this point the bindings cover most of GStreamer core (except for most
+notably GstAllocator and GstMemory), and most parts of the app, audio,
+base, check, editing-services, gl, net. pbutils, player, rtsp,
+rtsp-server, sdp, video and webrtc libraries.
+
+Also included is support for creating subclasses of the following types
+and writing GStreamer plugins:
+
+-   gst::Element
+-   gst::Bin and gst::Pipeline
+-   gst::URIHandler and gst::ChildProxy
+-   gst::Pad, gst::GhostPad
+-   gst_base::Aggregator and gst_base::AggregatorPad
+-   gst_base::BaseSrc and gst_base::BaseSink
+-   gst_base::BaseTransform
+
+Changes to 0.12.X since 0.12.0
+
+Fixed
+
+-   PTP clock constructor actually creates a PTP instead of NTP clock
+
+Added
+
+-   Bindings for GStreamer Editing Services
+-   Bindings for GStreamer Check testing library
+-   Bindings for the encoding profile API (encodebin)
+
+-   VideoFrame, VideoInfo, AudioInfo, StructureRef implements Send and
+    Sync now
+-   VideoFrame has a function to get the raw FFI pointer
+-   From impls from the Error/Success enums to the combined enums like
+    FlowReturn
+-   Bin-to-dot file functions were added to the Bin trait
+-   gst_base::Adapter implements SendUnique now
+-   More complete bindings for the gst_video::VideoOverlay interface,
+    especially
+    gst_video::is_video_overlay_prepare_window_handle_message()
+
+Changed
+
+-   All references were updated from GitHub to freedesktop.org GitLab
+-   Fix various links in the README.md
+-   Link to the correct location for the documentation
+-   Remove GitLab badge as that only works with gitlab.com currently
+
+Changes in git master for 0.13
+
+Fixed
+
+-   gst::tag::Album is the album tag now instead of artist sortname
+
+Added
+
+-   Subclassing infrastructure was moved directly into the bindings,
+    making the gst-plugin crate deprecated. This involves many API
+    changes but generally cleans up code and makes it more flexible.
+    Take a look at the gst-plugins-rs crate for various examples.
+
+-   Bindings for CapsFeatures and Meta
+-   Bindings for
+    ParentBufferMeta,VideoMetaandVideoOverlayCompositionMeta`
+-   Bindings for VideoOverlayComposition and VideoOverlayRectangle
+-   Bindings for VideoTimeCode
+
+-   UniqueFlowCombiner and UniqueAdapter wrappers that make use of the
+    Rust compile-time mutability checks and expose more API in a safe
+    way, and as a side-effect implement Sync and Send now
+
+-   More complete bindings for Allocation Query
+-   pbutils functions for codec descriptions
+-   TagList::iter() for iterating over all tags while getting a single
+    value per tag. The old ::iter_tag_list() function was renamed to
+    ::iter_generic() and still provides access to each value for a tag
+-   Bus::iter() and Bus::iter_timed() iterators around the corresponding
+    ::pop*() functions
+
+-   serde serialization of Value can also handle Buffer now
+
+-   Extensive comments to all examples with explanations
+-   Transmuxing example showing how to use typefind, multiqueue and
+    dynamic pads
+-   basic-tutorial-12 was ported and added
+
+Changed
+
+-   Rust 1.31 is the minimum supported Rust version now
+-   Update to latest gir code generator and glib bindings
+
+-   Functions returning e.g. gst::FlowReturn or other “combined” enums
+    were changed to return split enums like
+    Result<gst::FlowSuccess, gst::FlowError> to allow usage of the
+    standard Rust error handling.
+
+-   MiniObject subclasses are now newtype wrappers around the underlying
+    GstRc<FooRef> wrapper. This does not change the API in any breaking
+    way for the current usages, but allows MiniObjects to also be
+    implemented in other crates and makes sure rustdoc places the
+    documentation in the right places.
+
+-   BinExt extension trait was renamed to GstBinExt to prevent conflicts
+    with gtk::Bin if both are imported
+
+-   Buffer::from_slice() can’t possible return None
+
+-   Various clippy warnings
+
+
+GStreamer Rust Plugins
+
+Like the GStreamer Rust bindings, the Rust plugins are now officially
+part of the GStreamer project and are also maintained in the GStreamer
+GitLab.
+
+In the 0.3.x versions this contained infrastructure for writing
+GStreamer plugins in Rust, and a set of plugins.
+
+In git master that infrastructure was moved to the GLib and GStreamer
+bindings directly, together with many other improvements that were made
+possible by this, so the gst-plugins-rs repository only contains
+GStreamer elements now.
+
+Elements included are:
+
+-   Tutorials plugin: identity, rgb2gray and sinesrc with extensive
+    comments
+
+-   rsaudioecho, a port of the audiofx element
+
+-   rsfilesrc, rsfilesink
+
+-   rsflvdemux, a FLV demuxer. Not feature-equivalent with flvdemux yet
+
+-   threadshare plugin: ts-appsrc, ts-proxysrc/sink, ts-queue, ts-udpsrc
+    and ts-tcpclientsrc elements that use a fixed number of threads and
+    share them between instances. For more background about these
+    elements see Sebastian’s talk “When adding more threads adds more
+    problems - Thread-sharing between elements in GStreamer” at the
+    GStreamer Conference 2017.
+
+-   rshttpsrc, a HTTP source around the hyper/reqwest Rust libraries.
+    Not feature-equivalent with souphttpsrc yet.
+
+-   togglerecord, an element that allows to start/stop recording at any
+    time and keeps all audio/video streams in sync.
+
+-   mccparse and mccenc, parsers and encoders for the MCC closed caption
+    file format.
+
+Changes to 0.3.X since 0.3.0
+
+-   All references were updated from GitHub to freedesktop.org GitLab
+-   Fix various links in the README.md
+-   Link to the correct location for the documentation
+
+Changes in git master for 0.4
+
+-   togglerecord: Switch to parking_lot crate for mutexes/condition
+    variables for lower overhead
+-   Merge threadshare plugin here
+-   New closedcaption plugin with mccparse and mccenc elements
+-   New identity element for the tutorials plugin
+
+-   Register plugins statically in tests instead of relying on the
+    plugin loader to find the shared library in a specific place
+
+-   Update to the latest API changes in the GLib and GStreamer bindings
+-   Update to the latest versions of all crates
 
 
 Build and Dependencies
 
--   the new WebRTC support in gst-plugins-bad depends on the GStreamer
-    elements that ship as part of libnice, and libnice version 1.1.14 is
-    required. Also the dtls and srtp plugins.
+-   The MESON BUILD SYSTEM BUILD IS NOW FEATURE-COMPLETE (*) and it is
+    now the recommended build system on all platforms and also used by
+    Cerbero to build GStreamer on all platforms. The Autotools build is
+    scheduled to be removed in the next cycle. Developers who currently
+    use gst-uninstalled should move to gst-build. The build option
+    naming has been cleaned up and made consistent and there are now
+    feature options to enable/disable plugins and various other features
+    on a case-by-case basis. (*) with the exception of plugin docs which
+    will be handled differently in future
 
--   gst-plugins-bad no longer depends on the libschroedinger Dirac codec
-    library.
+-   Symbol export in libraries is now controlled via explicit exports
+    using symbol visibility or export defines where supported, to ensure
+    consistency across all platforms. This also allows libraries to have
+    exports that vary based on detected platform features and configure
+    options as is the case with the GStreamer OpenGL integration library
+    for example. A few symbols that had been exported by accident in
+    earlier versions may no longer be exported. These symbols will not
+    have had declarations in any public header files then though and
+    would not have been usable.
 
--   The srtp plugin can now also be built against libsrtp2.
+-   The GStreamer FFmpeg wrapper plugin (gst-libav) now depends on
+    FFmpeg 4.x and uses the new FFmpeg 4.x API and stopped relying on
+    ancient API that was removed with the FFmpeg 4.x release. This means
+    that it is no longer possible to build this module against an older
+    system-provided FFmpeg 3.x version. Use the internal FFmpeg 4.x copy
+    instead if you build using autotools, or use gst-libav 1.14.x
+    instead which targets the FFmpeg 3.x API and _should_ work fine in
+    combination with a newer GStreamer. It’s difficult for us to support
+    both old and new FFmpeg APIs at the same time, apologies for any
+    inconvenience caused.
 
--   some plugins and libraries have moved between modules, see the
-    _Plugin and_ _library moves_ section above, and their respective
-    dependencies have moved with them of course, e.g. the GStreamer
-    OpenGL integration support library and plugin is now in
-    gst-plugins-base, and mpg123, LAME and twoLAME based audio decoder
-    and encoder plugins are now in gst-plugins-good.
+-   Hardware-accelerated Nvidia video encoder/decoder plugins nvdec and
+    nvenc can be built against CUDA Toolkit versions 9 and 10.0 now. The
+    dynlink interface has been dropped since it’s deprecated in 10.0.
 
--   Unify static and dynamic plugin interface and remove plugin specific
-    static build option: Static and dynamic plugins now have the same
-    interface. The standard --enable-static/--enable-shared toggle is
-    sufficient. This allows building static and shared plugins from the
-    same object files, instead of having to build everything twice.
+-   The (optional) OpenCV requirement has been bumped to >= 3.0.0 and
+    the plugin can also be built against OpenCV 4.x now.
 
--   The default plugin entry point has changed. This will only affect
-    plugins that are recompiled against new GStreamer headers. Binary
-    plugins using the old entry point will continue to work. However,
-    plugins that are recompiled must have matching plugin names in
-    GST_PLUGIN_DEFINE and filenames, as the plugin entry point for
-    shared plugins is now deduced from the plugin filename. This means
-    you can no longer have a plugin called foo living in a file called
-    libfoobar.so or such, the plugin filename needs to match. This might
-    cause problems with some external third party plugin modules when
-    they get rebuilt against GStreamer 1.14.
-
-
-Note to packagers and distributors
-
-A number of libraries, APIs and plugins moved between modules and/or
-libraries in different modules between version 1.12.x and 1.14.x, see
-the _Plugin and_ _library moves_ section above. Some APIs have seen
-minor ABI changes in the course of moving them into the stable APIs
-section.
-
-This means that you should try to ensure that all major GStreamer
-modules are synced to the same major version (1.12 or 1.13/1.14) and can
-only be upgraded in lockstep, so that your users never end up with a mix
-of major versions on their system at the same time, as this may cause
-breakages.
-
-Also, plugins compiled against >= 1.14 headers will not load with
-GStreamer <= 1.12 owing to a new plugin entry point (but plugin binaries
-built against older GStreamer versions will continue to load with newer
-versions of GStreamer of course).
-
-There is also a small structure size related ABI breakage introduced in
-the gst-plugins-bad codecparsers library between version 1.13.90 and
-1.13.91. This should “only” affect gstreamer-vaapi, so anyone who ships
-the release candidates is advised to upgrade those two modules at the
-same time.
+-   New sctp plugin based on usrsctp (for WebRTC data channels)
 
 
-Platform-specific improvements
+Platform-specific changes and improvements
 
 Android
 
--   ahcsrc (Android camera source) does autofocus now
+-   The way that GIO modules are named has changed due to upstream GLib
+    natively adding support for loading static GIO modules. This means
+    that any GStreamer application using gnutls for SSL/TLS on the
+    Android or iOS platforms (or any other setup using static libraries)
+    will fail to link looking for the g_io_module_gnutls_load_static()
+    function. The new function name is now
+    g_io_gnutls_load(gpointer data). data can be NULL for a static
+    library. Look at this commit for the necessary change in the
+    examples.
 
 macOS and iOS
 
--   no major changes in macOS and iOS support, only bugfixes
+-   macOS binaries should be fully relocatable now
+
+-   The way that GIO modules are named has changed due to upstream GLib
+    natively adding support for loading static GIO modules. This means
+    that any GStreamer application using gnutls for SSL/TLS on the
+    Android or iOS platforms (or any other setup using static libraries)
+    will fail to link looking for the g_io_module_gnutls_load_static()
+    function. The new function name is now
+    g_io_gnutls_load(gpointer data). data can be NULL for a static
+    library. Look at this commit for the necessary change in the
+    examples.
 
 Windows
 
--   The GStreamer wasapi plugin was rewritten and should not only be
-    usable now, but in top shape and suitable for low-latency use cases.
-    The Windows Audio Session API (WASAPI) is Microsoft’s most modern
-    method for talking with audio devices, and now that the wasapi
-    plugin is up to scratch it is preferred over the directsound plugin.
-    The ranks of the wasapisink and wasapisrc elements have been updated
-    to reflect this. Further improvements include:
+-   The webrtcdsp element is shipped again as part of the Windows binary
+    packages, the build system issue has been resolved.
 
-    -   support for more than 2 channels
+-   ‘Inconsistent DLL linkage’ warnings when building with MSVC have
+    been fixed
 
-    -   a new "low-latency" property to enable low-latency operation
-        (which should always be safe to enable)
+-   Hardware-accelerated Nvidia video encoder/decoder plugins nvdec and
+    nvenc build on Windows now, also with MSVC and using Meson.
 
-    -   support for the AudioClient3 API which is only available on
-        Windows 10: in wasapisink this will be used automatically if
-        available; in wasapisrc it will have to be enabled explicitly
-        via the "use-audioclient3" property, as capturing audio with low
-        latency and without glitches seems to require setting the
-        realtime priority of the entire pipeline to “critical”, which
-        cannot be done from inside the element, but has to be done in
-        the application.
+-   The ksvideosrc camera capture plugin supports 16-bit grayscale video
+    now
 
-    -   set realtime thread priority to avoid glitches
+-   The wasapisrc audio capture element implements loopback recording
+    from another output device or sink
 
-    -   allow opening devices in exclusive mode, which provides much
-        lower latency compared to shared mode where WASAPI’s engine
-        period is 10ms. This can be activated via the "exclusive"
-        property.
+-   wasapisink recover from low buffer levels in shared mode and some
+    exclusive mode fixes
 
-    -   Also see Nirbheek’s blog post _Low Latency Audio on Windows with
-        GStreamer_.
-
--   There are now GstDeviceProvider implementations for the wasapi and
-    directsound plugins, so it’s now possible to discover both audio
-    sources and audio sinks on Windows via the GstDeviceMonitor API
-
--   debug log timestamps are now higher granularity owing to
-    g_get_monotonic_time() now being used as fallback in
-    gst_utils_get_timestamp(). Before that, there would sometimes be
-    10-20 lines of debug log output sporting the same timestamp.
+-   dshowsrc now implements the GstDeviceMonitor interface
 
 
 Contributors
 
-Aaron Boxer, Adrián Pardini, Adrien SCH, Akinobu Mita, Alban Bedel,
-Alessandro Decina, Alex Ashley, Alicia Boya García, Alistair Buxton,
-Alvaro Margulis, Anders Jonsson, Andreas Frisch, Andrejs Vasiljevs,
-Andrew Bott, Antoine Jacoutot, Antonio Ospite, Antoni Silvestre, Anton
-Obzhirov, Anuj Jaiswal, Arjen Veenhuizen, Arnaud Bonatti, Arun Raghavan,
-Ashish Kumar, Aurélien Zanelli, Ayaka, Branislav Katreniak, Branko
-Subasic, Brion Vibber, Carlos Rafael Giani, Cassandra Rommel, Chris
-Bass, Chris Paulson-Ellis, Christoph Reiter, Claudio Saavedra, Clemens
-Lang, Cyril Lashkevich, Daniel van Vugt, Dave Craig, Dave Johnstone,
-David Evans, David Schleef, Deepak Srivastava, Dimitrios Katsaros,
-Dmitry Zhadinets, Dongil Park, Dustin Spicuzza, Eduard Sinelnikov,
-Edward Hervey, Enrico Jorns, Eunhae Choi, Ezequiel Garcia, fengalin,
-Filippo Argiolas, Florent Thiéry, Florian Zwoch, Francisco Velazquez,
-François Laignel, fvanzile, George Kiagiadakis, Georg Lippitsch, Graham
-Leggett, Guillaume Desmottes, Gurkirpal Singh, Gwang Yoon Hwang, Gwenole
-Beauchesne, Haakon Sporsheim, Haihua Hu, Håvard Graff, Heekyoung Seo,
-Heinrich Fink, Holger Kaelberer, Hoonhee Lee, Hosang Lee, Hyunjun Ko,
-Ian Jamison, James Stevenson, Jan Alexander Steffens (heftig), Jan
-Schmidt, Jason Lin, Jens Georg, Jeremy Hiatt, Jérôme Laheurte, Jimmy
-Ohn, Jochen Henneberg, John Ludwig, John Nikolaides, Jonathan Karlsson,
-Josep Torra, Juan Navarro, Juan Pablo Ugarte, Julien Isorce, Jun Xie,
-Jussi Kukkonen, Justin Kim, Lasse Laursen, Lubosz Sarnecki, Luc
-Deschenaux, Luis de Bethencourt, Marcin Lewandowski, Mario Alfredo
-Carrillo Arevalo, Mark Nauwelaerts, Martin Kelly, Matej Knopp, Mathieu
-Duponchelle, Matteo Valdina, Matt Fischer, Matthew Waters, Matthieu
-Bouron, Matthieu Crapet, Matt Staples, Michael Catanzaro, Michael
-Olbrich, Michael Shigorin, Michael Tretter, Michał Dębski, Michał Górny,
-Michele Dionisio, Miguel París, Mikhail Fludkov, Munez, Nael Ouedraogo,
-Neos3452, Nicholas Panayis, Nick Kallen, Nicola Murino, Nicolas
-Dechesne, Nicolas Dufresne, Nirbheek Chauhan, Ognyan Tonchev, Ole André
-Vadla Ravnås, Oleksij Rempel, Olivier Crête, Omar Akkila, Orestis
-Floros, Patricia Muscalu, Patrick Radizi, Paul Kim, Per-Erik Brodin,
-Peter Seiderer, Philip Craig, Philippe Normand, Philippe Renon, Philipp
-Zabel, Pierre Pouzol, Piotr Drąg, Ponnam Srinivas, Pratheesh Gangadhar,
-Raimo Järvi, Ramprakash Jelari, Ravi Kiran K N, Reynaldo H. Verdejo
-Pinochet, Rico Tzschichholz, Robert Rosengren, Roland Peffer, Руслан
-Ижбулатов, Sam Hurst, Sam Thursfield, Sangkyu Park, Sanjay NM, Satya
-Prakash Gupta, Scott D Phillips, Sean DuBois, Sebastian Cote, Sebastian
-Dröge, Sebastian Rasmussen, Sejun Park, Sergey Borovkov, Seungha Yang,
-Shakin Chou, Shinya Saito, Simon Himmelbauer, Sky Juan, Song Bing,
-Sreerenj Balachandran, Stefan Kost, Stefan Popa, Stefan Sauer, Stian
-Selnes, Thiago Santos, Thibault Saunier, Thijs Vermeir, Tim Allen,
-Tim-Philipp Müller, Ting-Wei Lan, Tomas Rataj, Tom Bailey, Tonu Jaansoo,
-U. Artie Eoff, Umang Jain, Ursula Maplehurst, VaL Doroshchuk, Vasilis
-Liaskovitis, Víctor Manuel Jáquez Leal, vijay, Vincent Penquerc’h,
-Vineeth T M, Vivia Nikolaidou, Wang Xin-yu (王昕宇), Wei Feng, Wim
-Taymans, Wonchul Lee, Xabier Rodriguez Calvar, Xavier Claessens,
-XuGuangxin, Yasushi SHOJI, Yi A Wang, Youness Alaoui,
+Aleix Conchillo Flaqué, Alessandro Decina, Alexandru Băluț, Alex Ashley,
+Alexey Chernov, Alicia Boya García, Amit Pandya, Andoni Morales
+Alastruey, Andreas Frisch, Andre McCurdy, Andy Green, Anthony Violo,
+Antoine Jacoutot, Antonio Ospite, Arun Raghavan, Aurelien Jarno,
+Aurélien Zanelli, ayaka, Bananahemic, Bastian Köcher, Branko Subasic,
+Brendan Shanks, Carlos Rafael Giani, Christoph Reiter, Corentin Noël,
+Daeseok Youn, Daniel Drake, Daniel Klamt, Dardo D Kleiner, David Ing,
+David Svensson Fors, Devarsh Thakkar, Dimitrios Katsaros, Edward Hervey,
+Emilio Pozuelo Monfort, Enrique Ocaña González, Ezequiel Garcia, Fabien
+Dessenne, Fabrizio Gennari, Florent Thiéry, Francisco Velazquez,
+Freyr666, Garima Gaur, Gary Bisson, George Kiagiadakis, Georg Lippitsch,
+Georg Ottinger, Geunsik Lim, Göran Jönsson, Guillaume Desmottes, H1Gdev,
+Haihao Xiang, Haihua Hu, Harshad Khedkar, Havard Graff, He Junyan,
+Hoonhee Lee, Hosang Lee, Hyunjun Ko, Ingo Randolf, Iñigo Huguet, James
+Stevenson, Jan Alexander Steffens, Jan Schmidt, Jerome Laheurte, Jimmy
+Ohn, Joakim Johansson, Jochen Henneberg, Johan Bjäreholt, John-Mark
+Bell, John Nikolaides, Jonathan Karlsson, Jonny Lamb, Jordan Petridis,
+Josep Torra, Joshua M. Doe, Jos van Egmond, Juan Navarro, Jun Xie,
+Junyan He, Justin Kim, Kai Kang, Kim Tae Soo, Kirill Marinushkin, Kyrylo
+Polezhaiev, Lars Petter Endresen, Linus Svensson, Louis-Francis
+Ratté-Boulianne, Luis de Bethencourt, Luz Paz, Lyon Wang, Maciej Wolny,
+Marc-André Lureau, Marc Leeman, Marcos Kintschner, Marian Mihailescu,
+Marinus Schraal, Mark Nauwelaerts, Marouen Ghodhbane, Martin Kelly,
+Matej Knopp, Mathieu Duponchelle, Matteo Valdina, Matthew Waters,
+Matthias Fend, memeka, Michael Drake, Michael Gruner, Michael Olbrich,
+Michael Tretter, Miguel Paris, Mike Wey, Mikhail Fludkov, Naveen
+Cherukuri, Nicola Murino, Nicolas Dufresne, Niels De Graef, Nirbheek
+Chauhan, Norbert Wesp, Ognyan Tonchev, Olivier Crête, Omar Akkila,
+Patricia Muscalu, Patrick Radizi, Patrik Nilsson, Paul Kocialkowski, Per
+Forlin, Peter Körner, Peter Seiderer, Petr Kulhavy, Philippe Normand,
+Philippe Renon, Philipp Zabel, Pierre Labastie, Roland Jon, Roman
+Sivriver, Rosen Penev, Russel Winder, Sam Gigliotti, Sean-Der, Sebastian
+Dröge, Seungha Yang, Sjoerd Simons, Snir Sheriber, Song Bing, Soon,
+Thean Siew, Sreerenj Balachandran, Stefan Ringel, Stephane Cerveau,
+Stian Selnes, Suhas Nayak, Takeshi Sato, Thiago Santos, Thibault
+Saunier, Thomas Bluemel, Tianhao Liu, Tim-Philipp Müller, Tomasz
+Andrzejak, Tomislav Tustonić, U. Artie Eoff, Ulf Olsson, Varunkumar
+Allagadapa, Víctor Guzmán, Víctor Manuel Jáquez Leal, Vincenzo Bono,
+Vineeth T M, Vivia Nikolaidou, Wang Fei, wangzq, Whoopie, Wim Taymans,
+Wind Yuan, Wonchul Lee, Xabier Rodriguez Calvar, Xavier Claessens,
+Haihao Xiang, Yacine Bandou, Yeongjin Jeong, Yuji Kuwabara, Zeeshan Ali,
 
 … and many others who have contributed bug reports, translations, sent
 suggestions or helped testing.
 
 
-Bugs fixed in 1.14
+Bugs fixed in 1.16
 
-More than 800 bugs have been fixed during the development of 1.14.
+-   this section will be filled in in due course
+
+More than XXX bugs have been fixed during the development of 1.16.
 
 This list does not include issues that have been cherry-picked into the
-stable 1.12 branch and fixed there as well, all fixes that ended up in
-the 1.12 branch are also included in 1.14.
+stable 1.16 branch and fixed there as well, all fixes that ended up in
+the 1.16 branch are also included in 1.16.
 
 This list also does not include issues that have been fixed without a
 bug report in bugzilla, so the actual number of fixes is much higher.
 
 
-Stable 1.14 branch
+Stable 1.16 branch
 
-After the 1.14.0 release there will be several 1.14.x bug-fix releases
+After the 1.16.0 release there will be several 1.16.x bug-fix releases
 which will contain bug fixes which have been deemed suitable for a
 stable branch, but no new features or intrusive changes will be added to
-a bug-fix release usually. The 1.14.x bug-fix releases will be made from
-the git 1.14 branch, which is a stable branch.
+a bug-fix release usually. The 1.16.x bug-fix releases will be made from
+the git 1.16 branch, which is a stable branch.
 
-1.14.0
+1.16.0
 
-1.14.0 was released on 19 March 2018.
-
-1.14.1
-
-The first 1.14 bug-fix release (1.14.1) was released on 17 May 2018.
-
-This release only contains bugfixes and it should be safe to update from
-1.14.0.
-
-Noteworthy bugfixes in 1.14.1
-
--   GstPad: Fix race condition causing the same probe to be called
-    multiple times
--   Fix occasional deadlocks on windows when outputting debug logging
--   Fix debug levels being applied in the wrong order
--   GIR annotation fixes for bindings
--   audiomixer, audioaggregator: fix some negotiation issues
--   gst-play-1.0: fix leaving stdin in non-blocking mode after exit
--   flvmux: wait for caps on all input pads before writing header even
-    if source is live
--   flvmux: don’t wake up the muxer unless there is data, fixes busy
-    looping if there’s no input data
--   flvmux: fix major leak of input buffers
--   rtspsrc, rtsp-server: revert to RTSP RFC handling of
-    sendonly/recvonly attributes
--   rtpvrawpay: fix payloading with very large mtu sizes where
-    everything fits into a single RTP packet
--   v4l2: Fix hard-coded enabled v4l2 probe on Linux/ARM
--   v4l2: Disable DMABuf for emulated formats when using libv4l2
--   v4l2: Always set colorimetry in S_FMT
--   asfdemux: Set stream-format field for H264 streams and handle H.264
-    in bytestream format
--   x265enc: Fix tagging of keyframes on output buffers
--   ladspa: Fix critical during plugin load on Windows
--   decklink: Fix COM initialisation on Windows
--   h264parse: fix re-use across pipeline stop/restart
--   mpegtsmux: fix force-keyframe event handling and PCR/PMT changes
-    that would confuse some players with generated HLS streams
--   adaptivedemux: Support period change in live playlist
--   rfbsrc: Fix support for applevncserver and support NULL pool in
-    decide_allocation
--   jpegparse: Fix APP1 marker segment parsing
--   h265parse: Make caps writable before modifying them, fixes criticals
--   fakevideosink: request an extra buffer if enable-last-sample is
-    enabled
--   wasapisrc: Don’t provide a clock based on WASAPI’s clock
--   wasapi: Only use audioclient3 when low-latency, as it might
-    otherwise glitch with slow CPUs or VMs
--   wasapi: Don’t derive device period from latency time, should make it
-    more robust against glitches
--   audiolatency: Fix wave detection in buffers and avoid bogus pts
-    values while starting
--   msdk: fix plugin load on implementations with only HW support
--   msdk: dec: set framerate to the driver only if provided, not in 0/1
-    case
--   msdk: Don’t set extended coding options for JPEG encode
--   rtponviftimestamp: fix state change function init/reset causing
-    races/crashes on shutdown
--   decklink: fix initialization failure in windows binary
--   ladspa: Fix critical warnings during plugin load on Windows and fix
-    dependencies in meson build
--   gl: fix cross-compilation error with viv-fb
--   qmlglsink: make work with eglfs_kms
--   rtspclientsink: Don’t deadlock in preroll on early close
--   rtspclientsink: Fix client ports for the RTCP backchannel
--   rtsp-server: Fix session timeout when streaming data to client over
-    TCP
--   vaapiencode: h264: find best profile in those available, fixing
-    negotiation errors
--   vaapi: remove custom GstGL context handling, use GstGL instead.
-    Fixes GL Context sharing with WebkitGtk on wayland
--   gst-editing-services: various fixes
--   gst-python: bump pygobject req to 3.8; fix
-    GstPad.set_query_function(); dist autogen.sh and configure.ac in
-    tarball
--   g-i: pick up GstVideo-1.0.gir from local build directory in GstGL
-    build
--   g-i: update constant values for bindings
--   avoid duplicate symbols in plugins across modules in static builds
--   … and many, many more!
-
-Cerbero build tool and packaging changes in 1.14.1
-
-Toolchain updates on iOS and Android necessitated a fairly large number
-of changes in our cerbero build tool used to create our binary packages
-for the various platforms we support:
-
--   Add support for Ubuntu 18.04 in cerbero
--   Fix generation of fat shared libraries on macOS
--   gnutls: also rename assembly functions on macos/ios to fix link
-    errors
--   gnutls: fix assembly symbol names for windows x86
--   openssl: fix linking on android/armv7
--   openssl: fix linker issue with Android NDK’s r16 binutils
--   ffmpeg: disable asm for android x86 to fix issues when linking with
-    apps
--   x264: disable asm for android x86 to fix issues when linking with
-    apps
--   gnutls: rename private symbols for armv8, x86 to not conflict with
-    openssl
--   mpg123: disable assembly on android/x86 to fix linker problems with
-    relocations
--   Check built version while loading recipe and rebuild if needed
--   Fix packaging of libgcc_s_sjlj which was missing in Windows packages
--   Make not-found in library search fatal so we don’t accidentally ship
-    broken packages
--   ship the proxy plugin which was new in 1.14
--   Fix git commands accidentally pulling in locally built libraries and
-    failing
-
-Contributors to 1.14.1
-
-Antonio Ospite, Aurélien Zanelli, Brendan Shanks, Carlos Rafael Giani,
-Edward Hervey, Emilio Pozuelo Monfort, Enrique Ocaña González, Garima
-Gaur, Georg Lippitsch, Guillaume Desmottes, Havard Graff, Hoonhee Lee,
-Hyunjun Ko, James Stevenson, Jan Alexander Steffens (heftig), Jan
-Schmidt, Joakim Johansson, Jun Xie, Kai Kang, Kirill Marinushkin, Mark
-Nauwelaerts, Matej Knopp, Mathieu Duponchelle, Matthew Waters, Matthias
-Fend, Michael Olbrich, Mikhail Fludkov, Nicolas Dufresne, Nirbheek
-Chauhan, Olivier Crête, Omar Akkila, Patrik Nilsson, Philippe Normand,
-Pierre Labastie, Sebastian Dröge, Seungha Yang, Sreerenj Balachandran,
-Stian Selnes, Takeshi Sato, Thibault Saunier, Tim-Philipp Müller, U.
-Artie Eoff, Víctor Manuel Jáquez Leal, Vivia Nikolaidou, Whoopie, Xabier
-Rodriguez Calvar, Xavier Claessens, Zeeshan Ali, and countless others.
-
-List of bugs fixed in 1.14.1
-
-For a full list of bugfixes see Bugzilla. Note that this is not the full
-list of changes. For the full list of changes please refer to the GIT
-logs or ChangeLogs of the particular modules.
-
-1.14.2
-
-The second 1.14 bug-fix release (1.14.2) was released on 20 July 2018.
-
-This release only contains bugfixes and it should be safe to update from
-1.14.x.
-
-Noteworthy bugfixes in 1.14.2
-
--   asfdemux: Only send flush-stop event for flushing seeks
--   glcolorbalance: Support OES textures for input/passthrough, avoids
-    possibly-unnecessary extra texture copy on Android in the default GL
-    path inside glimagesink.
--   parsebin: Don’t try to continue autoplugging a parser if we got raw
-    caps
--   audiobasesrc: Round down segsize to an integer number of samples
--   scaletempo: Mark as Audio in classification
--   souphttpsrc: thread-safety fixes
--   v4l2bufferpool: Validate that capture buffers were queued, to detect
-    when buffer importation was refused by the driver.
--   v4l2bufferpool: Only return eos for M2M devices not v4l2src when
-    buggy driver sends empty buffer
--   v4l2allocator: Fix userptr importation
--   v4l2src: Try to avoid TRY_FMT when camera is streaming, some drivers
-    don’t like it
--   v4l2videoenc: Only renegotiate with upstream, fixes use in
-    GstRtspServer pipeline
--   v4l2: many other fixes
--   pitch: fix latency reporting, and various other things
--   dvb: fix wrong (GPL) license headers in camconditionalaccess code
--   webrtc: Fix transportsendbin to fix spurious shut-down failures in
-    webrtcbin if DTLS negotiation hasn’t completed yet.
--   webrtc: Don’t deadlock on blocked pads on shutdown
--   webrtcbin: copy sticky events on our ghostpads so users can use
-    gst_pad_get_current_caps() to determine what to do with newly-added
-    pads.
--   webrtcbin: fix rtpstorage configuration on 32-bit systems
--   webrtcbin: implement support for FEC and RTX
--   gstplayer: Fix duration-changed CRITICAL warning if duration did not
-    actually change
--   gstplayer: Avoid trying to join the player thread from itself
--   codecparsers: mpeg2 parsing fixes for zero-sized packets
--   wasapisink: fix a rounding error when calculating the buffer frame
-    count
--   wasapisink: fix missing unlock in case IAudioClient_Start fails
--   wasapi: fix potential crash with MinGW
--   rtsp-server: fix race during udpsrc setup, avoiding pushing data on
-    unlinked udpsrc pad
--   rtsp-server: fix waiting for multiple streams in rtspclientsink
--   gst-editing-services: group: Fix handling clips that are added to a
-    layer
--   gst-editing-services: python binding fixes
--   gst-validate launcher: Allow retrieving coredumps from within
-    flatpak
--   gst-validate launcher: Fix the –forever switch which was not
-    stopping on error
--   vaapi: h264 encoder negotiation fixes
--   vaapi: fix issues with native EGL display
--   more GIR annotations fixes, especially for arrays
--   gstreamer-sharp bindings were updated for g-i annotation fixes in
-    other modules
--   fuzzing fixes
--   memory leak fixes
--   build fixes:
-    -   build fixes for MSVC compiler
-    -   meson: Fix detection of glib-mkenums under MSYS2 plus other
-        meson buil fixes
-    -   Fix static build symbol redefinition errors (xvimage, gst-libav)
-    -   qmlgl: build fixes for conflicting declaration of type GLsync
-        for non-android
-    -   gl: build fixes for missing EGLuint64KHR typedef
--   … and many more!
-
-Contributors to 1.14.2
-
-Alessandro Decina, Antoine Jacoutot, Brendan Shanks, Carlos Rafael
-Giani, Christoph Reiter, Edward Hervey, Göran Jönsson, Guillaume
-Desmottes, Hyunjun Ko, Iñigo Huguet, Jan Schmidt, Johan Bjäreholt,
-Louis-Francis Ratté-Boulianne, Lyon Wang, Marian Mihailescu, Mark
-Nauwelaerts, Mathieu Duponchelle, Matthew Waters, Michael Tretter,
-Nicolas Dufresne, Nirbheek Chauhan, Philipp Zabel, Roland Jon, Sebastian
-Dröge, Seungha Yang, Sreerenj Balachandran, Suhas Nayak, Thibault
-Saunier, Tim-Philipp Müller, Víctor Manuel Jáquez Leal, Vivia
-Nikolaidou, wangzq, and many others. Thank you all.
-
-List of bugs fixed in 1.14.2
-
-For a full list of bugfixes see Bugzilla. Note that this is not the full
-list of changes. For the full list of changes please refer to the GIT
-logs or ChangeLogs of the particular modules.
-
-1.14.3
-
-The third 1.14 bug-fix release (1.14.3) was released on 16 September
-2018.
-
-This release only contains bugfixes and it should be safe to update from
-1.14.x.
-
-Highlighted bugfixes in 1.14.3
-
--   opusenc: fix crash on 32-bit platforms
--   compositor: fix major buffer leak when doing crossfading on some but
-    not all pads
--   wasapi: various fixes for wasapisrc and wasapisink regressions
--   x264enc: Set bit depth to fix “This build of x264 requires 8-bit
-    depth. Rebuild to…” runtime errors with x264 version ≥ 153
--   audioaggregator, audiomixer: caps negotiation fixes
--   input-selector: latency handling fixes
--   playbin, playsink: audio visualization support fixes
--   dashdemux: fix possible crash if stream is neither isobmff nor
-    isoff_ondemand profile
--   opencv: Fix build for opencv >= 3.4.2
--   h265parse: miscellaneous fixes backported from h264parse
--   pads: fix changing of pad offsets from inside pad probes
--   pads: ensure that pads are blocked for IDLE probes if they are
-    called from the streaming thread too
-
-Other noteworthy bugfixes in 1.14.3
-
--   queries: Set default values for position and duration query results
--   segment: make gst_segment_position_from_running_time_full() handle
-    positions before the segment properly
--   aggregator: annotate GstAggregatorClass::update_src_caps for
-    bindings
--   aggregator: Don’t leak peer pad of inactive pads when (not)
-    forwarding QoS events to them
--   baseparse: avg_bitrate calculation critical warning fix
--   typefind: improved flow return handling in pull mode, flushing is
-    not an error
--   gl: Don’t steal callers reference when setting non-floating elements
-    via properties
--   gl: Also don’t leak floating references to elements set via
-    properties
--   tagdemux: Properly propagate gst_pad_pull_range() errors
--   aacparse: fix codec_data buffer leak
--   rtpgstpay: Add support for force-keyunit events
--   rtpL8pay: don’t try to modify a read-only structure
--   rtpvp8pay, rtpvp9pay, rtpopuspay: Fix VP8/VP9/OPUS dual encoding
-    name handling
--   rtp payloaders: Use running_time instead of PTS for config-interval
-    calculations
--   qtdemux: Don’t assert in prefill mode if a track has no samples at
-    all
--   qmlgl: Ensure GL headers are included
--   v4l2src: fix first input used is always used next times
--   v4l2object: Only offer MMAP/DMABUF pool
--   v4l2object: stop V4L2 from zeroing extended colorimetry for
-    non-mplane
--   v4l2object: improve colorspace handling for JPEG sources
--   splitmuxsink: fix handling of repeated timestamps and a leak if sink
-    pads are not released explicitly
--   player: Set default position and duration value to
-    GST_CLOCK_TIME_NONE
--   videoaggregator: Make sure to hold object lock while iterating sink
-    pads
--   audiobuffersplit: improve resync handling and compensate better for
-    accumulated errors
--   kmssink: add support for Xilinx DRM Driver, mxsfb-drm driver and the
-    Allwinner DRM driver (sun4i-drm)
--   rsvg: Also accept </svg:svg> as ending tag
--   ges: project: Compute relocation URIs in missing-uri signal
--   ges: formatter: Serialize Transition border and invert properties
--   ges: clip: Resync priorities when removing an effect
-
-Contributors to 1.14.3
-
-Christoph Reiter, Devarsh Thakkar, Edward Hervey, Gary Bisson, Iñigo
-Huguet, Jan Alexander Steffens (heftig), Jan Schmidt, Jerome Laheurte,
-Marcos Kintschner, Mathieu Duponchelle, Matthew Waters, Michael Olbrich,
-Nicolas Dufresne, Nirbheek Chauhan, Paul Kocialkowski, Philippe Normand,
-Philipp Zabel, Roland Jon, Sebastian Dröge, Seungha Yang, Thibault
-Saunier, Tim-Philipp Müller, Yuji Kuwabara, and many others. Thank you
-all.
-
-List of bugs fixed in 1.14.3
-
-For a full list of bugfixes see Bugzilla. Note that this is not the full
-list of changes. For the full list of changes please refer to the GIT
-logs or ChangeLogs of the particular modules.
-
-1.14.4
-
-The fourth 1.14 bug-fix release (1.14.4) was released on 2 October 2018.
-
-This release only contains bugfixes and it should be safe to update from
-1.14.x.
-
-Highlighted bugfixes in 1.14.4
-
--   glviewconvert: wait and set the gl sync meta on buffers
--   glviewconvert: Copy composition meta from the primary buffer to both
-    outputs
--   glcolorconvert: Don’t copy overlay composition meta over to NULL
-    outbufs
--   matroskademux: add functionality needed for MSE use case fixing
-    youtube playback in epiphany/webkit-gtk
--   msdk: fix build on windows
--   opusenc: fix another crash on 32-bit x86 on windows (alignment issue
-    in SSE optimisations)
--   osxaudio: add support for parsing more channel layouts
--   tagdemux: Use upstream GST_EVENT_STREAM_START (and stream-id) if
-    present
--   vorbisdec: fix header handling regression: init decoder immediately
-    once we have headers
--   wasapisink: recover from low buffer levels in shared mode
--   fix GstSegment unit test which would fail on some 32-bit x86 CPUs
-
-Contributors to 1.14.4
-
-Alicia Boya García, Christoph Reiter, Edward Hervey, Jan Schmidt,
-Matthew Waters, Nicola Murino, Nicolas Dufresne, Sebastian Dröge,
-Tim-Philipp Müller, Wangfei, and many others. Thank you all.
-
-List of bugs fixed in 1.14.4
-
-For a full list of bugfixes see Bugzilla. Note that this is not the full
-list of changes. For the full list of changes please refer to the GIT
-logs or ChangeLogs of the particular modules.
+1.16.0 is scheduled to be released around January/February 2019.
 
 
 Known Issues
 
--   The webrtcdsp element (which is unrelated to the newly-landed
-    GStreamer webrtc support) is currently not shipped as part of the
-    Windows binary packages due to a build system issue.
+-   possibly breaking/incompatible changes to properties of wrapped
+    FFmpeg decoders and encoders (see above).
 
--   The gst-libav module in 1.14 will only build against older ffmpeg
-    3.x versions and won’t build against the newly-released ffmpeg 4.0
-    (as in RPM Fusion for Fedora 28) due to API changes. Use the
-    internal ffmpeg copy instead if you build using autotools. This is
-    fixed in git master / upcoming 1.16, but won’t be backported to the
-    1.14 branch as it is rather intrusive and difficult to support both
-    old and new APIs at the same time.
+-   The way that GIO modules are named has changed due to upstream GLib
+    natively adding support for loading static GIO modules. This means
+    that any GStreamer application using gnutls for SSL/TLS on the
+    Android or iOS platforms (or any other setup using static libraries)
+    will fail to link looking for the g_io_module_gnutls_load_static()
+    function. The new function name is now
+    g_io_gnutls_load(gpointer data). See Android/iOS sections above for
+    further details.
 
 
-Schedule for 1.16
+Schedule for 1.18
 
-Our next major feature release will be 1.16, and 1.15 will be the
-unstable development version leading up to the stable 1.16 release. The
-development of 1.15/1.16 will happen in the git master branch.
+Our next major feature release will be 1.18, and 1.17 will be the
+unstable development version leading up to the stable 1.18 release. The
+development of 1.17/1.18 will happen in the git master branch.
 
-The plan for the 1.16 development cycle is yet to be confirmed, but it
-is expected that feature freeze will be around September 2018 followed
-by several 1.15 pre-releases and the new 1.16 stable release in October.
+The plan for the 1.18 development cycle is yet to be confirmed, but it
+is expected that feature freeze will be around July 2019 followed by
+several 1.17 pre-releases and the new 1.18 stable release in
+August/September.
 
-1.16 will be backwards-compatible to the stable 1.14, 1.12, 1.10, 1.8,
-1.6, 1.4, 1.2 and 1.0 release series.
+1.18 will be backwards-compatible to the stable 1.16, 1.14, 1.12, 1.10,
+1.8, 1.6, 1.4, 1.2 and 1.0 release series.
 
 ------------------------------------------------------------------------
 
 _These release notes have been prepared by Tim-Philipp Müller with_
-_contributions from Sebastian Dröge, Sreerenj Balachandran, Thibault
-Saunier_ _and Víctor Manuel Jáquez Leal._
+_contributions from Sebastian Dröge._
 
 _License: CC BY-SA 4.0_
