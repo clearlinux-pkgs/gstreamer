@@ -1004,6 +1004,7 @@ libgstreamer-1.0.so.0:gst_device_provider_class_get_metadata
 libgstreamer-1.0.so.0:gst_device_provider_class_set_metadata
 libgstreamer-1.0.so.0:gst_device_provider_class_set_static_metadata
 libgstreamer-1.0.so.0:gst_device_provider_device_add
+libgstreamer-1.0.so.0:gst_device_provider_device_changed
 libgstreamer-1.0.so.0:gst_device_provider_device_remove
 libgstreamer-1.0.so.0:gst_device_provider_factory_find
 libgstreamer-1.0.so.0:gst_device_provider_factory_get
@@ -1281,6 +1282,7 @@ libgstreamer-1.0.so.0:gst_message_new_clock_lost
 libgstreamer-1.0.so.0:gst_message_new_clock_provide
 libgstreamer-1.0.so.0:gst_message_new_custom
 libgstreamer-1.0.so.0:gst_message_new_device_added
+libgstreamer-1.0.so.0:gst_message_new_device_changed
 libgstreamer-1.0.so.0:gst_message_new_device_removed
 libgstreamer-1.0.so.0:gst_message_new_duration_changed
 libgstreamer-1.0.so.0:gst_message_new_element
@@ -1321,6 +1323,7 @@ libgstreamer-1.0.so.0:gst_message_parse_clock_lost
 libgstreamer-1.0.so.0:gst_message_parse_clock_provide
 libgstreamer-1.0.so.0:gst_message_parse_context_type
 libgstreamer-1.0.so.0:gst_message_parse_device_added
+libgstreamer-1.0.so.0:gst_message_parse_device_changed
 libgstreamer-1.0.so.0:gst_message_parse_device_removed
 libgstreamer-1.0.so.0:gst_message_parse_error
 libgstreamer-1.0.so.0:gst_message_parse_error_details
@@ -1366,8 +1369,10 @@ libgstreamer-1.0.so.0:gst_message_writable_structure
 libgstreamer-1.0.so.0:gst_meta_api_type_get_tags
 libgstreamer-1.0.so.0:gst_meta_api_type_has_tag
 libgstreamer-1.0.so.0:gst_meta_api_type_register
+libgstreamer-1.0.so.0:gst_meta_compare_seqnum
 libgstreamer-1.0.so.0:gst_meta_flags_get_type
 libgstreamer-1.0.so.0:gst_meta_get_info
+libgstreamer-1.0.so.0:gst_meta_get_seqnum
 libgstreamer-1.0.so.0:gst_meta_register
 libgstreamer-1.0.so.0:gst_mini_object_add_parent
 libgstreamer-1.0.so.0:gst_mini_object_copy
