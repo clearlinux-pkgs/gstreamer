@@ -5,12 +5,12 @@
 # Source0 file verified with key 0x5D2EEE6F6F349D7C (tim@centricular.com)
 #
 Name     : gstreamer
-Version  : 1.15.2
-Release  : 38
-URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.15.2.tar.xz
-Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.15.2.tar.xz
-Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.15.2.tar.xz.asc
-Summary  : Streaming media framework
+Version  : 1.16.0
+Release  : 39
+URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.16.0.tar.xz
+Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.16.0.tar.xz
+Source99 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.16.0.tar.xz.asc
+Summary  : GStreamer open-source multimedia framework core library
 Group    : Development/Tools
 License  : LGPL-2.0
 Requires: gstreamer-bin = %{version}-%{release}
@@ -56,7 +56,7 @@ BuildRequires : pkgconfig(libdw)
 BuildRequires : valgrind
 
 %description
-GStreamer 1.15.x development series
+GStreamer 1.16.x stable series
 WHAT IT IS
 ----------
 This is GStreamer, a framework for streaming media.
@@ -87,6 +87,7 @@ Requires: gstreamer-lib = %{version}-%{release}
 Requires: gstreamer-bin = %{version}-%{release}
 Requires: gstreamer-data = %{version}-%{release}
 Provides: gstreamer-devel = %{version}-%{release}
+Requires: gstreamer = %{version}-%{release}
 
 %description dev
 dev components for the gstreamer package.
@@ -168,9 +169,9 @@ man components for the gstreamer package.
 
 
 %prep
-%setup -q -n gstreamer-1.15.2
+%setup -q -n gstreamer-1.16.0
 pushd ..
-cp -a gstreamer-1.15.2 build32
+cp -a gstreamer-1.16.0 build32
 popd
 
 %build
@@ -178,7 +179,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1551479039
+export SOURCE_DATE_EPOCH=1555676844
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -208,7 +209,7 @@ cd ../build32;
 make VERBOSE=1 V=1 %{?_smp_mflags} check || : || :
 
 %install
-export SOURCE_DATE_EPOCH=1551479039
+export SOURCE_DATE_EPOCH=1555676844
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/gstreamer
 cp COPYING %{buildroot}/usr/share/package-licenses/gstreamer/COPYING
@@ -249,8 +250,8 @@ popd
 /usr/share/bash-completion/completions/gst-inspect-1.0
 /usr/share/bash-completion/completions/gst-launch-1.0
 /usr/share/bash-completion/helpers/gst
-/usr/share/gdb/auto-load/usr/lib32/libgstreamer-1.0.so.0.1502.0-gdb.py
-/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.1502.0-gdb.py
+/usr/share/gdb/auto-load/usr/lib32/libgstreamer-1.0.so.0.1600.0-gdb.py
+/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.1600.0-gdb.py
 /usr/share/gir-1.0/*.gir
 /usr/share/gstreamer-1.0/gdb/glib_gobject_helper.py
 /usr/share/gstreamer-1.0/gdb/gst_gdb.py
@@ -621,30 +622,30 @@ popd
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
-/usr/lib64/libgstbase-1.0.so.0.1502.0
+/usr/lib64/libgstbase-1.0.so.0.1600.0
 /usr/lib64/libgstcheck-1.0.so.0
-/usr/lib64/libgstcheck-1.0.so.0.1502.0
+/usr/lib64/libgstcheck-1.0.so.0.1600.0
 /usr/lib64/libgstcontroller-1.0.so.0
-/usr/lib64/libgstcontroller-1.0.so.0.1502.0
+/usr/lib64/libgstcontroller-1.0.so.0.1600.0
 /usr/lib64/libgstnet-1.0.so.0
-/usr/lib64/libgstnet-1.0.so.0.1502.0
+/usr/lib64/libgstnet-1.0.so.0.1600.0
 /usr/lib64/libgstreamer-1.0.so.0
-/usr/lib64/libgstreamer-1.0.so.0.1502.0
+/usr/lib64/libgstreamer-1.0.so.0.1600.0
 
 %files lib32
 %defattr(-,root,root,-)
 /usr/lib32/gstreamer-1.0/libgstcoreelements.so
 /usr/lib32/gstreamer-1.0/libgstcoretracers.so
 /usr/lib32/libgstbase-1.0.so.0
-/usr/lib32/libgstbase-1.0.so.0.1502.0
+/usr/lib32/libgstbase-1.0.so.0.1600.0
 /usr/lib32/libgstcheck-1.0.so.0
-/usr/lib32/libgstcheck-1.0.so.0.1502.0
+/usr/lib32/libgstcheck-1.0.so.0.1600.0
 /usr/lib32/libgstcontroller-1.0.so.0
-/usr/lib32/libgstcontroller-1.0.so.0.1502.0
+/usr/lib32/libgstcontroller-1.0.so.0.1600.0
 /usr/lib32/libgstnet-1.0.so.0
-/usr/lib32/libgstnet-1.0.so.0.1502.0
+/usr/lib32/libgstnet-1.0.so.0.1600.0
 /usr/lib32/libgstreamer-1.0.so.0
-/usr/lib32/libgstreamer-1.0.so.0.1502.0
+/usr/lib32/libgstreamer-1.0.so.0.1600.0
 
 %files libexec
 %defattr(-,root,root,-)

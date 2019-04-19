@@ -1172,6 +1172,7 @@ libgstreamer-1.0.so.0:gst_event_parse_latency
 libgstreamer-1.0.so.0:gst_event_parse_protection
 libgstreamer-1.0.so.0:gst_event_parse_qos
 libgstreamer-1.0.so.0:gst_event_parse_seek
+libgstreamer-1.0.so.0:gst_event_parse_seek_trickmode_interval
 libgstreamer-1.0.so.0:gst_event_parse_segment
 libgstreamer-1.0.so.0:gst_event_parse_segment_done
 libgstreamer-1.0.so.0:gst_event_parse_select_streams
@@ -1187,6 +1188,7 @@ libgstreamer-1.0.so.0:gst_event_parse_toc
 libgstreamer-1.0.so.0:gst_event_parse_toc_select
 libgstreamer-1.0.so.0:gst_event_set_group_id
 libgstreamer-1.0.so.0:gst_event_set_running_time_offset
+libgstreamer-1.0.so.0:gst_event_set_seek_trickmode_interval
 libgstreamer-1.0.so.0:gst_event_set_seqnum
 libgstreamer-1.0.so.0:gst_event_set_stream
 libgstreamer-1.0.so.0:gst_event_set_stream_flags
