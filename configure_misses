@@ -1,5 +1,4 @@
 Configure miss: VALGRIND
-Configure miss: setcap
 Configure miss: getifaddrs() and AF_LINK
 Configure miss: whether to build plugin documentation
 Configure miss: pthread_setname_np(const char*)
@@ -10,7 +9,6 @@ Configure miss: _strdup
 Configure miss: whether a statically linked program can dlopen itself
 Configure miss: VALGRIND
 Configure miss: cap_init in -lcap
-Configure miss: setcap
 Configure miss: getifaddrs() and AF_LINK
 Configure miss: whether to build plugin documentation
 Configure miss: pthread_setname_np(const char*)
