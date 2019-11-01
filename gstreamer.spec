@@ -5,11 +5,11 @@
 # Source0 file verified with key 0x5D2EEE6F6F349D7C (tim@centricular.com)
 #
 Name     : gstreamer
-Version  : 1.16.0
-Release  : 40
-URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.16.0.tar.xz
-Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.16.0.tar.xz
-Source1 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.16.0.tar.xz.asc
+Version  : 1.16.1
+Release  : 41
+URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.16.1.tar.xz
+Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.16.1.tar.xz
+Source1 : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.16.1.tar.xz.asc
 Summary  : Streaming media framework
 Group    : Development/Tools
 License  : LGPL-2.0
@@ -169,9 +169,10 @@ man components for the gstreamer package.
 
 
 %prep
-%setup -q -n gstreamer-1.16.0
+%setup -q -n gstreamer-1.16.1
+cd %{_builddir}/gstreamer-1.16.1
 pushd ..
-cp -a gstreamer-1.16.0 build32
+cp -a gstreamer-1.16.1 build32
 popd
 
 %build
@@ -179,7 +180,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1568858667
+export SOURCE_DATE_EPOCH=1572626286
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -210,10 +211,10 @@ cd ../build32;
 make VERBOSE=1 V=1 %{?_smp_mflags} check || : || :
 
 %install
-export SOURCE_DATE_EPOCH=1568858667
+export SOURCE_DATE_EPOCH=1572626286
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/gstreamer
-cp COPYING %{buildroot}/usr/share/package-licenses/gstreamer/COPYING
+cp %{_builddir}/gstreamer-1.16.1/COPYING %{buildroot}/usr/share/package-licenses/gstreamer/249308ff72cc14f24d4756377a537281c13ec8fa
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
@@ -251,8 +252,8 @@ popd
 /usr/share/bash-completion/completions/gst-inspect-1.0
 /usr/share/bash-completion/completions/gst-launch-1.0
 /usr/share/bash-completion/helpers/gst
-/usr/share/gdb/auto-load/usr/lib32/libgstreamer-1.0.so.0.1600.0-gdb.py
-/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.1600.0-gdb.py
+/usr/share/gdb/auto-load/usr/lib32/libgstreamer-1.0.so.0.1601.0-gdb.py
+/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.1601.0-gdb.py
 /usr/share/gir-1.0/*.gir
 /usr/share/gstreamer-1.0/gdb/glib_gobject_helper.py
 /usr/share/gstreamer-1.0/gdb/gst_gdb.py
@@ -623,30 +624,30 @@ popd
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
-/usr/lib64/libgstbase-1.0.so.0.1600.0
+/usr/lib64/libgstbase-1.0.so.0.1601.0
 /usr/lib64/libgstcheck-1.0.so.0
-/usr/lib64/libgstcheck-1.0.so.0.1600.0
+/usr/lib64/libgstcheck-1.0.so.0.1601.0
 /usr/lib64/libgstcontroller-1.0.so.0
-/usr/lib64/libgstcontroller-1.0.so.0.1600.0
+/usr/lib64/libgstcontroller-1.0.so.0.1601.0
 /usr/lib64/libgstnet-1.0.so.0
-/usr/lib64/libgstnet-1.0.so.0.1600.0
+/usr/lib64/libgstnet-1.0.so.0.1601.0
 /usr/lib64/libgstreamer-1.0.so.0
-/usr/lib64/libgstreamer-1.0.so.0.1600.0
+/usr/lib64/libgstreamer-1.0.so.0.1601.0
 
 %files lib32
 %defattr(-,root,root,-)
 /usr/lib32/gstreamer-1.0/libgstcoreelements.so
 /usr/lib32/gstreamer-1.0/libgstcoretracers.so
 /usr/lib32/libgstbase-1.0.so.0
-/usr/lib32/libgstbase-1.0.so.0.1600.0
+/usr/lib32/libgstbase-1.0.so.0.1601.0
 /usr/lib32/libgstcheck-1.0.so.0
-/usr/lib32/libgstcheck-1.0.so.0.1600.0
+/usr/lib32/libgstcheck-1.0.so.0.1601.0
 /usr/lib32/libgstcontroller-1.0.so.0
-/usr/lib32/libgstcontroller-1.0.so.0.1600.0
+/usr/lib32/libgstcontroller-1.0.so.0.1601.0
 /usr/lib32/libgstnet-1.0.so.0
-/usr/lib32/libgstnet-1.0.so.0.1600.0
+/usr/lib32/libgstnet-1.0.so.0.1601.0
 /usr/lib32/libgstreamer-1.0.so.0
-/usr/lib32/libgstreamer-1.0.so.0.1600.0
+/usr/lib32/libgstreamer-1.0.so.0.1601.0
 
 %files libexec
 %defattr(-,root,root,-)
@@ -656,7 +657,7 @@ popd
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/gstreamer/COPYING
+/usr/share/package-licenses/gstreamer/249308ff72cc14f24d4756377a537281c13ec8fa
 
 %files man
 %defattr(0644,root,root,0755)
