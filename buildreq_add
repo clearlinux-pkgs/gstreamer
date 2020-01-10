@@ -14,3 +14,4 @@ gdk-pixbuf-dev32
 at-spi2-atk-dev32
 gstreamer-dev
 fribidi-dev32
+harfbuzz-dev32
