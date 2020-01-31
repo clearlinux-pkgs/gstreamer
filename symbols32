@@ -366,6 +366,7 @@ libgstcheck-1.0.so.0:_gst_check_run_test_func
 libgstcheck-1.0.so.0:_mark_point
 libgstcheck-1.0.so.0:_tcase_add_test
 libgstcheck-1.0.so.0:check_fork
+libgstcheck-1.0.so.0:check_waitpid_and_exit
 libgstcheck-1.0.so.0:gst_buffer_straw_get_buffer
 libgstcheck-1.0.so.0:gst_buffer_straw_start_pipeline
 libgstcheck-1.0.so.0:gst_buffer_straw_stop_pipeline
@@ -498,6 +499,7 @@ libgstcheck-1.0.so.0:gst_test_clock_peek_next_pending_id
 libgstcheck-1.0.so.0:gst_test_clock_process_id_list
 libgstcheck-1.0.so.0:gst_test_clock_process_next_clock_id
 libgstcheck-1.0.so.0:gst_test_clock_set_time
+libgstcheck-1.0.so.0:gst_test_clock_timed_wait_for_multiple_pending_ids
 libgstcheck-1.0.so.0:gst_test_clock_wait_for_multiple_pending_ids
 libgstcheck-1.0.so.0:gst_test_clock_wait_for_next_pending_id
 libgstcheck-1.0.so.0:gst_test_clock_wait_for_pending_id_count

@@ -1,7 +1,9 @@
 # This file contains pkgconfig build requirements that get picked up
 # but are undesirable. One entry per line, no whitespace.
 32bash-completion
-32libunwind
-libunwind
-gstreamer-gl-$GST_API_VERSION
+32dbghelp
 32gstreamer-gl-$GST_API_VERSION
+32libunwind
+dbghelp
+gstreamer-gl-$GST_API_VERSION
+libunwind
