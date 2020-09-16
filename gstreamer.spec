@@ -6,7 +6,7 @@
 #
 Name     : gstreamer
 Version  : 1.16.2
-Release  : 49
+Release  : 50
 URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.16.2.tar.xz
 Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.16.2.tar.xz
 Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.16.2.tar.xz.asc
@@ -20,35 +20,18 @@ Requires: gstreamer-libexec = %{version}-%{release}
 Requires: gstreamer-license = %{version}-%{release}
 Requires: gstreamer-locales = %{version}-%{release}
 Requires: gstreamer-man = %{version}-%{release}
-BuildRequires : at-spi2-atk-dev32
 BuildRequires : bison
 BuildRequires : buildreq-meson
-BuildRequires : cairo-dev32
 BuildRequires : docbook-xml
 BuildRequires : flex
-BuildRequires : fribidi-dev32
-BuildRequires : gcc-dev32
-BuildRequires : gcc-libgcc32
-BuildRequires : gcc-libstdc++32
-BuildRequires : gdk-pixbuf-dev32
-BuildRequires : glib-dev32
-BuildRequires : glibc-dev32
-BuildRequires : glibc-libc32
 BuildRequires : gmp-dev
-BuildRequires : gmp-dev32
-BuildRequires : gobject-introspection
 BuildRequires : gobject-introspection-dev
 BuildRequires : gsl-dev
 BuildRequires : gtk-doc
 BuildRequires : gtk-doc-dev
-BuildRequires : harfbuzz-dev32
 BuildRequires : libcap-dev
 BuildRequires : libxslt-bin
-BuildRequires : pango-dev32
 BuildRequires : pkg-config
-BuildRequires : pkgconfig(32atk)
-BuildRequires : pkgconfig(32gtk+-3.0)
-BuildRequires : pkgconfig(32libdw)
 BuildRequires : pkgconfig(atk)
 BuildRequires : pkgconfig(bash-completion)
 BuildRequires : pkgconfig(gtk+-3.0)
@@ -93,18 +76,6 @@ Requires: gstreamer = %{version}-%{release}
 dev components for the gstreamer package.
 
 
-%package dev32
-Summary: dev32 components for the gstreamer package.
-Group: Default
-Requires: gstreamer-lib32 = %{version}-%{release}
-Requires: gstreamer-bin = %{version}-%{release}
-Requires: gstreamer-data = %{version}-%{release}
-Requires: gstreamer-dev = %{version}-%{release}
-
-%description dev32
-dev32 components for the gstreamer package.
-
-
 %package doc
 Summary: doc components for the gstreamer package.
 Group: Documentation
@@ -123,16 +94,6 @@ Requires: gstreamer-license = %{version}-%{release}
 
 %description lib
 lib components for the gstreamer package.
-
-
-%package lib32
-Summary: lib32 components for the gstreamer package.
-Group: Default
-Requires: gstreamer-data = %{version}-%{release}
-Requires: gstreamer-license = %{version}-%{release}
-
-%description lib32
-lib32 components for the gstreamer package.
 
 
 %package libexec
@@ -171,35 +132,23 @@ man components for the gstreamer package.
 %prep
 %setup -q -n gstreamer-1.16.2
 cd %{_builddir}/gstreamer-1.16.2
-pushd ..
-cp -a gstreamer-1.16.2 build32
-popd
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1580497234
+export SOURCE_DATE_EPOCH=1600285248
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
 export CFLAGS="$CFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export FFLAGS="$CFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export FCFLAGS="$FFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export FFLAGS="$FFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --libdir=lib64 --prefix=/usr --buildtype=plain   builddir
 ninja -v -C builddir
-pushd ../build32/
-export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
-export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
-export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
-export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
-export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32 -mstackrealign"
-meson --libdir=lib32 --prefix=/usr --buildtype=plain   builddir
-ninja -v -C builddir
-popd
 
 %check
 export LANG=C.UTF-8
@@ -207,31 +156,15 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 meson test -C builddir || :
-cd ../build32;
-meson test -C builddir || : || :
 
 %install
 mkdir -p %{buildroot}/usr/share/package-licenses/gstreamer
 cp %{_builddir}/gstreamer-1.16.2/COPYING %{buildroot}/usr/share/package-licenses/gstreamer/249308ff72cc14f24d4756377a537281c13ec8fa
-pushd ../build32/
-DESTDIR=%{buildroot} ninja -C builddir install
-if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
-then
-pushd %{buildroot}/usr/lib32/pkgconfig
-for i in *.pc ; do ln -s $i 32$i ; done
-popd
-fi
-popd
 DESTDIR=%{buildroot} ninja -C builddir install
 %find_lang gstreamer-1.0
 
 %files
 %defattr(-,root,root,-)
-/usr/lib32/girepository-1.0/Gst-1.0.typelib
-/usr/lib32/girepository-1.0/GstBase-1.0.typelib
-/usr/lib32/girepository-1.0/GstCheck-1.0.typelib
-/usr/lib32/girepository-1.0/GstController-1.0.typelib
-/usr/lib32/girepository-1.0/GstNet-1.0.typelib
 
 %files bin
 %defattr(-,root,root,-)
@@ -250,7 +183,6 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/share/bash-completion/completions/gst-inspect-1.0
 /usr/share/bash-completion/completions/gst-launch-1.0
 /usr/share/bash-completion/helpers/gst
-/usr/share/gdb/auto-load/usr/lib32/libgstreamer-1.0.so.0.1602.0-gdb.py
 /usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.1602.0-gdb.py
 /usr/share/gir-1.0/*.gir
 /usr/share/gstreamer-1.0/gdb/glib_gobject_helper.py
@@ -390,24 +322,6 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/lib64/pkgconfig/gstreamer-controller-1.0.pc
 /usr/lib64/pkgconfig/gstreamer-net-1.0.pc
 /usr/share/aclocal/*.m4
-
-%files dev32
-%defattr(-,root,root,-)
-/usr/lib32/libgstbase-1.0.so
-/usr/lib32/libgstcheck-1.0.so
-/usr/lib32/libgstcontroller-1.0.so
-/usr/lib32/libgstnet-1.0.so
-/usr/lib32/libgstreamer-1.0.so
-/usr/lib32/pkgconfig/32gstreamer-1.0.pc
-/usr/lib32/pkgconfig/32gstreamer-base-1.0.pc
-/usr/lib32/pkgconfig/32gstreamer-check-1.0.pc
-/usr/lib32/pkgconfig/32gstreamer-controller-1.0.pc
-/usr/lib32/pkgconfig/32gstreamer-net-1.0.pc
-/usr/lib32/pkgconfig/gstreamer-1.0.pc
-/usr/lib32/pkgconfig/gstreamer-base-1.0.pc
-/usr/lib32/pkgconfig/gstreamer-check-1.0.pc
-/usr/lib32/pkgconfig/gstreamer-controller-1.0.pc
-/usr/lib32/pkgconfig/gstreamer-net-1.0.pc
 
 %files doc
 %defattr(0644,root,root,0755)
@@ -589,21 +503,6 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/lib64/libgstnet-1.0.so.0.1602.0
 /usr/lib64/libgstreamer-1.0.so.0
 /usr/lib64/libgstreamer-1.0.so.0.1602.0
-
-%files lib32
-%defattr(-,root,root,-)
-/usr/lib32/gstreamer-1.0/libgstcoreelements.so
-/usr/lib32/gstreamer-1.0/libgstcoretracers.so
-/usr/lib32/libgstbase-1.0.so.0
-/usr/lib32/libgstbase-1.0.so.0.1602.0
-/usr/lib32/libgstcheck-1.0.so.0
-/usr/lib32/libgstcheck-1.0.so.0.1602.0
-/usr/lib32/libgstcontroller-1.0.so.0
-/usr/lib32/libgstcontroller-1.0.so.0.1602.0
-/usr/lib32/libgstnet-1.0.so.0
-/usr/lib32/libgstnet-1.0.so.0.1602.0
-/usr/lib32/libgstreamer-1.0.so.0
-/usr/lib32/libgstreamer-1.0.so.0.1602.0
 
 %files libexec
 %defattr(-,root,root,-)

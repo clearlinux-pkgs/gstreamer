@@ -1,19 +1,10 @@
 # This file contains additional build requirements that did not get
 # picked up automatically. One name per line, no whitespace.
-at-spi2-atk-dev32
 bison
-cairo-dev32
 flex
-fribidi-dev32
-gdk-pixbuf-dev32
-glib-dev32
 gmp-dev
-gmp-dev32
-gobject-introspection
 gobject-introspection-dev
 gsl-dev
-harfbuzz-dev32
 libcap-dev
-pango-dev32
 pkg-config
 valgrind
