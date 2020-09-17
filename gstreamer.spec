@@ -5,14 +5,14 @@
 # Source0 file verified with key 0x5D2EEE6F6F349D7C (tim@centricular.com)
 #
 Name     : gstreamer
-Version  : 1.16.2
-Release  : 50
-URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.16.2.tar.xz
-Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.16.2.tar.xz
-Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.16.2.tar.xz.asc
+Version  : 1.18.0
+Release  : 51
+URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.0.tar.xz
+Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.0.tar.xz
+Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.0.tar.xz.asc
 Summary  : Streaming media framework
 Group    : Development/Tools
-License  : LGPL-2.0
+License  : GPL-2.0 LGPL-2.0
 Requires: gstreamer-bin = %{version}-%{release}
 Requires: gstreamer-data = %{version}-%{release}
 Requires: gstreamer-lib = %{version}-%{release}
@@ -20,17 +20,14 @@ Requires: gstreamer-libexec = %{version}-%{release}
 Requires: gstreamer-license = %{version}-%{release}
 Requires: gstreamer-locales = %{version}-%{release}
 Requires: gstreamer-man = %{version}-%{release}
+BuildRequires : bash-completion-dev
 BuildRequires : bison
 BuildRequires : buildreq-meson
-BuildRequires : docbook-xml
 BuildRequires : flex
 BuildRequires : gmp-dev
 BuildRequires : gobject-introspection-dev
 BuildRequires : gsl-dev
-BuildRequires : gtk-doc
-BuildRequires : gtk-doc-dev
 BuildRequires : libcap-dev
-BuildRequires : libxslt-bin
 BuildRequires : pkg-config
 BuildRequires : pkgconfig(atk)
 BuildRequires : pkgconfig(bash-completion)
@@ -39,7 +36,7 @@ BuildRequires : pkgconfig(libdw)
 BuildRequires : valgrind
 
 %description
-GStreamer 1.16.x stable series
+GStreamer 1.18.x stable series
 WHAT IT IS
 ----------
 This is GStreamer, a framework for streaming media.
@@ -74,15 +71,6 @@ Requires: gstreamer = %{version}-%{release}
 
 %description dev
 dev components for the gstreamer package.
-
-
-%package doc
-Summary: doc components for the gstreamer package.
-Group: Documentation
-Requires: gstreamer-man = %{version}-%{release}
-
-%description doc
-doc components for the gstreamer package.
 
 
 %package lib
@@ -130,15 +118,15 @@ man components for the gstreamer package.
 
 
 %prep
-%setup -q -n gstreamer-1.16.2
-cd %{_builddir}/gstreamer-1.16.2
+%setup -q -n gstreamer-1.18.0
+cd %{_builddir}/gstreamer-1.18.0
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1600285248
+export SOURCE_DATE_EPOCH=1600379395
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -159,7 +147,8 @@ meson test -C builddir || :
 
 %install
 mkdir -p %{buildroot}/usr/share/package-licenses/gstreamer
-cp %{_builddir}/gstreamer-1.16.2/COPYING %{buildroot}/usr/share/package-licenses/gstreamer/249308ff72cc14f24d4756377a537281c13ec8fa
+cp %{_builddir}/gstreamer-1.18.0/COPYING %{buildroot}/usr/share/package-licenses/gstreamer/249308ff72cc14f24d4756377a537281c13ec8fa
+cp %{_builddir}/gstreamer-1.18.0/docs/random/LICENSE %{buildroot}/usr/share/package-licenses/gstreamer/22990b105a08bb838c95fcc4bc5450c6dfdc79ac
 DESTDIR=%{buildroot} ninja -C builddir install
 %find_lang gstreamer-1.0
 
@@ -171,6 +160,7 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/bin/gst-inspect-1.0
 /usr/bin/gst-launch-1.0
 /usr/bin/gst-stats-1.0
+/usr/bin/gst-tester-1.0
 /usr/bin/gst-typefind-1.0
 
 %files data
@@ -183,7 +173,7 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/share/bash-completion/completions/gst-inspect-1.0
 /usr/share/bash-completion/completions/gst-launch-1.0
 /usr/share/bash-completion/helpers/gst
-/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.1602.0-gdb.py
+/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.1800.0-gdb.py
 /usr/share/gir-1.0/*.gir
 /usr/share/gstreamer-1.0/gdb/glib_gobject_helper.py
 /usr/share/gstreamer-1.0/gdb/gst_gdb.py
@@ -308,6 +298,7 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/include/gstreamer-1.0/gst/net/gstnetcontrolmessagemeta.h
 /usr/include/gstreamer-1.0/gst/net/gstnettimepacket.h
 /usr/include/gstreamer-1.0/gst/net/gstnettimeprovider.h
+/usr/include/gstreamer-1.0/gst/net/gstnetutils.h
 /usr/include/gstreamer-1.0/gst/net/gstptpclock.h
 /usr/include/gstreamer-1.0/gst/net/net-prelude.h
 /usr/include/gstreamer-1.0/gst/net/net.h
@@ -323,195 +314,32 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/lib64/pkgconfig/gstreamer-net-1.0.pc
 /usr/share/aclocal/*.m4
 
-%files doc
-%defattr(0644,root,root,0755)
-/usr/share/gtk-doc/html/gstreamer-libs/GstARGBControlBinding.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstAdapter.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstAggregator.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstAggregatorPad.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstBaseParse.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstBaseSink.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstBaseSrc.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstBaseTransform.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstCollectPads.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstDirectControlBinding.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstInterpolationControlSource.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstLFOControlSource.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstNetClientClock.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstNetTimeProvider.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstPtpClock.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstPushSrc.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstTestClock.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstTimedValueControlSource.html
-/usr/share/gtk-doc/html/gstreamer-libs/GstTriggerControlSource.html
-/usr/share/gtk-doc/html/gstreamer-libs/annotation-glossary.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-base.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-check.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-control.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-hierarchy.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs-GstBitReader.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs-GstBitWriter.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs-GstBufferStraw.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs-GstByteReader.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs-GstByteWriter.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs-GstCheck.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs-GstDataQueue.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs-GstFlowCombiner.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs-GstHarness.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs-GstNetAddressMeta.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs-GstNetControlMessageMeta.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs-GstNetTimePacket.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs-GstProxyControlBinding.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs-GstQueueArray.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs-GstStreamConsistency.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs-GstTypeFindHelper.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs.devhelp2
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-libs.html
-/usr/share/gtk-doc/html/gstreamer-libs/gstreamer-net.html
-/usr/share/gtk-doc/html/gstreamer-libs/home.png
-/usr/share/gtk-doc/html/gstreamer-libs/index.html
-/usr/share/gtk-doc/html/gstreamer-libs/ix01.html
-/usr/share/gtk-doc/html/gstreamer-libs/ix02.html
-/usr/share/gtk-doc/html/gstreamer-libs/ix03.html
-/usr/share/gtk-doc/html/gstreamer-libs/ix04.html
-/usr/share/gtk-doc/html/gstreamer-libs/ix05.html
-/usr/share/gtk-doc/html/gstreamer-libs/ix06.html
-/usr/share/gtk-doc/html/gstreamer-libs/ix07.html
-/usr/share/gtk-doc/html/gstreamer-libs/ix08.html
-/usr/share/gtk-doc/html/gstreamer-libs/ix09.html
-/usr/share/gtk-doc/html/gstreamer-libs/ix10.html
-/usr/share/gtk-doc/html/gstreamer-libs/ix11.html
-/usr/share/gtk-doc/html/gstreamer-libs/left-insensitive.png
-/usr/share/gtk-doc/html/gstreamer-libs/left.png
-/usr/share/gtk-doc/html/gstreamer-libs/right-insensitive.png
-/usr/share/gtk-doc/html/gstreamer-libs/right.png
-/usr/share/gtk-doc/html/gstreamer-libs/style.css
-/usr/share/gtk-doc/html/gstreamer-libs/up-insensitive.png
-/usr/share/gtk-doc/html/gstreamer-libs/up.png
-/usr/share/gtk-doc/html/gstreamer/GstBin.html
-/usr/share/gtk-doc/html/gstreamer/GstBuffer.html
-/usr/share/gtk-doc/html/gstreamer/GstBufferList.html
-/usr/share/gtk-doc/html/gstreamer/GstBufferPool.html
-/usr/share/gtk-doc/html/gstreamer/GstBus.html
-/usr/share/gtk-doc/html/gstreamer/GstCaps.html
-/usr/share/gtk-doc/html/gstreamer/GstChildProxy.html
-/usr/share/gtk-doc/html/gstreamer/GstClock.html
-/usr/share/gtk-doc/html/gstreamer/GstContext.html
-/usr/share/gtk-doc/html/gstreamer/GstControlBinding.html
-/usr/share/gtk-doc/html/gstreamer/GstControlSource.html
-/usr/share/gtk-doc/html/gstreamer/GstElement.html
-/usr/share/gtk-doc/html/gstreamer/GstElementFactory.html
-/usr/share/gtk-doc/html/gstreamer/GstEvent.html
-/usr/share/gtk-doc/html/gstreamer/GstGhostPad.html
-/usr/share/gtk-doc/html/gstreamer/GstMemory.html
-/usr/share/gtk-doc/html/gstreamer/GstMessage.html
-/usr/share/gtk-doc/html/gstreamer/GstObject.html
-/usr/share/gtk-doc/html/gstreamer/GstPad.html
-/usr/share/gtk-doc/html/gstreamer/GstPadTemplate.html
-/usr/share/gtk-doc/html/gstreamer/GstPipeline.html
-/usr/share/gtk-doc/html/gstreamer/GstPlugin.html
-/usr/share/gtk-doc/html/gstreamer/GstPluginFeature.html
-/usr/share/gtk-doc/html/gstreamer/GstPreset.html
-/usr/share/gtk-doc/html/gstreamer/GstPromise.html
-/usr/share/gtk-doc/html/gstreamer/GstQuery.html
-/usr/share/gtk-doc/html/gstreamer/GstRegistry.html
-/usr/share/gtk-doc/html/gstreamer/GstSample.html
-/usr/share/gtk-doc/html/gstreamer/GstSystemClock.html
-/usr/share/gtk-doc/html/gstreamer/GstTagList.html
-/usr/share/gtk-doc/html/gstreamer/GstTagSetter.html
-/usr/share/gtk-doc/html/gstreamer/GstTask.html
-/usr/share/gtk-doc/html/gstreamer/GstTaskPool.html
-/usr/share/gtk-doc/html/gstreamer/GstToc.html
-/usr/share/gtk-doc/html/gstreamer/GstTracer.html
-/usr/share/gtk-doc/html/gstreamer/GstTracerFactory.html
-/usr/share/gtk-doc/html/gstreamer/GstTracerRecord.html
-/usr/share/gtk-doc/html/gstreamer/GstTypeFindFactory.html
-/usr/share/gtk-doc/html/gstreamer/annotation-glossary.html
-/usr/share/gtk-doc/html/gstreamer/gst-building.html
-/usr/share/gtk-doc/html/gstreamer/gst-running.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-Gst.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstAllocator.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstAtomicQueue.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstCapsFeatures.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstConfig.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstDateTime.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstDevice.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstDeviceMonitor.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstDeviceProvider.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstDeviceProviderFactory.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstDynamicTypeFactory.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstFormat.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstGError.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstInfo.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstIterator.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstMeta.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstMiniObject.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstParamSpec.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstParse.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstPoll.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstProtectionMeta.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstSegment.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstStream.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstStreamCollection.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstStructure.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstTocSetter.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstTypeFind.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstUri.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstUriHandler.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstUtils.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstValue.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-GstVersion.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-device-probing.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-hierarchy.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer-support.html
-/usr/share/gtk-doc/html/gstreamer/gstreamer.devhelp2
-/usr/share/gtk-doc/html/gstreamer/gstreamer.html
-/usr/share/gtk-doc/html/gstreamer/home.png
-/usr/share/gtk-doc/html/gstreamer/index.html
-/usr/share/gtk-doc/html/gstreamer/ix01.html
-/usr/share/gtk-doc/html/gstreamer/ix02.html
-/usr/share/gtk-doc/html/gstreamer/ix03.html
-/usr/share/gtk-doc/html/gstreamer/ix04.html
-/usr/share/gtk-doc/html/gstreamer/ix05.html
-/usr/share/gtk-doc/html/gstreamer/ix06.html
-/usr/share/gtk-doc/html/gstreamer/ix07.html
-/usr/share/gtk-doc/html/gstreamer/ix08.html
-/usr/share/gtk-doc/html/gstreamer/ix09.html
-/usr/share/gtk-doc/html/gstreamer/ix10.html
-/usr/share/gtk-doc/html/gstreamer/ix11.html
-/usr/share/gtk-doc/html/gstreamer/ix12.html
-/usr/share/gtk-doc/html/gstreamer/left-insensitive.png
-/usr/share/gtk-doc/html/gstreamer/left.png
-/usr/share/gtk-doc/html/gstreamer/libgstreamer.html
-/usr/share/gtk-doc/html/gstreamer/right-insensitive.png
-/usr/share/gtk-doc/html/gstreamer/right.png
-/usr/share/gtk-doc/html/gstreamer/style.css
-/usr/share/gtk-doc/html/gstreamer/up-insensitive.png
-/usr/share/gtk-doc/html/gstreamer/up.png
-
 %files lib
 %defattr(-,root,root,-)
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
-/usr/lib64/libgstbase-1.0.so.0.1602.0
+/usr/lib64/libgstbase-1.0.so.0.1800.0
 /usr/lib64/libgstcheck-1.0.so.0
-/usr/lib64/libgstcheck-1.0.so.0.1602.0
+/usr/lib64/libgstcheck-1.0.so.0.1800.0
 /usr/lib64/libgstcontroller-1.0.so.0
-/usr/lib64/libgstcontroller-1.0.so.0.1602.0
+/usr/lib64/libgstcontroller-1.0.so.0.1800.0
 /usr/lib64/libgstnet-1.0.so.0
-/usr/lib64/libgstnet-1.0.so.0.1602.0
+/usr/lib64/libgstnet-1.0.so.0.1800.0
 /usr/lib64/libgstreamer-1.0.so.0
-/usr/lib64/libgstreamer-1.0.so.0.1602.0
+/usr/lib64/libgstreamer-1.0.so.0.1800.0
 
 %files libexec
 %defattr(-,root,root,-)
 /usr/libexec/gstreamer-1.0/gst-completion-helper
+/usr/libexec/gstreamer-1.0/gst-hotdoc-plugins-scanner
 /usr/libexec/gstreamer-1.0/gst-plugin-scanner
+/usr/libexec/gstreamer-1.0/gst-plugins-doc-cache-generator
 /usr/libexec/gstreamer-1.0/gst-ptp-helper
 
 %files license
 %defattr(0644,root,root,0755)
+/usr/share/package-licenses/gstreamer/22990b105a08bb838c95fcc4bc5450c6dfdc79ac
 /usr/share/package-licenses/gstreamer/249308ff72cc14f24d4756377a537281c13ec8fa
 
 %files man

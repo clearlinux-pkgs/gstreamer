@@ -1,0 +1,5 @@
+1.18.0
+bash-completion-dev
+pkgconfig(bash-completion)
+pkgconfig(gtk+-3.0)
+pkgconfig(libdw)
