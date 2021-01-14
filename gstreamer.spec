@@ -5,11 +5,11 @@
 # Source0 file verified with key 0x5D2EEE6F6F349D7C (tim@centricular.com)
 #
 Name     : gstreamer
-Version  : 1.18.2
-Release  : 54
-URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.2.tar.xz
-Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.2.tar.xz
-Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.2.tar.xz.asc
+Version  : 1.18.3
+Release  : 55
+URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.3.tar.xz
+Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.3.tar.xz
+Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.3.tar.xz.asc
 Summary  : Streaming media framework
 Group    : Development/Tools
 License  : GPL-2.0 LGPL-2.0
@@ -118,15 +118,15 @@ man components for the gstreamer package.
 
 
 %prep
-%setup -q -n gstreamer-1.18.2
-cd %{_builddir}/gstreamer-1.18.2
+%setup -q -n gstreamer-1.18.3
+cd %{_builddir}/gstreamer-1.18.3
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1607358169
+export SOURCE_DATE_EPOCH=1610637895
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -147,8 +147,8 @@ meson test -C builddir || :
 
 %install
 mkdir -p %{buildroot}/usr/share/package-licenses/gstreamer
-cp %{_builddir}/gstreamer-1.18.2/COPYING %{buildroot}/usr/share/package-licenses/gstreamer/249308ff72cc14f24d4756377a537281c13ec8fa
-cp %{_builddir}/gstreamer-1.18.2/docs/random/LICENSE %{buildroot}/usr/share/package-licenses/gstreamer/22990b105a08bb838c95fcc4bc5450c6dfdc79ac
+cp %{_builddir}/gstreamer-1.18.3/COPYING %{buildroot}/usr/share/package-licenses/gstreamer/249308ff72cc14f24d4756377a537281c13ec8fa
+cp %{_builddir}/gstreamer-1.18.3/docs/random/LICENSE %{buildroot}/usr/share/package-licenses/gstreamer/22990b105a08bb838c95fcc4bc5450c6dfdc79ac
 DESTDIR=%{buildroot} ninja -C builddir install
 %find_lang gstreamer-1.0
 
@@ -173,7 +173,7 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/share/bash-completion/completions/gst-inspect-1.0
 /usr/share/bash-completion/completions/gst-launch-1.0
 /usr/share/bash-completion/helpers/gst
-/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.1802.0-gdb.py
+/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.1803.0-gdb.py
 /usr/share/gir-1.0/*.gir
 /usr/share/gstreamer-1.0/gdb/glib_gobject_helper.py
 /usr/share/gstreamer-1.0/gdb/gst_gdb.py
@@ -319,15 +319,15 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
-/usr/lib64/libgstbase-1.0.so.0.1802.0
+/usr/lib64/libgstbase-1.0.so.0.1803.0
 /usr/lib64/libgstcheck-1.0.so.0
-/usr/lib64/libgstcheck-1.0.so.0.1802.0
+/usr/lib64/libgstcheck-1.0.so.0.1803.0
 /usr/lib64/libgstcontroller-1.0.so.0
-/usr/lib64/libgstcontroller-1.0.so.0.1802.0
+/usr/lib64/libgstcontroller-1.0.so.0.1803.0
 /usr/lib64/libgstnet-1.0.so.0
-/usr/lib64/libgstnet-1.0.so.0.1802.0
+/usr/lib64/libgstnet-1.0.so.0.1803.0
 /usr/lib64/libgstreamer-1.0.so.0
-/usr/lib64/libgstreamer-1.0.so.0.1802.0
+/usr/lib64/libgstreamer-1.0.so.0.1803.0
 
 %files libexec
 %defattr(-,root,root,-)
