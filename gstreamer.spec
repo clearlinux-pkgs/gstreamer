@@ -5,11 +5,11 @@
 # Source0 file verified with key 0x5D2EEE6F6F349D7C (tim@centricular.com)
 #
 Name     : gstreamer
-Version  : 1.18.4
-Release  : 56
-URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.4.tar.xz
-Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.4.tar.xz
-Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.4.tar.xz.asc
+Version  : 1.18.5
+Release  : 57
+URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.5.tar.xz
+Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.5.tar.xz
+Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.5.tar.xz.asc
 Summary  : Streaming media framework
 Group    : Development/Tools
 License  : GPL-2.0 LGPL-2.0
@@ -118,23 +118,23 @@ man components for the gstreamer package.
 
 
 %prep
-%setup -q -n gstreamer-1.18.4
-cd %{_builddir}/gstreamer-1.18.4
+%setup -q -n gstreamer-1.18.5
+cd %{_builddir}/gstreamer-1.18.5
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1615858475
+export SOURCE_DATE_EPOCH=1631202786
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export FCFLAGS="$FFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export FFLAGS="$FFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export CFLAGS="$CFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mprefer-vector-width=256 "
+export FCFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mprefer-vector-width=256 "
+export FFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mprefer-vector-width=256 "
+export CXXFLAGS="$CXXFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mprefer-vector-width=256 "
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --libdir=lib64 --prefix=/usr --buildtype=plain   builddir
 ninja -v -C builddir
 
@@ -147,8 +147,8 @@ meson test -C builddir || :
 
 %install
 mkdir -p %{buildroot}/usr/share/package-licenses/gstreamer
-cp %{_builddir}/gstreamer-1.18.4/COPYING %{buildroot}/usr/share/package-licenses/gstreamer/249308ff72cc14f24d4756377a537281c13ec8fa
-cp %{_builddir}/gstreamer-1.18.4/docs/random/LICENSE %{buildroot}/usr/share/package-licenses/gstreamer/22990b105a08bb838c95fcc4bc5450c6dfdc79ac
+cp %{_builddir}/gstreamer-1.18.5/COPYING %{buildroot}/usr/share/package-licenses/gstreamer/249308ff72cc14f24d4756377a537281c13ec8fa
+cp %{_builddir}/gstreamer-1.18.5/docs/random/LICENSE %{buildroot}/usr/share/package-licenses/gstreamer/22990b105a08bb838c95fcc4bc5450c6dfdc79ac
 DESTDIR=%{buildroot} ninja -C builddir install
 %find_lang gstreamer-1.0
 
@@ -173,7 +173,7 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/share/bash-completion/completions/gst-inspect-1.0
 /usr/share/bash-completion/completions/gst-launch-1.0
 /usr/share/bash-completion/helpers/gst
-/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.1804.0-gdb.py
+/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.1805.0-gdb.py
 /usr/share/gir-1.0/*.gir
 /usr/share/gstreamer-1.0/gdb/glib_gobject_helper.py
 /usr/share/gstreamer-1.0/gdb/gst_gdb.py
@@ -319,15 +319,15 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
-/usr/lib64/libgstbase-1.0.so.0.1804.0
+/usr/lib64/libgstbase-1.0.so.0.1805.0
 /usr/lib64/libgstcheck-1.0.so.0
-/usr/lib64/libgstcheck-1.0.so.0.1804.0
+/usr/lib64/libgstcheck-1.0.so.0.1805.0
 /usr/lib64/libgstcontroller-1.0.so.0
-/usr/lib64/libgstcontroller-1.0.so.0.1804.0
+/usr/lib64/libgstcontroller-1.0.so.0.1805.0
 /usr/lib64/libgstnet-1.0.so.0
-/usr/lib64/libgstnet-1.0.so.0.1804.0
+/usr/lib64/libgstnet-1.0.so.0.1805.0
 /usr/lib64/libgstreamer-1.0.so.0
-/usr/lib64/libgstreamer-1.0.so.0.1804.0
+/usr/lib64/libgstreamer-1.0.so.0.1805.0
 
 %files libexec
 %defattr(-,root,root,-)
