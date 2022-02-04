@@ -5,14 +5,14 @@
 # Source0 file verified with key 0x5D2EEE6F6F349D7C (tim@centricular.com)
 #
 Name     : gstreamer
-Version  : 1.18.6
-Release  : 61
-URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.6.tar.xz
-Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.6.tar.xz
-Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.18.6.tar.xz.asc
-Summary  : Streaming media framework
+Version  : 1.20.0
+Release  : 62
+URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.0.tar.xz
+Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.0.tar.xz
+Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.0.tar.xz.asc
+Summary  : No detailed summary available
 Group    : Development/Tools
-License  : GPL-2.0 LGPL-2.0
+License  : LGPL-2.1
 Requires: gstreamer-bin = %{version}-%{release}
 Requires: gstreamer-data = %{version}-%{release}
 Requires: gstreamer-filemap = %{version}-%{release}
@@ -37,7 +37,7 @@ BuildRequires : pkgconfig(libdw)
 BuildRequires : valgrind
 
 %description
-GStreamer 1.18.x stable series
+GStreamer 1.20.x stable series
 WHAT IT IS
 ----------
 This is GStreamer, a framework for streaming media.
@@ -130,10 +130,10 @@ man components for the gstreamer package.
 
 
 %prep
-%setup -q -n gstreamer-1.18.6
-cd %{_builddir}/gstreamer-1.18.6
+%setup -q -n gstreamer-1.20.0
+cd %{_builddir}/gstreamer-1.20.0
 pushd ..
-cp -a gstreamer-1.18.6 buildavx2
+cp -a gstreamer-1.20.0 buildavx2
 popd
 
 %build
@@ -141,7 +141,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1643836806
+export SOURCE_DATE_EPOCH=1643934333
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -164,8 +164,7 @@ meson test -C builddir --print-errorlogs || :
 
 %install
 mkdir -p %{buildroot}/usr/share/package-licenses/gstreamer
-cp %{_builddir}/gstreamer-1.18.6/COPYING %{buildroot}/usr/share/package-licenses/gstreamer/249308ff72cc14f24d4756377a537281c13ec8fa
-cp %{_builddir}/gstreamer-1.18.6/docs/random/LICENSE %{buildroot}/usr/share/package-licenses/gstreamer/22990b105a08bb838c95fcc4bc5450c6dfdc79ac
+cp %{_builddir}/gstreamer-1.20.0/COPYING %{buildroot}/usr/share/package-licenses/gstreamer/39743f6cf5d70ee54b72485784313148db159a70
 DESTDIR=%{buildroot}-v3 ninja -C builddiravx2 install
 DESTDIR=%{buildroot} ninja -C builddir install
 %find_lang gstreamer-1.0
@@ -193,7 +192,7 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/share/bash-completion/completions/gst-inspect-1.0
 /usr/share/bash-completion/completions/gst-launch-1.0
 /usr/share/bash-completion/helpers/gst
-/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.1806.0-gdb.py
+/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.2000.0-gdb.py
 /usr/share/gir-1.0/*.gir
 /usr/share/gstreamer-1.0/gdb/glib_gobject_helper.py
 /usr/share/gstreamer-1.0/gdb/gst_gdb.py
@@ -343,15 +342,15 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
-/usr/lib64/libgstbase-1.0.so.0.1806.0
+/usr/lib64/libgstbase-1.0.so.0.2000.0
 /usr/lib64/libgstcheck-1.0.so.0
-/usr/lib64/libgstcheck-1.0.so.0.1806.0
+/usr/lib64/libgstcheck-1.0.so.0.2000.0
 /usr/lib64/libgstcontroller-1.0.so.0
-/usr/lib64/libgstcontroller-1.0.so.0.1806.0
+/usr/lib64/libgstcontroller-1.0.so.0.2000.0
 /usr/lib64/libgstnet-1.0.so.0
-/usr/lib64/libgstnet-1.0.so.0.1806.0
+/usr/lib64/libgstnet-1.0.so.0.2000.0
 /usr/lib64/libgstreamer-1.0.so.0
-/usr/lib64/libgstreamer-1.0.so.0.1806.0
+/usr/lib64/libgstreamer-1.0.so.0.2000.0
 /usr/share/clear/optimized-elf/lib*
 
 %files libexec
@@ -365,8 +364,7 @@ DESTDIR=%{buildroot} ninja -C builddir install
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/gstreamer/22990b105a08bb838c95fcc4bc5450c6dfdc79ac
-/usr/share/package-licenses/gstreamer/249308ff72cc14f24d4756377a537281c13ec8fa
+/usr/share/package-licenses/gstreamer/39743f6cf5d70ee54b72485784313148db159a70
 
 %files man
 %defattr(0644,root,root,0755)
