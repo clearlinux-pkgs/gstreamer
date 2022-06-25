@@ -6,7 +6,7 @@
 #
 Name     : gstreamer
 Version  : 1.20.3
-Release  : 66
+Release  : 67
 URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.3.tar.xz
 Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.3.tar.xz
 Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.3.tar.xz.asc
@@ -142,7 +142,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1656039314
+export SOURCE_DATE_EPOCH=1656121576
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -349,8 +349,6 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstcontroller-1.0.so
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstcontroller-1.0.so.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstcontroller-1.0.so.0.2003.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcoreelements.so
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcoretracers.so
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstnet-1.0.so
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstnet-1.0.so.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstnet-1.0.so.0.2003.0
