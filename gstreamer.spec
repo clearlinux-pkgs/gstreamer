@@ -6,7 +6,7 @@
 #
 Name     : gstreamer
 Version  : 1.20.3
-Release  : 67
+Release  : 68
 URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.3.tar.xz
 Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.3.tar.xz
 Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.3.tar.xz.asc
@@ -142,7 +142,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1656121576
+export SOURCE_DATE_EPOCH=1656713335
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -322,6 +322,11 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/include/gstreamer-1.0/gst/net/gstptpclock.h
 /usr/include/gstreamer-1.0/gst/net/net-prelude.h
 /usr/include/gstreamer-1.0/gst/net/net.h
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstbase-1.0.so
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcheck-1.0.so
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcontroller-1.0.so
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstnet-1.0.so
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so
 /usr/lib64/libgstbase-1.0.so
 /usr/lib64/libgstcheck-1.0.so
 /usr/lib64/libgstcontroller-1.0.so
@@ -340,19 +345,14 @@ DESTDIR=%{buildroot} ninja -C builddir install
 
 %files lib
 %defattr(-,root,root,-)
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstbase-1.0.so
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstbase-1.0.so.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstbase-1.0.so.0.2003.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcheck-1.0.so
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstcheck-1.0.so.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstcheck-1.0.so.0.2003.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcontroller-1.0.so
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstcontroller-1.0.so.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstcontroller-1.0.so.0.2003.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstnet-1.0.so
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstnet-1.0.so.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstnet-1.0.so.0.2003.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so.0.2003.0
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
@@ -367,6 +367,7 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/lib64/libgstnet-1.0.so.0.2003.0
 /usr/lib64/libgstreamer-1.0.so.0
 /usr/lib64/libgstreamer-1.0.so.0.2003.0
+/usr/share/clear/optimized-elf/other*
 
 %files libexec
 %defattr(-,root,root,-)
