@@ -5,11 +5,11 @@
 # Source0 file verified with key 0x5D2EEE6F6F349D7C (tim@centricular.com)
 #
 Name     : gstreamer
-Version  : 1.20.3
-Release  : 73
-URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.3.tar.xz
-Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.3.tar.xz
-Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.3.tar.xz.asc
+Version  : 1.20.4
+Release  : 74
+URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.4.tar.xz
+Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.4.tar.xz
+Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.4.tar.xz.asc
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : LGPL-2.1
@@ -131,10 +131,10 @@ man components for the gstreamer package.
 
 
 %prep
-%setup -q -n gstreamer-1.20.3
-cd %{_builddir}/gstreamer-1.20.3
+%setup -q -n gstreamer-1.20.4
+cd %{_builddir}/gstreamer-1.20.4
 pushd ..
-cp -a gstreamer-1.20.3 buildavx2
+cp -a gstreamer-1.20.4 buildavx2
 popd
 
 %build
@@ -142,7 +142,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1661264240
+export SOURCE_DATE_EPOCH=1665682141
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -165,7 +165,7 @@ meson test -C builddir --print-errorlogs || :
 
 %install
 mkdir -p %{buildroot}/usr/share/package-licenses/gstreamer
-cp %{_builddir}/gstreamer-%{version}/COPYING %{buildroot}/usr/share/package-licenses/gstreamer/39743f6cf5d70ee54b72485784313148db159a70
+cp %{_builddir}/gstreamer-%{version}/COPYING %{buildroot}/usr/share/package-licenses/gstreamer/39743f6cf5d70ee54b72485784313148db159a70 || :
 DESTDIR=%{buildroot}-v3 ninja -C builddiravx2 install
 DESTDIR=%{buildroot} ninja -C builddir install
 %find_lang gstreamer-1.0
@@ -193,7 +193,7 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/share/bash-completion/completions/gst-inspect-1.0
 /usr/share/bash-completion/completions/gst-launch-1.0
 /usr/share/bash-completion/helpers/gst
-/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.2003.0-gdb.py
+/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.2004.0-gdb.py
 /usr/share/gir-1.0/*.gir
 /usr/share/gstreamer-1.0/gdb/glib_gobject_helper.py
 /usr/share/gstreamer-1.0/gdb/gst_gdb.py
@@ -346,28 +346,28 @@ DESTDIR=%{buildroot} ninja -C builddir install
 %files lib
 %defattr(-,root,root,-)
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstbase-1.0.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstbase-1.0.so.0.2003.0
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstbase-1.0.so.0.2004.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstcheck-1.0.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcheck-1.0.so.0.2003.0
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcheck-1.0.so.0.2004.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstcontroller-1.0.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcontroller-1.0.so.0.2003.0
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcontroller-1.0.so.0.2004.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstnet-1.0.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstnet-1.0.so.0.2003.0
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstnet-1.0.so.0.2004.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so.0.2003.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so.0.2003.0-gdb.py
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so.0.2004.0
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so.0.2004.0-gdb.py
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
-/usr/lib64/libgstbase-1.0.so.0.2003.0
+/usr/lib64/libgstbase-1.0.so.0.2004.0
 /usr/lib64/libgstcheck-1.0.so.0
-/usr/lib64/libgstcheck-1.0.so.0.2003.0
+/usr/lib64/libgstcheck-1.0.so.0.2004.0
 /usr/lib64/libgstcontroller-1.0.so.0
-/usr/lib64/libgstcontroller-1.0.so.0.2003.0
+/usr/lib64/libgstcontroller-1.0.so.0.2004.0
 /usr/lib64/libgstnet-1.0.so.0
-/usr/lib64/libgstnet-1.0.so.0.2003.0
+/usr/lib64/libgstnet-1.0.so.0.2004.0
 /usr/lib64/libgstreamer-1.0.so.0
-/usr/lib64/libgstreamer-1.0.so.0.2003.0
+/usr/lib64/libgstreamer-1.0.so.0.2004.0
 /usr/share/clear/optimized-elf/other*
 
 %files libexec
