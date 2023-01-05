@@ -6,7 +6,7 @@
 #
 Name     : gstreamer
 Version  : 1.20.5
-Release  : 75
+Release  : 76
 URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.5.tar.xz
 Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.5.tar.xz
 Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.5.tar.xz.asc
