@@ -5,11 +5,11 @@
 # Source0 file verified with key 0x5D2EEE6F6F349D7C (tim@centricular.com)
 #
 Name     : gstreamer
-Version  : 1.20.5
-Release  : 76
-URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.5.tar.xz
-Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.5.tar.xz
-Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.20.5.tar.xz.asc
+Version  : 1.22.0
+Release  : 77
+URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.0.tar.xz
+Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.0.tar.xz
+Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.0.tar.xz.asc
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : LGPL-2.1
@@ -35,6 +35,9 @@ BuildRequires : pkgconfig(bash-completion)
 BuildRequires : pkgconfig(gtk+-3.0)
 BuildRequires : pkgconfig(libdw)
 BuildRequires : valgrind
+# Suppress stripping binaries
+%define __strip /bin/true
+%define debug_package %{nil}
 
 %description
 Base classes
@@ -131,10 +134,10 @@ man components for the gstreamer package.
 
 
 %prep
-%setup -q -n gstreamer-1.20.5
-cd %{_builddir}/gstreamer-1.20.5
+%setup -q -n gstreamer-1.22.0
+cd %{_builddir}/gstreamer-1.22.0
 pushd ..
-cp -a gstreamer-1.20.5 buildavx2
+cp -a gstreamer-1.22.0 buildavx2
 popd
 
 %build
@@ -142,15 +145,15 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1671553804
+export SOURCE_DATE_EPOCH=1674520063
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition "
-export FCFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition "
-export FFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition "
-export CXXFLAGS="$CXXFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition "
+export CFLAGS="$CFLAGS -O3 -Ofast -falign-functions=32 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz "
+export FCFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz "
+export FFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz "
+export CXXFLAGS="$CXXFLAGS -O3 -Ofast -falign-functions=32 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz "
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --libdir=lib64 --prefix=/usr --buildtype=plain   builddir
 ninja -v -C builddir
 CFLAGS="$CFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 -O3" CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 " LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3" meson --libdir=lib64 --prefix=/usr --buildtype=plain   builddiravx2
@@ -193,7 +196,7 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/share/bash-completion/completions/gst-inspect-1.0
 /usr/share/bash-completion/completions/gst-launch-1.0
 /usr/share/bash-completion/helpers/gst
-/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.2005.0-gdb.py
+/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.2200.0-gdb.py
 /usr/share/gir-1.0/*.gir
 /usr/share/gstreamer-1.0/gdb/glib_gobject_helper.py
 /usr/share/gstreamer-1.0/gdb/gst_gdb.py
@@ -346,28 +349,28 @@ DESTDIR=%{buildroot} ninja -C builddir install
 %files lib
 %defattr(-,root,root,-)
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstbase-1.0.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstbase-1.0.so.0.2005.0
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstbase-1.0.so.0.2200.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstcheck-1.0.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcheck-1.0.so.0.2005.0
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcheck-1.0.so.0.2200.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstcontroller-1.0.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcontroller-1.0.so.0.2005.0
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcontroller-1.0.so.0.2200.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstnet-1.0.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstnet-1.0.so.0.2005.0
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstnet-1.0.so.0.2200.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so.0.2005.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so.0.2005.0-gdb.py
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so.0.2200.0
+/usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so.0.2200.0-gdb.py
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
-/usr/lib64/libgstbase-1.0.so.0.2005.0
+/usr/lib64/libgstbase-1.0.so.0.2200.0
 /usr/lib64/libgstcheck-1.0.so.0
-/usr/lib64/libgstcheck-1.0.so.0.2005.0
+/usr/lib64/libgstcheck-1.0.so.0.2200.0
 /usr/lib64/libgstcontroller-1.0.so.0
-/usr/lib64/libgstcontroller-1.0.so.0.2005.0
+/usr/lib64/libgstcontroller-1.0.so.0.2200.0
 /usr/lib64/libgstnet-1.0.so.0
-/usr/lib64/libgstnet-1.0.so.0.2005.0
+/usr/lib64/libgstnet-1.0.so.0.2200.0
 /usr/lib64/libgstreamer-1.0.so.0
-/usr/lib64/libgstreamer-1.0.so.0.2005.0
+/usr/lib64/libgstreamer-1.0.so.0.2200.0
 /usr/share/clear/optimized-elf/other*
 
 %files libexec

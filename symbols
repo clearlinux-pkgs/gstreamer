@@ -33,6 +33,7 @@ libgstbase-1.0.so.0:gst_aggregator_finish_buffer
 libgstbase-1.0.so.0:gst_aggregator_finish_buffer_list
 libgstbase-1.0.so.0:gst_aggregator_get_allocator
 libgstbase-1.0.so.0:gst_aggregator_get_buffer_pool
+libgstbase-1.0.so.0:gst_aggregator_get_force_live
 libgstbase-1.0.so.0:gst_aggregator_get_ignore_inactive_pads
 libgstbase-1.0.so.0:gst_aggregator_get_latency
 libgstbase-1.0.so.0:gst_aggregator_get_type
@@ -46,6 +47,7 @@ libgstbase-1.0.so.0:gst_aggregator_pad_peek_buffer
 libgstbase-1.0.so.0:gst_aggregator_pad_pop_buffer
 libgstbase-1.0.so.0:gst_aggregator_peek_next_sample
 libgstbase-1.0.so.0:gst_aggregator_selected_samples
+libgstbase-1.0.so.0:gst_aggregator_set_force_live
 libgstbase-1.0.so.0:gst_aggregator_set_ignore_inactive_pads
 libgstbase-1.0.so.0:gst_aggregator_set_latency
 libgstbase-1.0.so.0:gst_aggregator_set_src_caps
@@ -367,12 +369,15 @@ libgstbase-1.0.so.0:gst_queue_array_push_tail_struct
 libgstbase-1.0.so.0:gst_queue_array_set_clear_func
 libgstbase-1.0.so.0:gst_type_find_helper
 libgstbase-1.0.so.0:gst_type_find_helper_for_buffer
+libgstbase-1.0.so.0:gst_type_find_helper_for_buffer_with_caps
 libgstbase-1.0.so.0:gst_type_find_helper_for_buffer_with_extension
 libgstbase-1.0.so.0:gst_type_find_helper_for_data
+libgstbase-1.0.so.0:gst_type_find_helper_for_data_with_caps
 libgstbase-1.0.so.0:gst_type_find_helper_for_data_with_extension
 libgstbase-1.0.so.0:gst_type_find_helper_for_extension
 libgstbase-1.0.so.0:gst_type_find_helper_get_range
 libgstbase-1.0.so.0:gst_type_find_helper_get_range_full
+libgstbase-1.0.so.0:gst_type_find_list_factories_for_caps
 libgstcheck-1.0.so.0:_ck_assert_failed
 libgstcheck-1.0.so.0:_fail_unless
 libgstcheck-1.0.so.0:_gst_check_run_test_func
@@ -614,6 +619,7 @@ libgstnet-1.0.so.0:gst_ptp_statistics_callback_add
 libgstnet-1.0.so.0:gst_ptp_statistics_callback_remove
 libgstreamer-1.0.so.0:_gst_debug_category_new
 libgstreamer-1.0.so.0:_gst_debug_dump_mem
+libgstreamer-1.0.so.0:_gst_debug_dump_mem_id
 libgstreamer-1.0.so.0:_gst_debug_get_category
 libgstreamer-1.0.so.0:_gst_debug_nameof_funcptr
 libgstreamer-1.0.so.0:_gst_debug_register_funcptr
@@ -878,6 +884,7 @@ libgstreamer-1.0.so.0:gst_child_proxy_child_removed
 libgstreamer-1.0.so.0:gst_child_proxy_get
 libgstreamer-1.0.so.0:gst_child_proxy_get_child_by_index
 libgstreamer-1.0.so.0:gst_child_proxy_get_child_by_name
+libgstreamer-1.0.so.0:gst_child_proxy_get_child_by_name_recurse
 libgstreamer-1.0.so.0:gst_child_proxy_get_children_count
 libgstreamer-1.0.so.0:gst_child_proxy_get_property
 libgstreamer-1.0.so.0:gst_child_proxy_get_type
@@ -1018,9 +1025,13 @@ libgstreamer-1.0.so.0:gst_debug_level_get_type
 libgstreamer-1.0.so.0:gst_debug_log
 libgstreamer-1.0.so.0:gst_debug_log_default
 libgstreamer-1.0.so.0:gst_debug_log_get_line
+libgstreamer-1.0.so.0:gst_debug_log_id
+libgstreamer-1.0.so.0:gst_debug_log_id_literal
+libgstreamer-1.0.so.0:gst_debug_log_id_valist
 libgstreamer-1.0.so.0:gst_debug_log_literal
 libgstreamer-1.0.so.0:gst_debug_log_valist
 libgstreamer-1.0.so.0:gst_debug_message_get
+libgstreamer-1.0.so.0:gst_debug_message_get_id
 libgstreamer-1.0.so.0:gst_debug_print_stack_trace
 libgstreamer-1.0.so.0:gst_debug_remove_log_function
 libgstreamer-1.0.so.0:gst_debug_remove_log_function_by_data
@@ -1278,6 +1289,7 @@ libgstreamer-1.0.so.0:gst_event_type_get_flags
 libgstreamer-1.0.so.0:gst_event_type_get_name
 libgstreamer-1.0.so.0:gst_event_type_get_type
 libgstreamer-1.0.so.0:gst_event_type_to_quark
+libgstreamer-1.0.so.0:gst_event_type_to_sticky_ordering
 libgstreamer-1.0.so.0:gst_event_unref
 libgstreamer-1.0.so.0:gst_event_writable_structure
 libgstreamer-1.0.so.0:gst_filename_to_uri
@@ -1795,6 +1807,7 @@ libgstreamer-1.0.so.0:gst_query_new_position
 libgstreamer-1.0.so.0:gst_query_new_scheduling
 libgstreamer-1.0.so.0:gst_query_new_seeking
 libgstreamer-1.0.so.0:gst_query_new_segment
+libgstreamer-1.0.so.0:gst_query_new_selectable
 libgstreamer-1.0.so.0:gst_query_new_uri
 libgstreamer-1.0.so.0:gst_query_parse_accept_caps
 libgstreamer-1.0.so.0:gst_query_parse_accept_caps_result
@@ -1821,6 +1834,7 @@ libgstreamer-1.0.so.0:gst_query_parse_position
 libgstreamer-1.0.so.0:gst_query_parse_scheduling
 libgstreamer-1.0.so.0:gst_query_parse_seeking
 libgstreamer-1.0.so.0:gst_query_parse_segment
+libgstreamer-1.0.so.0:gst_query_parse_selectable
 libgstreamer-1.0.so.0:gst_query_parse_uri
 libgstreamer-1.0.so.0:gst_query_parse_uri_redirection
 libgstreamer-1.0.so.0:gst_query_parse_uri_redirection_permanent
@@ -1847,6 +1861,7 @@ libgstreamer-1.0.so.0:gst_query_set_position
 libgstreamer-1.0.so.0:gst_query_set_scheduling
 libgstreamer-1.0.so.0:gst_query_set_seeking
 libgstreamer-1.0.so.0:gst_query_set_segment
+libgstreamer-1.0.so.0:gst_query_set_selectable
 libgstreamer-1.0.so.0:gst_query_set_uri
 libgstreamer-1.0.so.0:gst_query_set_uri_redirection
 libgstreamer-1.0.so.0:gst_query_set_uri_redirection_permanent
@@ -1987,6 +2002,7 @@ libgstreamer-1.0.so.0:gst_structure_get_date_time
 libgstreamer-1.0.so.0:gst_structure_get_double
 libgstreamer-1.0.so.0:gst_structure_get_enum
 libgstreamer-1.0.so.0:gst_structure_get_field_type
+libgstreamer-1.0.so.0:gst_structure_get_flags
 libgstreamer-1.0.so.0:gst_structure_get_flagset
 libgstreamer-1.0.so.0:gst_structure_get_fraction
 libgstreamer-1.0.so.0:gst_structure_get_int
