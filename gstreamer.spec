@@ -6,7 +6,7 @@
 #
 Name     : gstreamer
 Version  : 1.22.0
-Release  : 77
+Release  : 78
 URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.0.tar.xz
 Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.0.tar.xz
 Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.0.tar.xz.asc
@@ -15,7 +15,6 @@ Group    : Development/Tools
 License  : LGPL-2.1
 Requires: gstreamer-bin = %{version}-%{release}
 Requires: gstreamer-data = %{version}-%{release}
-Requires: gstreamer-filemap = %{version}-%{release}
 Requires: gstreamer-lib = %{version}-%{release}
 Requires: gstreamer-libexec = %{version}-%{release}
 Requires: gstreamer-license = %{version}-%{release}
@@ -52,7 +51,6 @@ Group: Binaries
 Requires: gstreamer-data = %{version}-%{release}
 Requires: gstreamer-libexec = %{version}-%{release}
 Requires: gstreamer-license = %{version}-%{release}
-Requires: gstreamer-filemap = %{version}-%{release}
 
 %description bin
 bin components for the gstreamer package.
@@ -79,21 +77,12 @@ Requires: gstreamer = %{version}-%{release}
 dev components for the gstreamer package.
 
 
-%package filemap
-Summary: filemap components for the gstreamer package.
-Group: Default
-
-%description filemap
-filemap components for the gstreamer package.
-
-
 %package lib
 Summary: lib components for the gstreamer package.
 Group: Libraries
 Requires: gstreamer-data = %{version}-%{release}
 Requires: gstreamer-libexec = %{version}-%{release}
 Requires: gstreamer-license = %{version}-%{release}
-Requires: gstreamer-filemap = %{version}-%{release}
 
 %description lib
 lib components for the gstreamer package.
@@ -103,7 +92,6 @@ lib components for the gstreamer package.
 Summary: libexec components for the gstreamer package.
 Group: Default
 Requires: gstreamer-license = %{version}-%{release}
-Requires: gstreamer-filemap = %{version}-%{release}
 
 %description libexec
 libexec components for the gstreamer package.
@@ -136,16 +124,13 @@ man components for the gstreamer package.
 %prep
 %setup -q -n gstreamer-1.22.0
 cd %{_builddir}/gstreamer-1.22.0
-pushd ..
-cp -a gstreamer-1.22.0 buildavx2
-popd
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1674520063
+export SOURCE_DATE_EPOCH=1674607669
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -156,8 +141,6 @@ export FFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -fdebug-types-section -fe
 export CXXFLAGS="$CXXFLAGS -O3 -Ofast -falign-functions=32 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz "
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --libdir=lib64 --prefix=/usr --buildtype=plain   builddir
 ninja -v -C builddir
-CFLAGS="$CFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 -O3" CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 " LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3" meson --libdir=lib64 --prefix=/usr --buildtype=plain   builddiravx2
-ninja -v -C builddiravx2
 
 %check
 export LANG=C.UTF-8
@@ -169,10 +152,8 @@ meson test -C builddir --print-errorlogs || :
 %install
 mkdir -p %{buildroot}/usr/share/package-licenses/gstreamer
 cp %{_builddir}/gstreamer-%{version}/COPYING %{buildroot}/usr/share/package-licenses/gstreamer/39743f6cf5d70ee54b72485784313148db159a70 || :
-DESTDIR=%{buildroot}-v3 ninja -C builddiravx2 install
 DESTDIR=%{buildroot} ninja -C builddir install
 %find_lang gstreamer-1.0
-/usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot} %{buildroot}/usr/share/clear/filemap/filemap-%{name}
 
 %files
 %defattr(-,root,root,-)
@@ -184,7 +165,6 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/bin/gst-stats-1.0
 /usr/bin/gst-tester-1.0
 /usr/bin/gst-typefind-1.0
-/usr/share/clear/optimized-elf/bin*
 
 %files data
 %defattr(-,root,root,-)
@@ -325,11 +305,6 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/include/gstreamer-1.0/gst/net/gstptpclock.h
 /usr/include/gstreamer-1.0/gst/net/net-prelude.h
 /usr/include/gstreamer-1.0/gst/net/net.h
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstbase-1.0.so
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcheck-1.0.so
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcontroller-1.0.so
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstnet-1.0.so
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so
 /usr/lib64/libgstbase-1.0.so
 /usr/lib64/libgstcheck-1.0.so
 /usr/lib64/libgstcontroller-1.0.so
@@ -342,23 +317,8 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/lib64/pkgconfig/gstreamer-net-1.0.pc
 /usr/share/aclocal/*.m4
 
-%files filemap
-%defattr(-,root,root,-)
-/usr/share/clear/filemap/filemap-gstreamer
-
 %files lib
 %defattr(-,root,root,-)
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstbase-1.0.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstbase-1.0.so.0.2200.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcheck-1.0.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcheck-1.0.so.0.2200.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcontroller-1.0.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstcontroller-1.0.so.0.2200.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstnet-1.0.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstnet-1.0.so.0.2200.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so.0.2200.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libgstreamer-1.0.so.0.2200.0-gdb.py
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
@@ -371,7 +331,6 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/lib64/libgstnet-1.0.so.0.2200.0
 /usr/lib64/libgstreamer-1.0.so.0
 /usr/lib64/libgstreamer-1.0.so.0.2200.0
-/usr/share/clear/optimized-elf/other*
 
 %files libexec
 %defattr(-,root,root,-)
@@ -380,7 +339,6 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/libexec/gstreamer-1.0/gst-plugin-scanner
 /usr/libexec/gstreamer-1.0/gst-plugins-doc-cache-generator
 /usr/libexec/gstreamer-1.0/gst-ptp-helper
-/usr/share/clear/optimized-elf/exec*
 
 %files license
 %defattr(0644,root,root,0755)
