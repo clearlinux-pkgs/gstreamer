@@ -5,11 +5,11 @@
 # Source0 file verified with key 0x5D2EEE6F6F349D7C (tim@centricular.com)
 #
 Name     : gstreamer
-Version  : 1.22.0
-Release  : 78
-URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.0.tar.xz
-Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.0.tar.xz
-Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.0.tar.xz.asc
+Version  : 1.22.1
+Release  : 79
+URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.1.tar.xz
+Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.1.tar.xz
+Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.1.tar.xz.asc
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : LGPL-2.1
@@ -122,15 +122,15 @@ man components for the gstreamer package.
 
 
 %prep
-%setup -q -n gstreamer-1.22.0
-cd %{_builddir}/gstreamer-1.22.0
+%setup -q -n gstreamer-1.22.1
+cd %{_builddir}/gstreamer-1.22.1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1674607669
+export SOURCE_DATE_EPOCH=1677973366
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -176,7 +176,7 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/share/bash-completion/completions/gst-inspect-1.0
 /usr/share/bash-completion/completions/gst-launch-1.0
 /usr/share/bash-completion/helpers/gst
-/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.2200.0-gdb.py
+/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.2201.0-gdb.py
 /usr/share/gir-1.0/*.gir
 /usr/share/gstreamer-1.0/gdb/glib_gobject_helper.py
 /usr/share/gstreamer-1.0/gdb/gst_gdb.py
@@ -322,15 +322,15 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
-/usr/lib64/libgstbase-1.0.so.0.2200.0
+/usr/lib64/libgstbase-1.0.so.0.2201.0
 /usr/lib64/libgstcheck-1.0.so.0
-/usr/lib64/libgstcheck-1.0.so.0.2200.0
+/usr/lib64/libgstcheck-1.0.so.0.2201.0
 /usr/lib64/libgstcontroller-1.0.so.0
-/usr/lib64/libgstcontroller-1.0.so.0.2200.0
+/usr/lib64/libgstcontroller-1.0.so.0.2201.0
 /usr/lib64/libgstnet-1.0.so.0
-/usr/lib64/libgstnet-1.0.so.0.2200.0
+/usr/lib64/libgstnet-1.0.so.0.2201.0
 /usr/lib64/libgstreamer-1.0.so.0
-/usr/lib64/libgstreamer-1.0.so.0.2200.0
+/usr/lib64/libgstreamer-1.0.so.0.2201.0
 
 %files libexec
 %defattr(-,root,root,-)
