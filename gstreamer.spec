@@ -7,7 +7,7 @@
 #
 Name     : gstreamer
 Version  : 1.22.3
-Release  : 81
+Release  : 82
 URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.3.tar.xz
 Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.3.tar.xz
 Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.22.3.tar.xz.asc
@@ -134,7 +134,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1684510918
+export SOURCE_DATE_EPOCH=1685548025
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -196,11 +196,6 @@ DESTDIR=%{buildroot} ninja -C builddir install
 
 %files dev
 %defattr(-,root,root,-)
-/V3/usr/lib64/libgstbase-1.0.so
-/V3/usr/lib64/libgstcheck-1.0.so
-/V3/usr/lib64/libgstcontroller-1.0.so
-/V3/usr/lib64/libgstnet-1.0.so
-/V3/usr/lib64/libgstreamer-1.0.so
 /usr/include/gstreamer-1.0/gst/base/base-prelude.h
 /usr/include/gstreamer-1.0/gst/base/base.h
 /usr/include/gstreamer-1.0/gst/base/gstadapter.h
@@ -339,15 +334,10 @@ DESTDIR=%{buildroot} ninja -C builddir install
 %defattr(-,root,root,-)
 /V3/usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /V3/usr/lib64/gstreamer-1.0/libgstcoretracers.so
-/V3/usr/lib64/libgstbase-1.0.so.0
 /V3/usr/lib64/libgstbase-1.0.so.0.2203.0
-/V3/usr/lib64/libgstcheck-1.0.so.0
 /V3/usr/lib64/libgstcheck-1.0.so.0.2203.0
-/V3/usr/lib64/libgstcontroller-1.0.so.0
 /V3/usr/lib64/libgstcontroller-1.0.so.0.2203.0
-/V3/usr/lib64/libgstnet-1.0.so.0
 /V3/usr/lib64/libgstnet-1.0.so.0.2203.0
-/V3/usr/lib64/libgstreamer-1.0.so.0
 /V3/usr/lib64/libgstreamer-1.0.so.0.2203.0
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
