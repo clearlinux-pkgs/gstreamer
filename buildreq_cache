@@ -1,4 +1,4 @@
-1.22.6
+1.22.7
 bash-completion-dev
 pkgconfig(bash-completion)
 pkgconfig(gtk+-3.0)
