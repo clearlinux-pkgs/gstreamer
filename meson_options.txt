@@ -3,6 +3,7 @@ option('gst_parse', type : 'boolean', value : true,
        description: 'Enable pipeline string parser')
 option('registry', type : 'boolean', value : true)
 option('tracer_hooks', type : 'boolean', value : true, description: 'Enable tracer usage')
+option('ptp-helper', type: 'feature', description: 'Build gst-ptp-helper')
 option('ptp-helper-setuid-user', type : 'string',
        description : 'User to switch to when installing gst-ptp-helper setuid root')
 option('ptp-helper-setuid-group', type : 'string',
@@ -23,6 +24,7 @@ option('libdw', type : 'feature', value : 'auto', description : 'Use libdw to ge
 option('dbghelp', type : 'feature', value : 'auto', description : 'Use dbghelp to generate backtraces')
 option('bash-completion', type : 'feature', value : 'auto', description : 'Install bash completion files')
 option('coretracers', type : 'feature', value : 'auto', description : 'Build coretracers plugin')
+option('gstreamer-static-full', type : 'boolean', value : false, description : 'Enable static support of gstreamer-full.')
 
 # Common feature options
 option('examples', type : 'feature', value : 'auto', yield : true)
