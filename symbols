@@ -2121,6 +2121,7 @@ libgstreamer-1.0.so.0:gst_structure_id_take_value
 libgstreamer-1.0.so.0:gst_structure_intersect
 libgstreamer-1.0.so.0:gst_structure_is_equal
 libgstreamer-1.0.so.0:gst_structure_is_subset
+libgstreamer-1.0.so.0:gst_structure_is_writable
 libgstreamer-1.0.so.0:gst_structure_map_in_place
 libgstreamer-1.0.so.0:gst_structure_map_in_place_id_str
 libgstreamer-1.0.so.0:gst_structure_n_fields
