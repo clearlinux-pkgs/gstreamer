@@ -9,7 +9,7 @@
 #
 Name     : gstreamer
 Version  : 1.26.3
-Release  : 107
+Release  : 108
 URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.26.3.tar.xz
 Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.26.3.tar.xz
 Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.26.3.tar.xz.asc
@@ -143,7 +143,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1751037960
+export SOURCE_DATE_EPOCH=1751038413
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
