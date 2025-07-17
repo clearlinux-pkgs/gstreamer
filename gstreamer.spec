@@ -8,11 +8,11 @@
 # Source0 file verified with key 0x5D2EEE6F6F349D7C (tim@centricular.com)
 #
 Name     : gstreamer
-Version  : 1.26.3
-Release  : 108
-URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.26.3.tar.xz
-Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.26.3.tar.xz
-Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.26.3.tar.xz.asc
+Version  : 1.26.4
+Release  : 109
+URL      : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.26.4.tar.xz
+Source0  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.26.4.tar.xz
+Source1  : https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.26.4.tar.xz.asc
 Source2  : 5D2EEE6F6F349D7C.pkey
 Summary  : No detailed summary available
 Group    : Development/Tools
@@ -38,6 +38,7 @@ BuildRequires : pkgconfig(atk)
 BuildRequires : pkgconfig(bash-completion)
 BuildRequires : pkgconfig(gtk+-3.0)
 BuildRequires : pkgconfig(libdw)
+BuildRequires : pkgconfig(valgrind)
 BuildRequires : valgrind
 # Suppress stripping binaries
 %define __strip /bin/true
@@ -132,10 +133,10 @@ chmod 700 .gnupg
 gpg --homedir .gnupg --import %{SOURCE2}
 gpg --homedir .gnupg --status-fd 1 --verify %{SOURCE1} %{SOURCE0} > gpg.status
 grep -E '^\[GNUPG:\] (GOODSIG|EXPKEYSIG) 5D2EEE6F6F349D7C' gpg.status
-%setup -q -n gstreamer-1.26.3
-cd %{_builddir}/gstreamer-1.26.3
+%setup -q -n gstreamer-1.26.4
+cd %{_builddir}/gstreamer-1.26.4
 pushd ..
-cp -a gstreamer-1.26.3 buildavx2
+cp -a gstreamer-1.26.4 buildavx2
 popd
 
 %build
@@ -143,7 +144,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1751038413
+export SOURCE_DATE_EPOCH=1752767600
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -226,7 +227,7 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/share/bash-completion/completions/gst-launch-1.0
 /usr/share/bash-completion/helpers/gst
 /usr/share/cmake/*
-/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.2603.0-gdb.py
+/usr/share/gdb/auto-load/usr/lib64/libgstreamer-1.0.so.0.2604.0-gdb.py
 /usr/share/gir-1.0/*.gir
 /usr/share/gstreamer-1.0/gdb/glib_gobject_helper.py
 /usr/share/gstreamer-1.0/gdb/gst_gdb.py
@@ -374,23 +375,23 @@ DESTDIR=%{buildroot} ninja -C builddir install
 %defattr(-,root,root,-)
 /V3/usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /V3/usr/lib64/gstreamer-1.0/libgstcoretracers.so
-/V3/usr/lib64/libgstbase-1.0.so.0.2603.0
-/V3/usr/lib64/libgstcheck-1.0.so.0.2603.0
-/V3/usr/lib64/libgstcontroller-1.0.so.0.2603.0
-/V3/usr/lib64/libgstnet-1.0.so.0.2603.0
-/V3/usr/lib64/libgstreamer-1.0.so.0.2603.0
+/V3/usr/lib64/libgstbase-1.0.so.0.2604.0
+/V3/usr/lib64/libgstcheck-1.0.so.0.2604.0
+/V3/usr/lib64/libgstcontroller-1.0.so.0.2604.0
+/V3/usr/lib64/libgstnet-1.0.so.0.2604.0
+/V3/usr/lib64/libgstreamer-1.0.so.0.2604.0
 /usr/lib64/gstreamer-1.0/libgstcoreelements.so
 /usr/lib64/gstreamer-1.0/libgstcoretracers.so
 /usr/lib64/libgstbase-1.0.so.0
-/usr/lib64/libgstbase-1.0.so.0.2603.0
+/usr/lib64/libgstbase-1.0.so.0.2604.0
 /usr/lib64/libgstcheck-1.0.so.0
-/usr/lib64/libgstcheck-1.0.so.0.2603.0
+/usr/lib64/libgstcheck-1.0.so.0.2604.0
 /usr/lib64/libgstcontroller-1.0.so.0
-/usr/lib64/libgstcontroller-1.0.so.0.2603.0
+/usr/lib64/libgstcontroller-1.0.so.0.2604.0
 /usr/lib64/libgstnet-1.0.so.0
-/usr/lib64/libgstnet-1.0.so.0.2603.0
+/usr/lib64/libgstnet-1.0.so.0.2604.0
 /usr/lib64/libgstreamer-1.0.so.0
-/usr/lib64/libgstreamer-1.0.so.0.2603.0
+/usr/lib64/libgstreamer-1.0.so.0.2604.0
 
 %files libexec
 %defattr(-,root,root,-)
